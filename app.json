@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "rookiereps",
+    "name": "Rookie Reps",
     "slug": "rookiereps",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -8,9 +8,11 @@
     "scheme": "rookiereps",
     "userInterfaceStyle": "automatic",
     "ios": {
+      "bundleIdentifier": "com.ayushbharadva.rookiereps",
       "icon": "./assets/expo.icon"
     },
     "android": {
+      "package": "com.ayushbharadva.rookiereps",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
