@@ -1,4 +1,25 @@
-This is an Expo/React Native mobile application. Prioritize mobile-first patterns, performance, and cross-platform compatibility.
+# Rookie Reps
+
+A 5-minute daily chess workout for beginners: open the app, solve 3 short challenges, keep a streak, close the app.
+Android first, offline, no account, no backend. Plan and milestones: [docs/PLAN.md](docs/PLAN.md). Decisions: [docs/decisions/](docs/decisions/).
+
+## Project rules
+
+- Work one milestone at a time, as written in docs/PLAN.md. Keep the app runnable after every change.
+- Run `npm run check` (typecheck, lint, format, tests) before declaring any task done.
+- Simple beats clever. Don't add a library without a clear reason; record the reason in the commit or a decision record.
+- Chess correctness is non-negotiable:
+  - Never implement chess rules by hand. Only `src/chess` may import chess.js.
+  - Never claim a move is correct without validation. Answers come from the engine-verified content pipeline, never from UI code or guesses.
+- Challenge content lives in data files, never inside components.
+- Keep layers separate: screens (`src/app`) → workout/progress logic (pure TypeScript) → chess domain → content → storage.
+- MVP non-goals: backend, accounts, analytics SDKs, multiplayer, social features, payments.
+- Write tests for logic (chess, streak, workout selection, persistence). Tests live in `__tests__/` folders named `*.test.ts(x)`, never inside `src/app`.
+- React Native Testing Library v14 is async: `await render(...)`, `await fireEvent.press(...)`. For navigation tests see `src/__tests__/navigation.test.tsx`.
+- Naming: descriptive names, no abbreviations or single letters. Files kebab-case, components PascalCase, imports via `@/`.
+- Comments only where the logic is not obvious; one line where possible.
+- Colors only through `useTheme()`. Text colors must keep WCAG AA contrast; `src/constants/__tests__/theme.test.ts` enforces it.
+- In network-restricted environments `npx expo install` needs `EXPO_OFFLINE=1` (it reads versions bundled in the `expo` package).
 
 ## Expo has changed — do not trust your training data
 
@@ -8,20 +29,17 @@ Expo ships breaking changes every SDK release. APIs you remember are likely rena
 2. Fetch the matching versioned docs: `https://docs.expo.dev/versions/v<major>.0.0/`
 3. For anything else, fetch https://docs.expo.dev/llms.txt — an index of all Expo docs with corrections to common LLM misconceptions. Follow its links to the specific page you need; never answer from memory.
 
+If docs.expo.dev is unreachable, the same pages are in the expo/expo repository, e.g. `https://raw.githubusercontent.com/expo/expo/sdk-<major>/docs/pages/<path>.mdx`.
+
 ## Commands
 
-Use `bunx` instead of `npx` if the project uses bun (`bun.lock` present).
-
 ```bash
-npx expo install <package>  # ALWAYS use instead of npm/yarn/pnpm/bun add — resolves SDK-compatible versions
+npx expo install <package>  # ALWAYS use instead of npm add — resolves SDK-compatible versions
 npx expo start              # start the dev server
-npx expo lint               # lint
-npx tsc --noEmit            # typecheck
+npm run check               # typecheck + lint + format check + tests
 npx expo-doctor             # diagnose dependency and config issues
 npx expo install --fix      # fix incompatible package versions
 ```
-
-Run lint and typecheck before declaring any task done.
 
 ## Navigation & Routing
 
@@ -31,10 +49,10 @@ Run lint and typecheck before declaring any task done.
 
 ## Building with EAS
 
-Use EAS to build, sign, and submit the app in the cloud (`eas build`, `eas submit`) and to ship over-the-air updates (`eas update`) — no local Xcode or Android Studio required. Run EAS CLI as `bunx eas-cli <command>` in Bun projects, or `npx eas-cli@latest <command>` otherwise; substitute that for bare `eas` in docs examples.
+Use EAS to build, sign, and submit the app in the cloud (`eas build`, `eas submit`) and to ship over-the-air updates (`eas update`) — no local Xcode or Android Studio required. Run EAS CLI as `npx eas-cli@latest <command>`; substitute that for bare `eas` in docs examples.
 Docs: https://docs.expo.dev/eas/index.md
 
-## Rules
+## Expo rules
 
 - If `ios/` and `android/` directories do not exist, they are generated (Continuous Native Generation). Never create or edit them by hand — configure native behavior in `app.json` and config plugins.
 - Expo Go only includes its bundled native modules. After adding a library with native code, the app needs a development build: `npx expo run:ios|android` locally, or `eas build --profile development`.

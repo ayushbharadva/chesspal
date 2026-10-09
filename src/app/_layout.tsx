@@ -27,7 +27,7 @@ export default function RootLayout() {
       <Stack>
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="workout" options={{ title: 'Today’s Workout' }} />
-        <Stack.Screen name="result" options={{ title: 'Results', headerBackVisible: false }} />
+        <Stack.Screen name="result" options={{ title: 'Results' }} />
         <Stack.Screen name="progress" options={{ title: 'Your Progress' }} />
       </Stack>
     </ThemeProvider>

@@ -1,56 +1,53 @@
-# Welcome to your Expo app 👋
+# Rookie Reps
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A 5-minute daily chess workout for beginners. Open the app, solve 3 short challenges, keep your streak, learn something, close the app.
 
-## Get started
+**Status:** Milestone 2 (app shell) is done. Roadmap: [docs/PLAN.md](docs/PLAN.md).
 
-1. Install dependencies
+## Requirements
 
-   ```bash
-   npm install
-   ```
+- Node 22 (see `.nvmrc`)
+- An Android phone with [Expo Go](https://expo.dev/go), or an Android emulator from Android Studio
 
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+## Getting started
 
 ```bash
-npm run reset-project
+npm install
+npm start   # press "a" to open the Android emulator, or scan the QR code with Expo Go
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## Scripts
 
-### Other setup steps
+| Command             | What it does                                                          |
+| ------------------- | --------------------------------------------------------------------- |
+| `npm start`         | Start the Expo dev server                                             |
+| `npm run android`   | Start the dev server and open Android                                 |
+| `npm run web`       | Browser preview for quick layout checks (the product targets Android) |
+| `npm run typecheck` | TypeScript check                                                      |
+| `npm run lint`      | ESLint, including Prettier formatting of code                         |
+| `npm run format`    | Format every file with Prettier                                       |
+| `npm test`          | Jest tests                                                            |
+| `npm run check`     | Everything CI runs: typecheck, lint, format check, tests              |
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+## Project structure
 
-## Learn more
+```text
+src/
+  app/          # screens (Expo Router): every file is a route
+  components/   # shared UI: screen, button, themed-text, themed-view
+  constants/    # design tokens: colors (light/dark), spacing, radius
+  hooks/        # useTheme
+  utils/        # small pure helpers
+  __tests__/    # app-level tests (tests never live in src/app)
+docs/           # plan and decision records
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+## Conventions
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+- File names in kebab-case, components in PascalCase, imports from `src` via `@/`.
+- Colors only through `useTheme()`. Text colors must meet WCAG AA contrast; a test enforces it.
+- Tests live in `__tests__/` folders next to the code, named `*.test.ts(x)`.
+- Add packages with `npx expo install <package>` so versions match the Expo SDK.
+- More rules for humans and AI agents: [AGENTS.md](AGENTS.md).
 
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+The app icon and splash screen are Expo placeholders until Milestone 10.
