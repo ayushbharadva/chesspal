@@ -422,6 +422,7 @@ Every milestone ends with a runnable app and green CI.
   - Confirm target API 36 (required for new apps and updates since Aug 31, 2026).
   - Icon, feature graphic, screenshots, privacy policy page, Data safety form, content rating.
   - Decide on crash reporting (e.g. Sentry). Update Data safety if added.
+  - Update Expo to its latest patch and review `npm audit`. At M2 it flagged 5 packages (braces, node-forge, sprintf-js, uuid, decode-uri-component), all through Expo's pinned dependencies and mostly in build tools.
   - Closed test with 12+ testers for 14 days in a row (required for personal developer accounts created after Nov 13, 2023). Then production.
 - **Done when:** Testers install from Play, and the kill/continue checkpoint is measured.
 
