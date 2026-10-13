@@ -4,7 +4,7 @@ Date: 2026-10-09. Status: accepted.
 
 ## Context
 
-One developer, Android first, offline, a small MVP of 4–5 screens. Chess correctness matters more than anything else. Full reasoning: [PLAN.md, section 4](../PLAN.md#4-proposed-stack).
+One developer, Android first, offline, a small MVP of 4–5 screens. Chess correctness matters more than anything else. Full reasoning: [PLAN.md, section 3](../PLAN.md#3-proposed-stack).
 
 ## Decision
 

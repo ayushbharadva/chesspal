@@ -4,44 +4,25 @@ Written 2026-10-09 in Milestone 1. Name chosen: **Rookie Reps**.
 
 Progress:
 
-- ✅ M1: inspection, market check, names, architecture, milestones (this document)
-- ✅ M2: repo + app shell (see [section 6](#m2-new-repo--app-shell))
+- ✅ M1: market check, names, architecture, milestones (this document)
+- ✅ M2: repo + app shell (see [section 5](#m2-new-repo--app-shell))
 - ⏭️ Next: M3, chess domain + board
 
 Still open: the product angle ("stop blundering, for people who already play" vs "daily chess for complete beginners"). It matters from M4, when content is chosen.
 
 Contents:
 
-1. [Repository inspection](#1-repository-inspection)
-2. [Market check and honest verdict](#2-market-check-and-honest-verdict)
-3. [Names](#3-names)
-4. [Proposed stack](#4-proposed-stack)
-5. [Architecture](#5-architecture)
-6. [Milestones 2–12](#6-milestones)
-7. [Risks](#7-risks)
-8. [Sources](#8-sources)
+1. [Market check and honest verdict](#1-market-check-and-honest-verdict)
+2. [Names](#2-names)
+3. [Proposed stack](#3-proposed-stack)
+4. [Architecture](#4-architecture)
+5. [Milestones 2–12](#5-milestones)
+6. [Risks](#6-risks)
+7. [Sources](#7-sources)
 
 ---
 
-## 1. Repository inspection
-
-| Item                              | Finding                                                                                                   |
-| --------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| Repo                              | `ayushbharadva/DSA`: 5 Python files of data-structures practice (binary search, linear search, BST notes) |
-| Stack                             | Python scripts. No React Native, no `package.json`, no Android project                                    |
-| Navigation, state, styling, tests | None                                                                                                      |
-| Chess code or chess libraries     | None                                                                                                      |
-| Android config                    | None                                                                                                      |
-| Your other GitHub repos           | None of them is this app                                                                                  |
-
-**What can be reused:** nothing from this repo. The app needs its own new repo.
-
-I tried to read one of your other React Native repos to copy your usual choices (state library, styling).
-That was blocked in this environment, so the stack below uses common defaults. Override anything you normally do differently.
-
----
-
-## 2. Market check and honest verdict
+## 1. Market check and honest verdict
 
 ### Who already does this
 
@@ -89,7 +70,7 @@ If they don't come back, change the angle before adding features.
 
 ---
 
-## 3. Names
+## 2. Names
 
 ### What went wrong with ChessMate
 
@@ -147,7 +128,7 @@ Store facts that matter:
 
 ---
 
-## 4. Proposed stack
+## 3. Proposed stack
 
 Chosen for: simple, offline, Android first, iOS later without a rewrite.
 
@@ -171,7 +152,7 @@ Chosen for: simple, offline, Android first, iOS later without a rewrite.
 
 ---
 
-## 5. Architecture
+## 4. Architecture
 
 ### Layers
 
@@ -332,12 +313,13 @@ We revisit this in M12 if we add crash reporting.
 
 ---
 
-## 6. Milestones
+## 5. Milestones
 
 Every milestone ends with a runnable app and green CI.
 
-### M2: New repo + app shell ✅
+### M2: New repo + app shell
 
+- **Status:** ✅ done.
 - **Goal:** Runnable Expo app with 4 placeholder screens, theme and CI.
 - **Built:** Expo SDK 57 default template, stripped of demo code. `src/app/{_layout,index,workout,result,progress}.tsx`, `src/components/{screen,button,themed-text,themed-view}.tsx`, `src/constants/theme.ts`, ESLint + Prettier, Jest + React Native Testing Library v14, `.github/workflows/ci.yml`, `README.md`, `AGENTS.md`/`CLAUDE.md`, `docs/decisions/0001-stack.md`. Package name `com.ayushbharadva.rookiereps`.
 - **Tests:** Greeting boundaries. WCAG AA contrast for every text color in both themes. Navigation through all four screens using the real routes.
@@ -371,7 +353,7 @@ Every milestone ends with a runnable app and green CI.
 
 - **Goal:** "Today's Workout" = 3 challenges for today. Same 3 if reopened today. New 3 tomorrow.
 - **Files:** `src/workout/{select-today-workout,workout-reducer,use-workout}.ts`, `src/utils/date-key.ts`, `src/app/workout.tsx`.
-- **Approach:** Selection rules from section 5. Progress bar 1/3 → 3/3. "Quit workout?" confirmation. Resume.
+- **Approach:** Selection rules from section 4. Progress bar 1/3 → 3/3. "Quit workout?" confirmation. Resume.
 - **Tests:** New user. Partial history. All seen → repeat wrong ones first. Same day → same workout. Next day → new workout. Date keys around midnight, month and year ends, daylight saving.
 - **Done when:** Install → open → Start → 3 challenges → finish, with no account or setup. Closing mid-workout and reopening shows the same workout.
 
@@ -387,7 +369,7 @@ Every milestone ends with a runnable app and green CI.
 
 - **Goal:** Streak and history survive restarts. Storage problems never crash the app.
 - **Files:** `src/progress/{streak,store}.ts`, `src/storage/{storage,schema,migrate}.ts`.
-- **Approach:** Rules from section 5. Zustand `persist` → AsyncStorage. Schema version + migrate. Corruption fallback.
+- **Approach:** Rules from section 4. Zustand `persist` → AsyncStorage. Schema version + migrate. Corruption fallback.
 - **Tests:** Streak: first completion, consecutive days, missed day, two completions the same day, month and year boundaries, daylight saving, clock moved back. Storage: save/load round-trip, missing data, corrupted JSON, old-schema migration, reload from storage (simulated restart).
 - **Done when:** Finish today → 🔥 1. Change the phone date to tomorrow and finish → 🔥 2. Skip a day → "Start a new streak" with best streak kept. Force-close and reopen keeps everything.
 
@@ -428,7 +410,7 @@ Every milestone ends with a runnable app and green CI.
 
 ---
 
-## 7. Risks
+## 6. Risks
 
 | Risk                                | Plan                                                                                                        |
 | ----------------------------------- | ----------------------------------------------------------------------------------------------------------- |
@@ -441,7 +423,7 @@ Every milestone ends with a runnable app and green CI.
 
 ---
 
-## 8. Sources
+## 7. Sources
 
 Market:
 
