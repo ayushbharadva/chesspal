@@ -1,11 +1,11 @@
 # Rookie Reps
 
-A 5-minute daily chess workout for beginners: open the app, solve 3 short challenges, keep a streak, close the app.
-Android first, offline, no account, no backend. Plan and milestones: [docs/PLAN.md](docs/PLAN.md). Decisions: [docs/decisions/](docs/decisions/).
+A chess learning app for beginners who know the rules: practice easy puzzles, learn opening ideas, and save progress.
+Android first, offline, no account, no backend. Current scope: [docs/MVP.md](docs/MVP.md). Decisions: [docs/decisions/](docs/decisions/). The original plan is historical.
 
 ## Project rules
 
-- Work one milestone at a time, as written in docs/PLAN.md. Keep the app runnable after every change.
+- Work incrementally against docs/MVP.md. Keep the app runnable after every change.
 - Run `npm run check` (typecheck, lint, format, tests) before declaring any task done.
 - Simple beats clever. Don't add a library without a clear reason; record the reason in the commit or a decision record.
 - Chess correctness is non-negotiable:

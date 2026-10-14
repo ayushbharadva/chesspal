@@ -1,0 +1,2402 @@
+[
+  {
+    "id": "00X66",
+    "fen": "4r1k1/6pp/1R3p2/P7/1P1p1B2/2b4P/5PP1/5K2 b - - 3 31",
+    "moves": ["e8e1"],
+    "rating": 405,
+    "motif": "mate",
+    "goal": "Find checkmate in one",
+    "hints": [
+      "Check the opponent king and look at its escape squares.",
+      "Consider your rook on e8.",
+      "Rook to e1"
+    ],
+    "explanation": "The final move checks the king, and there is no legal escape. Replay the line to see how the pieces cover the escape squares.",
+    "source": {
+      "puzzleId": "00X66",
+      "gameUrl": "https://lichess.org/9WU44YEe#61",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:00.439Z"
+    }
+  },
+  {
+    "id": "00QOp",
+    "fen": "4r3/pp2rkp1/2p5/P2p2pP/R4bP1/2NQ4/1PP2P2/3KR3 b - - 0 25",
+    "moves": ["e7e1"],
+    "rating": 425,
+    "motif": "mate",
+    "goal": "Find checkmate in one",
+    "hints": [
+      "Check the opponent king and look at its escape squares.",
+      "Consider your rook on e7.",
+      "Rook captures on e1"
+    ],
+    "explanation": "The final move checks the king, and there is no legal escape. Replay the line to see how the pieces cover the escape squares.",
+    "source": {
+      "puzzleId": "00QOp",
+      "gameUrl": "https://lichess.org/7puRAwZg#49",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:00.435Z"
+    }
+  },
+  {
+    "id": "00GRa",
+    "fen": "1r3rk1/2p1qppb/p2n4/1p2p1Pp/4Qn1P/2P1N3/PPB2P1K/3R2R1 w - - 0 29",
+    "moves": ["e4h7"],
+    "rating": 431,
+    "motif": "mate",
+    "goal": "Find checkmate in one",
+    "hints": [
+      "Check the opponent king and look at its escape squares.",
+      "Consider your queen on e4.",
+      "Queen captures on h7"
+    ],
+    "explanation": "The final move checks the king, and there is no legal escape. Replay the line to see how the pieces cover the escape squares.",
+    "source": {
+      "puzzleId": "00GRa",
+      "gameUrl": "https://lichess.org/QiJhfG8J/black#56",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:00.420Z"
+    }
+  },
+  {
+    "id": "00Gyu",
+    "fen": "r1b1k1nr/1pp2p2/p7/1q5p/6p1/4PP2/PPPQ1P2/2KR3R w kq - 0 18",
+    "moves": ["d2d8"],
+    "rating": 448,
+    "motif": "mate",
+    "goal": "Find checkmate in one",
+    "hints": [
+      "Check the opponent king and look at its escape squares.",
+      "Consider your queen on d2.",
+      "Queen to d8"
+    ],
+    "explanation": "The final move checks the king, and there is no legal escape. Replay the line to see how the pieces cover the escape squares.",
+    "source": {
+      "puzzleId": "00Gyu",
+      "gameUrl": "https://lichess.org/EZLk62ss/black#34",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:00.423Z"
+    }
+  },
+  {
+    "id": "0olA8",
+    "fen": "3r2k1/2p2pp1/p6p/8/8/2P4P/2P2PP1/3Q2KR b - - 0 25",
+    "moves": ["d8d1", "g1h2", "d1h1"],
+    "rating": 466,
+    "motif": "capture",
+    "goal": "Win the undefended material",
+    "hints": [
+      "Look for a piece you can capture. Check the reply too.",
+      "Consider your rook on d8.",
+      "Rook captures on d1"
+    ],
+    "explanation": "Look for material you can win safely. This line finishes by capturing the rook.",
+    "source": {
+      "puzzleId": "0olA8",
+      "gameUrl": "https://lichess.org/lxDxOaNv#49",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:02.091Z"
+    }
+  },
+  {
+    "id": "008Nz",
+    "fen": "6k1/2p2ppp/pnp5/B7/2P3PP/1P2PPR1/r3b2r/3R2K1 w - - 2 30",
+    "moves": ["d1d8"],
+    "rating": 473,
+    "motif": "mate",
+    "goal": "Find checkmate in one",
+    "hints": [
+      "Check the opponent king and look at its escape squares.",
+      "Consider your rook on d1.",
+      "Rook to d8"
+    ],
+    "explanation": "The final move checks the king, and there is no legal escape. Replay the line to see how the pieces cover the escape squares.",
+    "source": {
+      "puzzleId": "008Nz",
+      "gameUrl": "https://lichess.org/HNU4zavC/black#58",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:00.397Z"
+    }
+  },
+  {
+    "id": "00FHX",
+    "fen": "2r3k1/5p1p/4pP2/3p3P/8/5P2/p5P1/1bR3K1 w - - 1 31",
+    "moves": ["c1c8"],
+    "rating": 473,
+    "motif": "mate",
+    "goal": "Find checkmate in one",
+    "hints": [
+      "Check the opponent king and look at its escape squares.",
+      "Consider your rook on c1.",
+      "Rook captures on c8"
+    ],
+    "explanation": "The final move checks the king, and there is no legal escape. Replay the line to see how the pieces cover the escape squares.",
+    "source": {
+      "puzzleId": "00FHX",
+      "gameUrl": "https://lichess.org/rztVgThB/black#60",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:00.416Z"
+    }
+  },
+  {
+    "id": "00K48",
+    "fen": "6k1/6pp/p2B4/2pP4/P1q5/6P1/2P1p2P/5RK1 w - - 0 27",
+    "moves": ["f1f8"],
+    "rating": 476,
+    "motif": "mate",
+    "goal": "Find checkmate in one",
+    "hints": [
+      "Check the opponent king and look at its escape squares.",
+      "Consider your rook on f1.",
+      "Rook to f8"
+    ],
+    "explanation": "The final move checks the king, and there is no legal escape. Replay the line to see how the pieces cover the escape squares.",
+    "source": {
+      "puzzleId": "00K48",
+      "gameUrl": "https://lichess.org/vGu9FCAH/black#52",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:00.426Z"
+    }
+  },
+  {
+    "id": "00dOP",
+    "fen": "r2q1k1r/pbp1bppp/1p2p3/1B1nN3/3P1Q2/8/PPP2PPP/R1B2RK1 w - - 6 13",
+    "moves": ["f4f7"],
+    "rating": 481,
+    "motif": "mate",
+    "goal": "Find checkmate in one",
+    "hints": [
+      "Check the opponent king and look at its escape squares.",
+      "Consider your queen on f4.",
+      "Queen captures on f7"
+    ],
+    "explanation": "The final move checks the king, and there is no legal escape. Replay the line to see how the pieces cover the escape squares.",
+    "source": {
+      "puzzleId": "00dOP",
+      "gameUrl": "https://lichess.org/RvqmzkCr/black#24",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:00.450Z"
+    }
+  },
+  {
+    "id": "004iZ",
+    "fen": "r2r2k1/2q1bpp1/3p3p/1ppn4/1P1BP3/P5Q1/4RPPP/R5K1 w - - 0 21",
+    "moves": ["g3g7"],
+    "rating": 499,
+    "motif": "mate",
+    "goal": "Find checkmate in one",
+    "hints": [
+      "Check the opponent king and look at its escape squares.",
+      "Consider your queen on g3.",
+      "Queen captures on g7"
+    ],
+    "explanation": "The final move checks the king, and there is no legal escape. Replay the line to see how the pieces cover the escape squares.",
+    "source": {
+      "puzzleId": "004iZ",
+      "gameUrl": "https://lichess.org/dQ85JUe1/black#40",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:00.378Z"
+    }
+  },
+  {
+    "id": "00Dlt",
+    "fen": "r3kb1r/p4pp1/b1p4p/n3pQ2/4N3/2Nq4/PP1P1PPP/R1B2RK1 b kq - 1 14",
+    "moves": ["d3f1"],
+    "rating": 510,
+    "motif": "mate",
+    "goal": "Find checkmate in one",
+    "hints": [
+      "Check the opponent king and look at its escape squares.",
+      "Consider your queen on d3.",
+      "Queen captures on f1"
+    ],
+    "explanation": "The final move checks the king, and there is no legal escape. Replay the line to see how the pieces cover the escape squares.",
+    "source": {
+      "puzzleId": "00Dlt",
+      "gameUrl": "https://lichess.org/fDwnUxIU#27",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:00.413Z"
+    }
+  },
+  {
+    "id": "0jfEN",
+    "fen": "8/2k5/p2p1p2/2pBP3/1pN3p1/1P6/P1P5/2KqB2r w - - 0 43",
+    "moves": ["c1d1", "h1e1", "d1e1"],
+    "rating": 523,
+    "motif": "capture",
+    "goal": "Win the undefended material",
+    "hints": [
+      "Look for a piece you can capture. Check the reply too.",
+      "Consider your king on c1.",
+      "King captures on d1"
+    ],
+    "explanation": "Look for material you can win safely. This line finishes by capturing the rook.",
+    "source": {
+      "puzzleId": "0jfEN",
+      "gameUrl": "https://lichess.org/TbMpl1Dq/black#84",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:01.748Z"
+    }
+  },
+  {
+    "id": "00GoO",
+    "fen": "r1b2rk1/ppb5/2p4p/2Ppqpp1/1P6/2NBP3/P4PPP/2RQ1RK1 b - - 1 16",
+    "moves": ["e5h2"],
+    "rating": 524,
+    "motif": "mate",
+    "goal": "Find checkmate in one",
+    "hints": [
+      "Check the opponent king and look at its escape squares.",
+      "Consider your queen on e5.",
+      "Queen captures on h2"
+    ],
+    "explanation": "The final move checks the king, and there is no legal escape. Replay the line to see how the pieces cover the escape squares.",
+    "source": {
+      "puzzleId": "00GoO",
+      "gameUrl": "https://lichess.org/sf8dREp6#31",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:00.421Z"
+    }
+  },
+  {
+    "id": "00all",
+    "fen": "6k1/5ppp/4p1b1/1n1pP3/1P6/r7/5PPP/2R2BK1 w - - 0 26",
+    "moves": ["c1c8"],
+    "rating": 535,
+    "motif": "mate",
+    "goal": "Find checkmate in one",
+    "hints": [
+      "Check the opponent king and look at its escape squares.",
+      "Consider your rook on c1.",
+      "Rook to c8"
+    ],
+    "explanation": "The final move checks the king, and there is no legal escape. Replay the line to see how the pieces cover the escape squares.",
+    "source": {
+      "puzzleId": "00all",
+      "gameUrl": "https://lichess.org/84IXBueE/black#50",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:00.445Z"
+    }
+  },
+  {
+    "id": "007HB",
+    "fen": "rn2q1k1/pp3ppp/2pb4/3p1B2/2PN4/1Q6/PP3PPP/R1B4K b - - 0 15",
+    "moves": ["e8e1"],
+    "rating": 538,
+    "motif": "mate",
+    "goal": "Find checkmate in one",
+    "hints": [
+      "Check the opponent king and look at its escape squares.",
+      "Consider your queen on e8.",
+      "Queen to e1"
+    ],
+    "explanation": "The final move checks the king, and there is no legal escape. Replay the line to see how the pieces cover the escape squares.",
+    "source": {
+      "puzzleId": "007HB",
+      "gameUrl": "https://lichess.org/prYQo0BK#29",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:00.392Z"
+    }
+  },
+  {
+    "id": "00bSy",
+    "fen": "1kr1r3/1pp4p/p2b2p1/3N1p2/P7/3P1Q1P/2R2PP1/4R1K1 b - - 0 27",
+    "moves": ["e8e1"],
+    "rating": 544,
+    "motif": "mate",
+    "goal": "Find checkmate in one",
+    "hints": [
+      "Check the opponent king and look at its escape squares.",
+      "Consider your rook on e8.",
+      "Rook captures on e1"
+    ],
+    "explanation": "The final move checks the king, and there is no legal escape. Replay the line to see how the pieces cover the escape squares.",
+    "source": {
+      "puzzleId": "00bSy",
+      "gameUrl": "https://lichess.org/s7Pa0Pux#53",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:00.447Z"
+    }
+  },
+  {
+    "id": "0CweW",
+    "fen": "4R3/pp5k/3p2B1/3P4/P1r2bP1/2r5/P7/1KR5 b - - 0 38",
+    "moves": ["h7g6", "c1c3", "c4c3"],
+    "rating": 545,
+    "motif": "capture",
+    "goal": "Win the undefended material",
+    "hints": [
+      "Look for a piece you can capture. Check the reply too.",
+      "Consider your king on h7.",
+      "King captures on g6"
+    ],
+    "explanation": "Look for material you can win safely. This line finishes by capturing the rook.",
+    "source": {
+      "puzzleId": "0CweW",
+      "gameUrl": "https://lichess.org/i5ricZVm#75",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:00.750Z"
+    }
+  },
+  {
+    "id": "00Xn1",
+    "fen": "3r2k1/5pp1/2p3np/2b5/Np2P1b1/1B4B1/1PP3PP/4KR2 b - - 1 21",
+    "moves": ["d8d1"],
+    "rating": 556,
+    "motif": "mate",
+    "goal": "Find checkmate in one",
+    "hints": [
+      "Check the opponent king and look at its escape squares.",
+      "Consider your rook on d8.",
+      "Rook to d1"
+    ],
+    "explanation": "The final move checks the king, and there is no legal escape. Replay the line to see how the pieces cover the escape squares.",
+    "source": {
+      "puzzleId": "00Xn1",
+      "gameUrl": "https://lichess.org/GK88IOTY#41",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:00.440Z"
+    }
+  },
+  {
+    "id": "001KR",
+    "fen": "6k1/p1p3pp/4N3/1p6/2q1r1n1/2B5/PP4PP/3R1R1K w - - 0 29",
+    "moves": ["f1f8"],
+    "rating": 563,
+    "motif": "mate",
+    "goal": "Find checkmate in one",
+    "hints": [
+      "Check the opponent king and look at its escape squares.",
+      "Consider your rook on f1.",
+      "Rook to f8"
+    ],
+    "explanation": "The final move checks the king, and there is no legal escape. Replay the line to see how the pieces cover the escape squares.",
+    "source": {
+      "puzzleId": "001KR",
+      "gameUrl": "https://lichess.org/TaT1Zl7z/black#56",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:00.373Z"
+    }
+  },
+  {
+    "id": "00465",
+    "fen": "5r1k/pp4pp/2p5/6q1/5R2/2P5/P1P2PPP/3rR1K1 w - - 0 28",
+    "moves": ["f4f8"],
+    "rating": 571,
+    "motif": "mate",
+    "goal": "Find checkmate in one",
+    "hints": [
+      "Check the opponent king and look at its escape squares.",
+      "Consider your rook on f4.",
+      "Rook captures on f8"
+    ],
+    "explanation": "The final move checks the king, and there is no legal escape. Replay the line to see how the pieces cover the escape squares.",
+    "source": {
+      "puzzleId": "00465",
+      "gameUrl": "https://lichess.org/h21VtqGG/black#54",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:00.376Z"
+    }
+  },
+  {
+    "id": "007fJ",
+    "fen": "1Q6/5ppp/8/8/8/2pk3P/3p2P1/3K4 b - - 0 52",
+    "moves": ["c3c2"],
+    "rating": 571,
+    "motif": "mate",
+    "goal": "Find checkmate in one",
+    "hints": [
+      "Check the opponent king and look at its escape squares.",
+      "Consider your pawn on c3.",
+      "Pawn to c2"
+    ],
+    "explanation": "The final move checks the king, and there is no legal escape. Replay the line to see how the pieces cover the escape squares.",
+    "source": {
+      "puzzleId": "007fJ",
+      "gameUrl": "https://lichess.org/34ezZi7R#103",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:00.394Z"
+    }
+  },
+  {
+    "id": "00UkB",
+    "fen": "8/8/n1R4p/r5p1/5p1k/7P/5PK1/8 w - - 0 51",
+    "moves": ["c6h6"],
+    "rating": 572,
+    "motif": "mate",
+    "goal": "Find checkmate in one",
+    "hints": [
+      "Check the opponent king and look at its escape squares.",
+      "Consider your rook on c6.",
+      "Rook captures on h6"
+    ],
+    "explanation": "The final move checks the king, and there is no legal escape. Replay the line to see how the pieces cover the escape squares.",
+    "source": {
+      "puzzleId": "00UkB",
+      "gameUrl": "https://lichess.org/A2DzkmFy/black#100",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:00.436Z"
+    }
+  },
+  {
+    "id": "00WiZ",
+    "fen": "3r1rk1/p3R2p/b2P2p1/2p5/7Q/P2q1P1P/6P1/2R3K1 w - - 0 35",
+    "moves": ["h4h7"],
+    "rating": 573,
+    "motif": "mate",
+    "goal": "Find checkmate in one",
+    "hints": [
+      "Check the opponent king and look at its escape squares.",
+      "Consider your queen on h4.",
+      "Queen captures on h7"
+    ],
+    "explanation": "The final move checks the king, and there is no legal escape. Replay the line to see how the pieces cover the escape squares.",
+    "source": {
+      "puzzleId": "00WiZ",
+      "gameUrl": "https://lichess.org/tGch7j6L/black#68",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:00.438Z"
+    }
+  },
+  {
+    "id": "00NR5",
+    "fen": "R2r2k1/6pp/3N4/1nP5/6P1/1P3P2/P2K2n1/8 w - - 2 31",
+    "moves": ["a8d8"],
+    "rating": 575,
+    "motif": "mate",
+    "goal": "Find checkmate in one",
+    "hints": [
+      "Check the opponent king and look at its escape squares.",
+      "Consider your rook on a8.",
+      "Rook captures on d8"
+    ],
+    "explanation": "The final move checks the king, and there is no legal escape. Replay the line to see how the pieces cover the escape squares.",
+    "source": {
+      "puzzleId": "00NR5",
+      "gameUrl": "https://lichess.org/nRo0kQGD/black#60",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:00.432Z"
+    }
+  },
+  {
+    "id": "0r7l4",
+    "fen": "2r5/1p3k2/p3bnp1/2q2p2/8/1P1BR3/PB2Q1Pr/4R2K w - - 0 29",
+    "moves": ["h1h2", "c5e3", "e2e3"],
+    "rating": 575,
+    "motif": "capture",
+    "goal": "Win the undefended material",
+    "hints": [
+      "Look for a piece you can capture. Check the reply too.",
+      "Consider your king on h1.",
+      "King captures on h2"
+    ],
+    "explanation": "Look for material you can win safely. This line finishes by capturing the queen.",
+    "source": {
+      "puzzleId": "0r7l4",
+      "gameUrl": "https://lichess.org/JjqI7eR7/black#56",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:02.293Z"
+    }
+  },
+  {
+    "id": "002vV",
+    "fen": "8/6k1/1R5p/5p1P/5P1K/6P1/8/r7 b - - 3 58",
+    "moves": ["a1h1"],
+    "rating": 576,
+    "motif": "mate",
+    "goal": "Find checkmate in one",
+    "hints": [
+      "Check the opponent king and look at its escape squares.",
+      "Consider your rook on a1.",
+      "Rook to h1"
+    ],
+    "explanation": "The final move checks the king, and there is no legal escape. Replay the line to see how the pieces cover the escape squares.",
+    "source": {
+      "puzzleId": "002vV",
+      "gameUrl": "https://lichess.org/KB7FAntf#115",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:00.375Z"
+    }
+  },
+  {
+    "id": "009bn",
+    "fen": "2kr2r1/ppb2ppp/3qNn2/3p2B1/P7/2P2Q1P/1PB2PP1/R4RK1 b - - 0 18",
+    "moves": ["d6h2"],
+    "rating": 580,
+    "motif": "mate",
+    "goal": "Find checkmate in one",
+    "hints": [
+      "Check the opponent king and look at its escape squares.",
+      "Consider your queen on d6.",
+      "Queen to h2"
+    ],
+    "explanation": "The final move checks the king, and there is no legal escape. Replay the line to see how the pieces cover the escape squares.",
+    "source": {
+      "puzzleId": "009bn",
+      "gameUrl": "https://lichess.org/Zw4AxPzS#35",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:00.399Z"
+    }
+  },
+  {
+    "id": "01o70",
+    "fen": "8/8/q7/P7/1K6/1N1k4/8/8 w - - 1 59",
+    "moves": ["b3c5", "d3d4", "c5a6"],
+    "rating": 581,
+    "motif": "fork",
+    "goal": "Find the fork and follow through",
+    "hints": [
+      "Look for a move that creates two threats at once.",
+      "Consider your knight on b3.",
+      "Knight to c5"
+    ],
+    "explanation": "A fork creates more than one threat. Follow the reply and capture the queen.",
+    "source": {
+      "puzzleId": "01o70",
+      "gameUrl": "https://lichess.org/GIHV3uX4/black#116",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:04.722Z"
+    }
+  },
+  {
+    "id": "00OPi",
+    "fen": "5k2/5p1p/1p1P2p1/1B6/4KP2/1P4P1/n6P/8 b - - 1 38",
+    "moves": ["a2c3", "e4d4", "c3b5"],
+    "rating": 586,
+    "motif": "fork",
+    "goal": "Find the fork and follow through",
+    "hints": [
+      "Look for a move that creates two threats at once.",
+      "Consider your knight on a2.",
+      "Knight to c3"
+    ],
+    "explanation": "A fork creates more than one threat. Follow the reply and capture the bishop.",
+    "source": {
+      "puzzleId": "00OPi",
+      "gameUrl": "https://lichess.org/4K29qsm1#75",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:03.662Z"
+    }
+  },
+  {
+    "id": "17YRN",
+    "fen": "5rk1/4R3/4Pb1Q/p4pp1/Pp2pq2/3b4/5BPP/1R1r2K1 w - - 0 33",
+    "moves": ["b1d1", "f4f2", "g1f2"],
+    "rating": 588,
+    "motif": "capture",
+    "goal": "Win the undefended material",
+    "hints": [
+      "Look for a piece you can capture. Check the reply too.",
+      "Consider your rook on b1.",
+      "Rook captures on d1"
+    ],
+    "explanation": "Look for material you can win safely. This line finishes by capturing the queen.",
+    "source": {
+      "puzzleId": "17YRN",
+      "gameUrl": "https://lichess.org/fxZfeURx/black#64",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:03.214Z"
+    }
+  },
+  {
+    "id": "011Ob",
+    "fen": "1B6/5kpp/8/pp1K4/6r1/3N4/7P/8 w - - 1 38",
+    "moves": ["d3e5", "f7f6", "e5g4"],
+    "rating": 595,
+    "motif": "fork",
+    "goal": "Find the fork and follow through",
+    "hints": [
+      "Look for a move that creates two threats at once.",
+      "Consider your knight on d3.",
+      "Knight to e5"
+    ],
+    "explanation": "A fork creates more than one threat. Follow the reply and capture the rook.",
+    "source": {
+      "puzzleId": "011Ob",
+      "gameUrl": "https://lichess.org/Vx1Uvz3B/black#74",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:03.773Z"
+    }
+  },
+  {
+    "id": "01Yjm",
+    "fen": "8/5Npk/p3b3/3p3p/8/6P1/1P4KP/8 w - - 2 39",
+    "moves": ["f7g5", "h7h6", "g5e6"],
+    "rating": 603,
+    "motif": "fork",
+    "goal": "Find the fork and follow through",
+    "hints": [
+      "Look for a move that creates two threats at once.",
+      "Consider your knight on f7.",
+      "Knight to g5"
+    ],
+    "explanation": "A fork creates more than one threat. Follow the reply and capture the bishop.",
+    "source": {
+      "puzzleId": "01Yjm",
+      "gameUrl": "https://lichess.org/N1QKKfKX/black#76",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:04.000Z"
+    }
+  },
+  {
+    "id": "009tE",
+    "fen": "6k1/6pp/p1N5/1pP2bp1/5P2/8/PPP5/3K4 w - - 0 29",
+    "moves": ["c6e7", "g8f7", "e7f5"],
+    "rating": 624,
+    "motif": "fork",
+    "goal": "Find the fork and follow through",
+    "hints": [
+      "Look for a move that creates two threats at once.",
+      "Consider your knight on c6.",
+      "Knight to e7"
+    ],
+    "explanation": "A fork creates more than one threat. Follow the reply and capture the bishop.",
+    "source": {
+      "puzzleId": "009tE",
+      "gameUrl": "https://lichess.org/fUV1iXBx/black#56",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:03.594Z"
+    }
+  },
+  {
+    "id": "00ad3",
+    "fen": "2kr3r/ppp2p2/2nb1n1p/4q1p1/Q1N5/2P1B3/PP2NPPP/R4RK1 b - - 3 13",
+    "moves": ["e5h2"],
+    "rating": 626,
+    "motif": "mate",
+    "goal": "Find checkmate in one",
+    "hints": [
+      "Check the opponent king and look at its escape squares.",
+      "Consider your queen on e5.",
+      "Queen captures on h2"
+    ],
+    "explanation": "The final move checks the king, and there is no legal escape. Replay the line to see how the pieces cover the escape squares.",
+    "source": {
+      "puzzleId": "00ad3",
+      "gameUrl": "https://lichess.org/3V6Uwh23#25",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:00.444Z"
+    }
+  },
+  {
+    "id": "19gVn",
+    "fen": "B4r1k/6pp/p3q3/1b3R2/6p1/4N1P1/PP3P2/6K1 w - - 0 29",
+    "moves": ["f5f8", "e6g8", "f8g8"],
+    "rating": 626,
+    "motif": "capture",
+    "goal": "Win the undefended material",
+    "hints": [
+      "Look for a piece you can capture. Check the reply too.",
+      "Consider your rook on f5.",
+      "Rook captures on f8"
+    ],
+    "explanation": "Look for material you can win safely. This line finishes by capturing the queen.",
+    "source": {
+      "puzzleId": "19gVn",
+      "gameUrl": "https://lichess.org/D9e9e0Pu/black#56",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:03.391Z"
+    }
+  },
+  {
+    "id": "0p94D",
+    "fen": "r6k/ppp3pp/5q2/2P2p2/1PQ1p3/3RP3/P4PPP/R5K1 b - - 0 20",
+    "moves": ["f6a1", "d3d1", "a1d1"],
+    "rating": 639,
+    "motif": "capture",
+    "goal": "Win the undefended material",
+    "hints": [
+      "Look for a piece you can capture. Check the reply too.",
+      "Consider your queen on f6.",
+      "Queen captures on a1"
+    ],
+    "explanation": "Look for material you can win safely. This line finishes by capturing the rook.",
+    "source": {
+      "puzzleId": "0p94D",
+      "gameUrl": "https://lichess.org/M82Zinyt#39",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:02.184Z"
+    }
+  },
+  {
+    "id": "00Flp",
+    "fen": "r2q1rk1/ppp2ppp/2n5/3p2N1/3P4/1B5P/P1Q2PP1/R1B2bK1 w - - 0 17",
+    "moves": ["c2h7"],
+    "rating": 643,
+    "motif": "mate",
+    "goal": "Find checkmate in one",
+    "hints": [
+      "Check the opponent king and look at its escape squares.",
+      "Consider your queen on c2.",
+      "Queen captures on h7"
+    ],
+    "explanation": "The final move checks the king, and there is no legal escape. Replay the line to see how the pieces cover the escape squares.",
+    "source": {
+      "puzzleId": "00Flp",
+      "gameUrl": "https://lichess.org/SXoBpAj9/black#32",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:00.418Z"
+    }
+  },
+  {
+    "id": "007AH",
+    "fen": "3r1n2/1bp1bkpp/p1q2n2/1p6/3P4/P1N3B1/1PP1QPPP/R3R1K1 b - - 6 18",
+    "moves": ["c6g2"],
+    "rating": 649,
+    "motif": "mate",
+    "goal": "Find checkmate in one",
+    "hints": [
+      "Check the opponent king and look at its escape squares.",
+      "Consider your queen on c6.",
+      "Queen captures on g2"
+    ],
+    "explanation": "The final move checks the king, and there is no legal escape. Replay the line to see how the pieces cover the escape squares.",
+    "source": {
+      "puzzleId": "007AH",
+      "gameUrl": "https://lichess.org/MCM1Gmz4#35",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:00.390Z"
+    }
+  },
+  {
+    "id": "0e8rX",
+    "fen": "8/8/P7/8/4p3/2P1K1kR/1P5p/8 b - - 0 46",
+    "moves": ["g3h3", "a6a7", "h2h1q"],
+    "rating": 651,
+    "motif": "capture",
+    "goal": "Win the undefended material",
+    "hints": [
+      "Look for a piece you can capture. Check the reply too.",
+      "Consider your king on g3.",
+      "King captures on h3"
+    ],
+    "explanation": "Look for material you can win safely. Follow the full line to finish the tactic.",
+    "source": {
+      "puzzleId": "0e8rX",
+      "gameUrl": "https://lichess.org/hQwZ2TFX#91",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:01.697Z"
+    }
+  },
+  {
+    "id": "01bbw",
+    "fen": "8/8/2n1R1pp/pp6/1k6/1P1P3P/P3KP2/8 b - - 7 50",
+    "moves": ["c6d4", "e2e3", "d4e6"],
+    "rating": 656,
+    "motif": "fork",
+    "goal": "Find the fork and follow through",
+    "hints": [
+      "Look for a move that creates two threats at once.",
+      "Consider your knight on c6.",
+      "Knight to d4"
+    ],
+    "explanation": "A fork creates more than one threat. Follow the reply and capture the rook.",
+    "source": {
+      "puzzleId": "01bbw",
+      "gameUrl": "https://lichess.org/sDSfDAKO#99",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:04.101Z"
+    }
+  },
+  {
+    "id": "004yJ",
+    "fen": "r4rk1/1bp2ppp/p1q1pn2/2P1N3/8/3B4/P1P1QPPP/R4RK1 b - - 1 16",
+    "moves": ["c6g2"],
+    "rating": 658,
+    "motif": "mate",
+    "goal": "Find checkmate in one",
+    "hints": [
+      "Check the opponent king and look at its escape squares.",
+      "Consider your queen on c6.",
+      "Queen captures on g2"
+    ],
+    "explanation": "The final move checks the king, and there is no legal escape. Replay the line to see how the pieces cover the escape squares.",
+    "source": {
+      "puzzleId": "004yJ",
+      "gameUrl": "https://lichess.org/8N3Hfj05#31",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:00.380Z"
+    }
+  },
+  {
+    "id": "000rZ",
+    "fen": "2kr1b1r/p1p2pp1/2pqN3/7p/6n1/2NPB3/PPP2PPP/R2Q1RK1 b - - 0 13",
+    "moves": ["d6h2"],
+    "rating": 662,
+    "motif": "mate",
+    "goal": "Find checkmate in one",
+    "hints": [
+      "Check the opponent king and look at its escape squares.",
+      "Consider your queen on d6.",
+      "Queen captures on h2"
+    ],
+    "explanation": "The final move checks the king, and there is no legal escape. Replay the line to see how the pieces cover the escape squares.",
+    "source": {
+      "puzzleId": "000rZ",
+      "gameUrl": "https://lichess.org/seIMDWkD#25",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:00.363Z"
+    }
+  },
+  {
+    "id": "00656",
+    "fen": "7r/ppp2kp1/2nb1pp1/3p3r/3P2P1/2PQB3/PP3PP1/R3R1K1 b - - 0 18",
+    "moves": ["h5h1"],
+    "rating": 665,
+    "motif": "mate",
+    "goal": "Find checkmate in one",
+    "hints": [
+      "Check the opponent king and look at its escape squares.",
+      "Consider your rook on h5.",
+      "Rook to h1"
+    ],
+    "explanation": "The final move checks the king, and there is no legal escape. Replay the line to see how the pieces cover the escape squares.",
+    "source": {
+      "puzzleId": "00656",
+      "gameUrl": "https://lichess.org/V9os02rv#35",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:00.388Z"
+    }
+  },
+  {
+    "id": "00DAs",
+    "fen": "r6r/ppp1n1p1/3bBk1p/4nP2/3p4/8/PPPN1P1P/R1B1K2R w KQ - 2 16",
+    "moves": ["d2e4"],
+    "rating": 665,
+    "motif": "mate",
+    "goal": "Find checkmate in one",
+    "hints": [
+      "Check the opponent king and look at its escape squares.",
+      "Consider your knight on d2.",
+      "Knight to e4"
+    ],
+    "explanation": "The final move checks the king, and there is no legal escape. Replay the line to see how the pieces cover the escape squares.",
+    "source": {
+      "puzzleId": "00DAs",
+      "gameUrl": "https://lichess.org/FKD6drCM/black#30",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:00.409Z"
+    }
+  },
+  {
+    "id": "0bTcj",
+    "fen": "r4rk1/1b1qPp1p/p1n3p1/1p5n/8/1BP1QN2/P1P2PPP/R1BR2K1 b - - 0 15",
+    "moves": ["d7d1", "e3e1", "d1e1"],
+    "rating": 665,
+    "motif": "capture",
+    "goal": "Win the undefended material",
+    "hints": [
+      "Look for a piece you can capture. Check the reply too.",
+      "Consider your queen on d7.",
+      "Queen captures on d1"
+    ],
+    "explanation": "Look for material you can win safely. This line finishes by capturing the queen.",
+    "source": {
+      "puzzleId": "0bTcj",
+      "gameUrl": "https://lichess.org/DTWGcCBl#29",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:01.564Z"
+    }
+  },
+  {
+    "id": "00HPz",
+    "fen": "6r1/7p/2pk1p2/P2p4/P2KbP2/2N1P3/5R1P/8 b - - 2 35",
+    "moves": ["c6c5"],
+    "rating": 678,
+    "motif": "mate",
+    "goal": "Find checkmate in one",
+    "hints": [
+      "Check the opponent king and look at its escape squares.",
+      "Consider your pawn on c6.",
+      "Pawn to c5"
+    ],
+    "explanation": "The final move checks the king, and there is no legal escape. Replay the line to see how the pieces cover the escape squares.",
+    "source": {
+      "puzzleId": "00HPz",
+      "gameUrl": "https://lichess.org/ElfQqRYp#69",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:00.424Z"
+    }
+  },
+  {
+    "id": "00A9Q",
+    "fen": "2rq1rk1/1p3p1p/p1pn2p1/P1Np4/1P1PnP2/4P3/5PBP/R1Q3RK b - - 3 22",
+    "moves": ["e4f2"],
+    "rating": 679,
+    "motif": "mate",
+    "goal": "Find checkmate in one",
+    "hints": [
+      "Check the opponent king and look at its escape squares.",
+      "Consider your knight on e4.",
+      "Knight captures on f2"
+    ],
+    "explanation": "The final move checks the king, and there is no legal escape. Replay the line to see how the pieces cover the escape squares.",
+    "source": {
+      "puzzleId": "00A9Q",
+      "gameUrl": "https://lichess.org/Eek8XUCN#43",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:00.403Z"
+    }
+  },
+  {
+    "id": "1CCu7",
+    "fen": "3rkb1r/5ppp/8/N2n2N1/PpR1p3/1P2B3/6PP/R4K2 b k - 2 25",
+    "moves": ["d5e3", "f1f2", "e3c4"],
+    "rating": 679,
+    "motif": "capture",
+    "goal": "Win the undefended material",
+    "hints": [
+      "Look for a piece you can capture. Check the reply too.",
+      "Consider your knight on d5.",
+      "Knight captures on e3"
+    ],
+    "explanation": "Look for material you can win safely. This line finishes by capturing the rook.",
+    "source": {
+      "puzzleId": "1CCu7",
+      "gameUrl": "https://lichess.org/HjooG07j#49",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:03.452Z"
+    }
+  },
+  {
+    "id": "01eue",
+    "fen": "r7/5pp1/1Pk1p2p/2P5/3Pn3/PR2P3/6PP/5K2 b - - 4 33",
+    "moves": ["e4d2", "f1e2", "d2b3"],
+    "rating": 684,
+    "motif": "fork",
+    "goal": "Find the fork and follow through",
+    "hints": [
+      "Look for a move that creates two threats at once.",
+      "Consider your knight on e4.",
+      "Knight to d2"
+    ],
+    "explanation": "A fork creates more than one threat. Follow the reply and capture the rook.",
+    "source": {
+      "puzzleId": "01eue",
+      "gameUrl": "https://lichess.org/fCKvDgov#65",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:04.158Z"
+    }
+  },
+  {
+    "id": "00Bn4",
+    "fen": "1k6/pp6/4nNp1/P3r2p/3p4/7P/3R1PPK/8 w - - 1 41",
+    "moves": ["f6d7", "b8c7", "d7e5"],
+    "rating": 689,
+    "motif": "fork",
+    "goal": "Find the fork and follow through",
+    "hints": [
+      "Look for a move that creates two threats at once.",
+      "Consider your knight on f6.",
+      "Knight to d7"
+    ],
+    "explanation": "A fork creates more than one threat. Follow the reply and capture the rook.",
+    "source": {
+      "puzzleId": "00Bn4",
+      "gameUrl": "https://lichess.org/jvMUtZF5/black#80",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:03.648Z"
+    }
+  },
+  {
+    "id": "01vj4",
+    "fen": "8/8/p7/8/2npb1kP/P2p2P1/5R2/4K3 w - - 2 45",
+    "moves": ["f2f4", "g4g3", "f4e4"],
+    "rating": 690,
+    "motif": "fork",
+    "goal": "Find the fork and follow through",
+    "hints": [
+      "Look for a move that creates two threats at once.",
+      "Consider your rook on f2.",
+      "Rook to f4"
+    ],
+    "explanation": "A fork creates more than one threat. Follow the reply and capture the bishop.",
+    "source": {
+      "puzzleId": "01vj4",
+      "gameUrl": "https://lichess.org/SY8cjodN/black#88",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:04.811Z"
+    }
+  },
+  {
+    "id": "00Ui0",
+    "fen": "r5k1/5pp1/2p5/P1N4p/2PR1n2/1P3P2/5P1P/6K1 b - - 0 26",
+    "moves": ["f4e2", "g1f1", "e2d4"],
+    "rating": 694,
+    "motif": "fork",
+    "goal": "Find the fork and follow through",
+    "hints": [
+      "Look for a move that creates two threats at once.",
+      "Consider your knight on f4.",
+      "Knight to e2"
+    ],
+    "explanation": "A fork creates more than one threat. Follow the reply and capture the rook.",
+    "source": {
+      "puzzleId": "00Ui0",
+      "gameUrl": "https://lichess.org/R2pJ0rIG#51",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:03.722Z"
+    }
+  },
+  {
+    "id": "00LUZ",
+    "fen": "rnb1k1nr/1ppp1ppp/8/p1bPp3/4P2q/2PB1N2/PP3PPP/RNBQK2R b KQkq - 4 6",
+    "moves": ["h4f2"],
+    "rating": 702,
+    "motif": "mate",
+    "goal": "Find checkmate in one",
+    "hints": [
+      "Check the opponent king and look at its escape squares.",
+      "Consider your queen on h4.",
+      "Queen captures on f2"
+    ],
+    "explanation": "The final move checks the king, and there is no legal escape. Replay the line to see how the pieces cover the escape squares.",
+    "source": {
+      "puzzleId": "00LUZ",
+      "gameUrl": "https://lichess.org/mP2vit21#11",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:00.430Z"
+    }
+  },
+  {
+    "id": "008P4",
+    "fen": "8/4k3/1p1p4/rP2p1p1/P2nP1P1/3B4/3K4/R7 b - - 1 35",
+    "moves": ["d4b3", "d2c3", "b3a1"],
+    "rating": 703,
+    "motif": "fork",
+    "goal": "Find the fork and follow through",
+    "hints": [
+      "Look for a move that creates two threats at once.",
+      "Consider your knight on d4.",
+      "Knight to b3"
+    ],
+    "explanation": "A fork creates more than one threat. Follow the reply and capture the rook.",
+    "source": {
+      "puzzleId": "008P4",
+      "gameUrl": "https://lichess.org/3GoHPRp3#69",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:03.509Z"
+    }
+  },
+  {
+    "id": "00Hfa",
+    "fen": "6k1/5ppp/5Bq1/8/p3R3/P6P/5rB1/R5K1 w - - 0 30",
+    "moves": ["e4e8"],
+    "rating": 704,
+    "motif": "mate",
+    "goal": "Find checkmate in one",
+    "hints": [
+      "Check the opponent king and look at its escape squares.",
+      "Consider your rook on e4.",
+      "Rook to e8"
+    ],
+    "explanation": "The final move checks the king, and there is no legal escape. Replay the line to see how the pieces cover the escape squares.",
+    "source": {
+      "puzzleId": "00Hfa",
+      "gameUrl": "https://lichess.org/FXBTZRsW/black#58",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:00.425Z"
+    }
+  },
+  {
+    "id": "00NiV",
+    "fen": "rn2qrk1/ppp2N2/3pPpp1/3n4/6b1/8/P1QN1PPP/R4RK1 w - - 0 19",
+    "moves": ["c2g6"],
+    "rating": 705,
+    "motif": "mate",
+    "goal": "Find checkmate in one",
+    "hints": [
+      "Check the opponent king and look at its escape squares.",
+      "Consider your queen on c2.",
+      "Queen captures on g6"
+    ],
+    "explanation": "The final move checks the king, and there is no legal escape. Replay the line to see how the pieces cover the escape squares.",
+    "source": {
+      "puzzleId": "00NiV",
+      "gameUrl": "https://lichess.org/NvBz7kYS/black#36",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:00.434Z"
+    }
+  },
+  {
+    "id": "005x9",
+    "fen": "r1b1kb1Q/ppp4p/6pB/3P4/2pn4/8/PPP1qPPP/RNK4R b q - 3 13",
+    "moves": ["e2c2"],
+    "rating": 707,
+    "motif": "mate",
+    "goal": "Find checkmate in one",
+    "hints": [
+      "Check the opponent king and look at its escape squares.",
+      "Consider your queen on e2.",
+      "Queen captures on c2"
+    ],
+    "explanation": "The final move checks the king, and there is no legal escape. Replay the line to see how the pieces cover the escape squares.",
+    "source": {
+      "puzzleId": "005x9",
+      "gameUrl": "https://lichess.org/TiwHxq8n#25",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:00.385Z"
+    }
+  },
+  {
+    "id": "005Ep",
+    "fen": "5kr1/ppR3p1/3R3p/1n6/1r6/8/1P3PPP/2K5 w - - 5 32",
+    "moves": ["d6d8"],
+    "rating": 708,
+    "motif": "mate",
+    "goal": "Find checkmate in one",
+    "hints": [
+      "Check the opponent king and look at its escape squares.",
+      "Consider your rook on d6.",
+      "Rook to d8"
+    ],
+    "explanation": "The final move checks the king, and there is no legal escape. Replay the line to see how the pieces cover the escape squares.",
+    "source": {
+      "puzzleId": "005Ep",
+      "gameUrl": "https://lichess.org/ttFEoJfQ/black#62",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:00.383Z"
+    }
+  },
+  {
+    "id": "00CYP",
+    "fen": "3r1k1r/p1p2pp1/1p6/2pQ1b2/2Pn1P2/8/PP1P1KBq/R1B1R3 w - - 4 26",
+    "moves": ["d5d8"],
+    "rating": 709,
+    "motif": "mate",
+    "goal": "Find checkmate in one",
+    "hints": [
+      "Check the opponent king and look at its escape squares.",
+      "Consider your queen on d5.",
+      "Queen captures on d8"
+    ],
+    "explanation": "The final move checks the king, and there is no legal escape. Replay the line to see how the pieces cover the escape squares.",
+    "source": {
+      "puzzleId": "00CYP",
+      "gameUrl": "https://lichess.org/LywFPEls/black#50",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:00.406Z"
+    }
+  },
+  {
+    "id": "0212o",
+    "fen": "r4rk1/2p2pp1/1p1p3p/pB1Pn3/P3P3/2P4P/1B1Q1P2/R5K1 b - - 0 22",
+    "moves": ["e5f3", "g1g2", "f3d2"],
+    "rating": 712,
+    "motif": "fork",
+    "goal": "Find the fork and follow through",
+    "hints": [
+      "Look for a move that creates two threats at once.",
+      "Consider your knight on e5.",
+      "Knight to f3"
+    ],
+    "explanation": "A fork creates more than one threat. Follow the reply and capture the queen.",
+    "source": {
+      "puzzleId": "0212o",
+      "gameUrl": "https://lichess.org/z6sMyCBa#43",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:04.908Z"
+    }
+  },
+  {
+    "id": "0njYx",
+    "fen": "r4rk1/1b4pp/1P2p3/4Np2/3Q1n2/P6P/4B1P1/RR4K1 b - - 0 29",
+    "moves": ["f4e2", "g1h2", "e2d4"],
+    "rating": 713,
+    "motif": "capture",
+    "goal": "Win the undefended material",
+    "hints": [
+      "Look for a piece you can capture. Check the reply too.",
+      "Consider your knight on f4.",
+      "Knight captures on e2"
+    ],
+    "explanation": "Look for material you can win safely. This line finishes by capturing the queen.",
+    "source": {
+      "puzzleId": "0njYx",
+      "gameUrl": "https://lichess.org/TnXLQbck#57",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:02.021Z"
+    }
+  },
+  {
+    "id": "0Bv81",
+    "fen": "8/7p/5pk1/1pp3p1/6P1/7Q/1P3P1P/r2rN1K1 b - - 0 35",
+    "moves": ["d1e1", "g1g2", "e1g1"],
+    "rating": 714,
+    "motif": "capture",
+    "goal": "Win the undefended material",
+    "hints": [
+      "Look for a piece you can capture. Check the reply too.",
+      "Consider your rook on d1.",
+      "Rook captures on e1"
+    ],
+    "explanation": "Look for material you can win safely. Follow the full line to finish the tactic.",
+    "source": {
+      "puzzleId": "0Bv81",
+      "gameUrl": "https://lichess.org/2bbKCBvl#69",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:00.671Z"
+    }
+  },
+  {
+    "id": "00TAb",
+    "fen": "6k1/5pp1/p1N5/1n1b3p/1B4P1/P4P1P/2K5/8 w - - 3 43",
+    "moves": ["c6e7", "g8h7", "e7d5"],
+    "rating": 715,
+    "motif": "fork",
+    "goal": "Find the fork and follow through",
+    "hints": [
+      "Look for a move that creates two threats at once.",
+      "Consider your knight on c6.",
+      "Knight to e7"
+    ],
+    "explanation": "A fork creates more than one threat. Follow the reply and capture the bishop.",
+    "source": {
+      "puzzleId": "00TAb",
+      "gameUrl": "https://lichess.org/vPUJ0Lkg/black#84",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:03.691Z"
+    }
+  },
+  {
+    "id": "0935i",
+    "fen": "r4rk1/pb3p1B/5p2/3qp3/8/8/PP1Q1PPP/2R2RK1 b - - 0 17",
+    "moves": ["g8h7", "d2d5", "b7d5"],
+    "rating": 716,
+    "motif": "capture",
+    "goal": "Win the undefended material",
+    "hints": [
+      "Look for a piece you can capture. Check the reply too.",
+      "Consider your king on g8.",
+      "King captures on h7"
+    ],
+    "explanation": "Look for material you can win safely. This line finishes by capturing the queen.",
+    "source": {
+      "puzzleId": "0935i",
+      "gameUrl": "https://lichess.org/DgsYQZgr#33",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:00.592Z"
+    }
+  },
+  {
+    "id": "0q1wt",
+    "fen": "1rr3k1/p4ppp/2b1p3/8/P1PnP3/2QP4/P3B1PP/2KR3R b - - 2 19",
+    "moves": ["d4e2", "c1d2", "e2c3"],
+    "rating": 717,
+    "motif": "capture",
+    "goal": "Win the undefended material",
+    "hints": [
+      "Look for a piece you can capture. Check the reply too.",
+      "Consider your knight on d4.",
+      "Knight captures on e2"
+    ],
+    "explanation": "Look for material you can win safely. This line finishes by capturing the queen.",
+    "source": {
+      "puzzleId": "0q1wt",
+      "gameUrl": "https://lichess.org/sZxP3vcW#37",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:02.253Z"
+    }
+  },
+  {
+    "id": "19Scg",
+    "fen": "8/Kn4k1/6p1/4pp2/4P3/5P1P/7P/8 w - - 0 68",
+    "moves": ["a7b7", "f5e4", "f3e4"],
+    "rating": 719,
+    "motif": "capture",
+    "goal": "Win the undefended material",
+    "hints": [
+      "Look for a piece you can capture. Check the reply too.",
+      "Consider your king on a7.",
+      "King captures on b7"
+    ],
+    "explanation": "Look for material you can win safely. This line finishes by capturing the pawn.",
+    "source": {
+      "puzzleId": "19Scg",
+      "gameUrl": "https://lichess.org/0kfoVTvo/black#134",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:03.368Z"
+    }
+  },
+  {
+    "id": "15OUj",
+    "fen": "r1b2rk1/1p2Q1p1/4p1p1/1P1p2N1/7P/6P1/p3PP2/R1q2K2 w - - 0 28",
+    "moves": ["a1c1", "a2a1q", "c1a1"],
+    "rating": 721,
+    "motif": "capture",
+    "goal": "Win the undefended material",
+    "hints": [
+      "Look for a piece you can capture. Check the reply too.",
+      "Consider your rook on a1.",
+      "Rook captures on c1"
+    ],
+    "explanation": "Look for material you can win safely. This line finishes by capturing the queen.",
+    "source": {
+      "puzzleId": "15OUj",
+      "gameUrl": "https://lichess.org/OAPKblRn/black#54",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:03.145Z"
+    }
+  },
+  {
+    "id": "00bnX",
+    "fen": "4rr1k/ppp3pp/3b1p2/6qQ/8/1PBB3P/P1P3P1/5RK1 w - - 14 27",
+    "moves": ["h5h7"],
+    "rating": 722,
+    "motif": "mate",
+    "goal": "Find checkmate in one",
+    "hints": [
+      "Check the opponent king and look at its escape squares.",
+      "Consider your queen on h5.",
+      "Queen captures on h7"
+    ],
+    "explanation": "The final move checks the king, and there is no legal escape. Replay the line to see how the pieces cover the escape squares.",
+    "source": {
+      "puzzleId": "00bnX",
+      "gameUrl": "https://lichess.org/cOFXbSU6/black#52",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:00.449Z"
+    }
+  },
+  {
+    "id": "01P8L",
+    "fen": "3r3r/4bk2/1R2p3/3pP2p/P2n4/2Q2p1P/6P1/R5K1 b - - 1 31",
+    "moves": ["d4e2", "g1h2", "e2c3"],
+    "rating": 722,
+    "motif": "fork",
+    "goal": "Find the fork and follow through",
+    "hints": [
+      "Look for a move that creates two threats at once.",
+      "Consider your knight on d4.",
+      "Knight to e2"
+    ],
+    "explanation": "A fork creates more than one threat. Follow the reply and capture the queen.",
+    "source": {
+      "puzzleId": "01P8L",
+      "gameUrl": "https://lichess.org/rkvIhbCW#61",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:03.966Z"
+    }
+  },
+  {
+    "id": "19iLx",
+    "fen": "r4nk1/1p3p2/pb3q2/7r/1P2p1Np/P3P1P1/5PP1/2R2RK1 w - - 0 28",
+    "moves": ["g4f6", "g8g7", "f6h5"],
+    "rating": 724,
+    "motif": "capture",
+    "goal": "Win the undefended material",
+    "hints": [
+      "Look for a piece you can capture. Check the reply too.",
+      "Consider your knight on g4.",
+      "Knight captures on f6"
+    ],
+    "explanation": "Look for material you can win safely. This line finishes by capturing the rook.",
+    "source": {
+      "puzzleId": "19iLx",
+      "gameUrl": "https://lichess.org/oYGvIvlm/black#54",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:03.407Z"
+    }
+  },
+  {
+    "id": "016Im",
+    "fen": "6k1/ppp5/1b6/3r1Npp/6p1/1P1p2P1/PB1Pn1KP/4R3 w - - 4 30",
+    "moves": ["f5e7", "g8f7", "e7d5"],
+    "rating": 731,
+    "motif": "fork",
+    "goal": "Find the fork and follow through",
+    "hints": [
+      "Look for a move that creates two threats at once.",
+      "Consider your knight on f5.",
+      "Knight to e7"
+    ],
+    "explanation": "A fork creates more than one threat. Follow the reply and capture the rook.",
+    "source": {
+      "puzzleId": "016Im",
+      "gameUrl": "https://lichess.org/0r15kPZY/black#58",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:03.858Z"
+    }
+  },
+  {
+    "id": "0a8v4",
+    "fen": "2rq1rk1/3n1pp1/bp3n1p/p7/1bBP4/4PNB1/PP3PPP/2RQ1K1R w - - 4 18",
+    "moves": ["c4a6", "c8c1", "d1c1"],
+    "rating": 733,
+    "motif": "capture",
+    "goal": "Win the undefended material",
+    "hints": [
+      "Look for a piece you can capture. Check the reply too.",
+      "Consider your bishop on c4.",
+      "Bishop captures on a6"
+    ],
+    "explanation": "Look for material you can win safely. This line finishes by capturing the rook.",
+    "source": {
+      "puzzleId": "0a8v4",
+      "gameUrl": "https://lichess.org/vgPK6Hqn/black#34",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:01.531Z"
+    }
+  },
+  {
+    "id": "00BQD",
+    "fen": "4r3/3R1pkp/6p1/1P6/1b6/5B2/1P1R1PPP/6K1 b - - 0 36",
+    "moves": ["e8e1"],
+    "rating": 740,
+    "motif": "mate",
+    "goal": "Find checkmate in one",
+    "hints": [
+      "Check the opponent king and look at its escape squares.",
+      "Consider your rook on e8.",
+      "Rook to e1"
+    ],
+    "explanation": "The final move checks the king, and there is no legal escape. Replay the line to see how the pieces cover the escape squares.",
+    "source": {
+      "puzzleId": "00BQD",
+      "gameUrl": "https://lichess.org/ckr8Ti7I#71",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:00.405Z"
+    }
+  },
+  {
+    "id": "01Z5o",
+    "fen": "8/8/2R2bk1/2Np4/4p3/P7/1Pn1K3/8 b - - 0 49",
+    "moves": ["c2d4", "e2e3", "d4c6"],
+    "rating": 741,
+    "motif": "fork",
+    "goal": "Find the fork and follow through",
+    "hints": [
+      "Look for a move that creates two threats at once.",
+      "Consider your knight on c2.",
+      "Knight to d4"
+    ],
+    "explanation": "A fork creates more than one threat. Follow the reply and capture the rook.",
+    "source": {
+      "puzzleId": "01Z5o",
+      "gameUrl": "https://lichess.org/ArKzEaN8#97",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:04.043Z"
+    }
+  },
+  {
+    "id": "0puXX",
+    "fen": "8/r2nkp2/2b1p1p1/3pN2p/2pP4/4P1P1/2B2PP1/6K1 w - - 0 33",
+    "moves": ["e5c6", "e7d6", "c6a7"],
+    "rating": 744,
+    "motif": "capture",
+    "goal": "Win the undefended material",
+    "hints": [
+      "Look for a piece you can capture. Check the reply too.",
+      "Consider your knight on e5.",
+      "Knight captures on c6"
+    ],
+    "explanation": "Look for material you can win safely. This line finishes by capturing the rook.",
+    "source": {
+      "puzzleId": "0puXX",
+      "gameUrl": "https://lichess.org/ooXyfzLW/black#64",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:02.227Z"
+    }
+  },
+  {
+    "id": "020eQ",
+    "fen": "3qr1k1/3N1p2/2p1pPp1/2Np2Pp/1P1P3n/8/3Q1P2/R5K1 b - - 0 25",
+    "moves": ["h4f3", "g1g2", "f3d2"],
+    "rating": 748,
+    "motif": "fork",
+    "goal": "Find the fork and follow through",
+    "hints": [
+      "Look for a move that creates two threats at once.",
+      "Consider your knight on h4.",
+      "Knight to f3"
+    ],
+    "explanation": "A fork creates more than one threat. Follow the reply and capture the queen.",
+    "source": {
+      "puzzleId": "020eQ",
+      "gameUrl": "https://lichess.org/IUqGqiqh#49",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:04.878Z"
+    }
+  },
+  {
+    "id": "009fH",
+    "fen": "rn2kb1r/pQ2pppp/2p2n2/8/3q2b1/8/PPP2PPP/RNB1KBNR b KQkq - 0 7",
+    "moves": ["d4d1"],
+    "rating": 750,
+    "motif": "mate",
+    "goal": "Find checkmate in one",
+    "hints": [
+      "Check the opponent king and look at its escape squares.",
+      "Consider your queen on d4.",
+      "Queen to d1"
+    ],
+    "explanation": "The final move checks the king, and there is no legal escape. Replay the line to see how the pieces cover the escape squares.",
+    "source": {
+      "puzzleId": "009fH",
+      "gameUrl": "https://lichess.org/bFNxjeFg#13",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:00.401Z"
+    }
+  },
+  {
+    "id": "09koP",
+    "fen": "rnb2b2/pp1pk2p/2p2q2/7Q/4Pp2/2NP4/PPP3rP/R1B2RK1 w - - 0 13",
+    "moves": ["g1g2", "f6g6", "h5g6"],
+    "rating": 754,
+    "motif": "capture",
+    "goal": "Win the undefended material",
+    "hints": [
+      "Look for a piece you can capture. Check the reply too.",
+      "Consider your king on g1.",
+      "King captures on g2"
+    ],
+    "explanation": "Look for material you can win safely. This line finishes by capturing the queen.",
+    "source": {
+      "puzzleId": "09koP",
+      "gameUrl": "https://lichess.org/scNGZ5Bm/black#24",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:00.608Z"
+    }
+  },
+  {
+    "id": "0jhLq",
+    "fen": "r2q1rk1/pb1nbppp/2p1pn2/1p4B1/3PN3/4PN2/PP2BPPP/R2Q1RK1 b - - 3 11",
+    "moves": ["f6e4", "g5e7", "d8e7"],
+    "rating": 757,
+    "motif": "capture",
+    "goal": "Win the undefended material",
+    "hints": [
+      "Look for a piece you can capture. Check the reply too.",
+      "Consider your knight on f6.",
+      "Knight captures on e4"
+    ],
+    "explanation": "Look for material you can win safely. This line finishes by capturing the bishop.",
+    "source": {
+      "puzzleId": "0jhLq",
+      "gameUrl": "https://lichess.org/VBafIjMy#21",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:01.783Z"
+    }
+  },
+  {
+    "id": "0EUQb",
+    "fen": "8/8/6P1/7K/3b4/7P/1pk5/1R6 b - - 0 59",
+    "moves": ["c2b1", "g6g7", "d4g7"],
+    "rating": 759,
+    "motif": "capture",
+    "goal": "Win the undefended material",
+    "hints": [
+      "Look for a piece you can capture. Check the reply too.",
+      "Consider your king on c2.",
+      "King captures on b1"
+    ],
+    "explanation": "Look for material you can win safely. This line finishes by capturing the pawn.",
+    "source": {
+      "puzzleId": "0EUQb",
+      "gameUrl": "https://lichess.org/ElyXVE47#117",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:00.940Z"
+    }
+  },
+  {
+    "id": "18oXE",
+    "fen": "1Q2k3/5p2/P7/2ppbp2/8/8/6Pp/7K b - - 1 41",
+    "moves": ["e5b8", "a6a7", "b8a7"],
+    "rating": 763,
+    "motif": "capture",
+    "goal": "Win the undefended material",
+    "hints": [
+      "Look for a piece you can capture. Check the reply too.",
+      "Consider your bishop on e5.",
+      "Bishop captures on b8"
+    ],
+    "explanation": "Look for material you can win safely. This line finishes by capturing the pawn.",
+    "source": {
+      "puzzleId": "18oXE",
+      "gameUrl": "https://lichess.org/Jr8I58Wk#81",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:03.234Z"
+    }
+  },
+  {
+    "id": "00DPQ",
+    "fen": "2k4r/pp3pp1/4pn2/2np2p1/8/1B1P1Pq1/PPPN3R/R2Q3K b - - 7 20",
+    "moves": ["g3h2"],
+    "rating": 765,
+    "motif": "mate",
+    "goal": "Find checkmate in one",
+    "hints": [
+      "Check the opponent king and look at its escape squares.",
+      "Consider your queen on g3.",
+      "Queen captures on h2"
+    ],
+    "explanation": "The final move checks the king, and there is no legal escape. Replay the line to see how the pieces cover the escape squares.",
+    "source": {
+      "puzzleId": "00DPQ",
+      "gameUrl": "https://lichess.org/AKiNfVd0#39",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:00.411Z"
+    }
+  },
+  {
+    "id": "01hdS",
+    "fen": "5b1r/pp3ppp/8/3Npk2/8/8/PPr2PPP/R3K2R w KQ - 0 16",
+    "moves": ["d5e3", "f5e6", "e3c2"],
+    "rating": 765,
+    "motif": "fork",
+    "goal": "Find the fork and follow through",
+    "hints": [
+      "Look for a move that creates two threats at once.",
+      "Consider your knight on d5.",
+      "Knight to e3"
+    ],
+    "explanation": "A fork creates more than one threat. Follow the reply and capture the rook.",
+    "source": {
+      "puzzleId": "01hdS",
+      "gameUrl": "https://lichess.org/D7ZmENTi/black#30",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:04.199Z"
+    }
+  },
+  {
+    "id": "0zs91",
+    "fen": "r3k2r/pbppqppp/1p2pn2/8/2Pn4/P4NP1/1P1NPPBP/R2Q1RK1 w kq - 0 10",
+    "moves": ["f3d4", "b7g2", "g1g2"],
+    "rating": 767,
+    "motif": "capture",
+    "goal": "Win the undefended material",
+    "hints": [
+      "Look for a piece you can capture. Check the reply too.",
+      "Consider your knight on f3.",
+      "Knight captures on d4"
+    ],
+    "explanation": "Look for material you can win safely. This line finishes by capturing the bishop.",
+    "source": {
+      "puzzleId": "0zs91",
+      "gameUrl": "https://lichess.org/ZA6xckpC/black#18",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:02.832Z"
+    }
+  },
+  {
+    "id": "0SVoQ",
+    "fen": "r2qr1k1/pp3ppp/1npb1p2/7b/3P4/2P4P/PP1NBPP1/R1BQR1K1 w - - 5 13",
+    "moves": ["e2h5", "e8e1", "d1e1"],
+    "rating": 768,
+    "motif": "capture",
+    "goal": "Win the undefended material",
+    "hints": [
+      "Look for a piece you can capture. Check the reply too.",
+      "Consider your bishop on e2.",
+      "Bishop captures on h5"
+    ],
+    "explanation": "Look for material you can win safely. This line finishes by capturing the rook.",
+    "source": {
+      "puzzleId": "0SVoQ",
+      "gameUrl": "https://lichess.org/ePW61GHB/black#24",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:00.968Z"
+    }
+  },
+  {
+    "id": "0yyRz",
+    "fen": "r4rk1/p1p1qpRp/1pn1p3/3pP3/3PB3/2P2P2/P1PQ1P1P/2K4R b - - 0 15",
+    "moves": ["g8g7", "h1g1", "g7h8"],
+    "rating": 772,
+    "motif": "capture",
+    "goal": "Win the undefended material",
+    "hints": [
+      "Look for a piece you can capture. Check the reply too.",
+      "Consider your king on g8.",
+      "King captures on g7"
+    ],
+    "explanation": "Look for material you can win safely. Follow the full line to finish the tactic.",
+    "source": {
+      "puzzleId": "0yyRz",
+      "gameUrl": "https://lichess.org/n4MXCRxX#29",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:02.791Z"
+    }
+  },
+  {
+    "id": "00EDa",
+    "fen": "r1bk3r/ppp1np1p/3P2pP/1N4q1/2BP1n2/8/PPP3P1/R1BQ2KR b - - 0 14",
+    "moves": ["g5g2"],
+    "rating": 774,
+    "motif": "mate",
+    "goal": "Find checkmate in one",
+    "hints": [
+      "Check the opponent king and look at its escape squares.",
+      "Consider your queen on g5.",
+      "Queen captures on g2"
+    ],
+    "explanation": "The final move checks the king, and there is no legal escape. Replay the line to see how the pieces cover the escape squares.",
+    "source": {
+      "puzzleId": "00EDa",
+      "gameUrl": "https://lichess.org/dTj38zoQ#27",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:00.415Z"
+    }
+  },
+  {
+    "id": "0U6vs",
+    "fen": "r1q1k2r/pQ3p1p/2n1pp2/1B3b2/3P4/2P2N2/P4PPP/R3K2R b KQkq - 2 14",
+    "moves": ["c8b7", "b5c6", "b7c6"],
+    "rating": 775,
+    "motif": "capture",
+    "goal": "Win the undefended material",
+    "hints": [
+      "Look for a piece you can capture. Check the reply too.",
+      "Consider your queen on c8.",
+      "Queen captures on b7"
+    ],
+    "explanation": "Look for material you can win safely. This line finishes by capturing the bishop.",
+    "source": {
+      "puzzleId": "0U6vs",
+      "gameUrl": "https://lichess.org/dGF6qUCd#27",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:01.470Z"
+    }
+  },
+  {
+    "id": "021Lo",
+    "fen": "r2qk2r/pp2bBpp/2n5/4p3/6b1/2P2N2/P4PPP/R1BQ1RK1 b kq - 0 13",
+    "moves": ["e8f7", "f3g5", "e7g5"],
+    "rating": 778,
+    "motif": "capture",
+    "goal": "Win the undefended material",
+    "hints": [
+      "Look for a piece you can capture. Check the reply too.",
+      "Consider your king on e8.",
+      "King captures on f7"
+    ],
+    "explanation": "Look for material you can win safely. This line finishes by capturing the knight.",
+    "source": {
+      "puzzleId": "021Lo",
+      "gameUrl": "https://lichess.org/PXaz6KFQ#25",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:00.538Z"
+    }
+  },
+  {
+    "id": "0uhvi",
+    "fen": "2r2rk1/p1qn1pR1/1p2pn1p/8/8/P1B1PP2/BPQ2P1P/R6K b - - 0 18",
+    "moves": ["g8g7", "a1g1", "g7h8"],
+    "rating": 779,
+    "motif": "capture",
+    "goal": "Win the undefended material",
+    "hints": [
+      "Look for a piece you can capture. Check the reply too.",
+      "Consider your king on g8.",
+      "King captures on g7"
+    ],
+    "explanation": "Look for material you can win safely. Follow the full line to finish the tactic.",
+    "source": {
+      "puzzleId": "0uhvi",
+      "gameUrl": "https://lichess.org/xJoyTaWD#35",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:02.631Z"
+    }
+  },
+  {
+    "id": "0kW7K",
+    "fen": "r1b1r1k1/pp3ppB/8/3qp3/1n6/5N2/PPP2PPP/R2Q1RK1 b - - 0 13",
+    "moves": ["g8h7", "d1d5", "b4d5"],
+    "rating": 781,
+    "motif": "capture",
+    "goal": "Win the undefended material",
+    "hints": [
+      "Look for a piece you can capture. Check the reply too.",
+      "Consider your king on g8.",
+      "King captures on h7"
+    ],
+    "explanation": "Look for material you can win safely. This line finishes by capturing the queen.",
+    "source": {
+      "puzzleId": "0kW7K",
+      "gameUrl": "https://lichess.org/RbRN0gGC#25",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:01.908Z"
+    }
+  },
+  {
+    "id": "00KgR",
+    "fen": "7k/1pq3p1/2p2r1p/3pPQ2/1p1P4/7P/1rB4K/5R2 w - - 0 36",
+    "moves": ["f5h7"],
+    "rating": 782,
+    "motif": "mate",
+    "goal": "Find checkmate in one",
+    "hints": [
+      "Check the opponent king and look at its escape squares.",
+      "Consider your queen on f5.",
+      "Queen to h7"
+    ],
+    "explanation": "The final move checks the king, and there is no legal escape. Replay the line to see how the pieces cover the escape squares.",
+    "source": {
+      "puzzleId": "00KgR",
+      "gameUrl": "https://lichess.org/8f0kmTFT/black#70",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:00.428Z"
+    }
+  },
+  {
+    "id": "1EvDs",
+    "fen": "1r2k1nr/pb3ppp/B1pb4/4p3/4P3/2P2N2/P4PPP/1RBK3R b k - 5 12",
+    "moves": ["b7a6", "b1b8", "d6b8"],
+    "rating": 787,
+    "motif": "capture",
+    "goal": "Win the undefended material",
+    "hints": [
+      "Look for a piece you can capture. Check the reply too.",
+      "Consider your bishop on b7.",
+      "Bishop captures on a6"
+    ],
+    "explanation": "Look for material you can win safely. This line finishes by capturing the rook.",
+    "source": {
+      "puzzleId": "1EvDs",
+      "gameUrl": "https://lichess.org/NyuLf01b#23",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:03.492Z"
+    }
+  },
+  {
+    "id": "128CD",
+    "fen": "2q3k1/4bppp/p2p4/1p1Np3/4P1b1/1P2nN2/P3QPPP/6K1 w - - 0 26",
+    "moves": ["d5e7", "g8f8", "e7c8"],
+    "rating": 789,
+    "motif": "capture",
+    "goal": "Win the undefended material",
+    "hints": [
+      "Look for a piece you can capture. Check the reply too.",
+      "Consider your knight on d5.",
+      "Knight captures on e7"
+    ],
+    "explanation": "Look for material you can win safely. This line finishes by capturing the queen.",
+    "source": {
+      "puzzleId": "128CD",
+      "gameUrl": "https://lichess.org/L7XjEWaZ/black#50",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:03.099Z"
+    }
+  },
+  {
+    "id": "011ON",
+    "fen": "2k5/1n3ppp/p7/3P4/4n3/8/P3KPPP/1R6 b - - 1 30",
+    "moves": ["e4c3", "e2d3", "c3b1"],
+    "rating": 792,
+    "motif": "fork",
+    "goal": "Find the fork and follow through",
+    "hints": [
+      "Look for a move that creates two threats at once.",
+      "Consider your knight on e4.",
+      "Knight to c3"
+    ],
+    "explanation": "A fork creates more than one threat. Follow the reply and capture the rook.",
+    "source": {
+      "puzzleId": "011ON",
+      "gameUrl": "https://lichess.org/MB8FzkNO#59",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:03.747Z"
+    }
+  },
+  {
+    "id": "01iOm",
+    "fen": "r2q1rk1/ppp2ppp/3p4/2b1n3/3PPQ2/1BP4P/PP3PP1/R3KN1R b KQ - 0 13",
+    "moves": ["e5d3", "e1d2", "d3f4"],
+    "rating": 792,
+    "motif": "fork",
+    "goal": "Find the fork and follow through",
+    "hints": [
+      "Look for a move that creates two threats at once.",
+      "Consider your knight on e5.",
+      "Knight to d3"
+    ],
+    "explanation": "A fork creates more than one threat. Follow the reply and capture the queen.",
+    "source": {
+      "puzzleId": "01iOm",
+      "gameUrl": "https://lichess.org/Eu3VAhgZ#25",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:04.714Z"
+    }
+  },
+  {
+    "id": "11I7B",
+    "fen": "1R6/6p1/4p2p/7P/5P2/4kP2/1p4K1/6r1 w - - 25 56",
+    "moves": ["g2g1", "b2b1q", "b8b1"],
+    "rating": 794,
+    "motif": "capture",
+    "goal": "Win the undefended material",
+    "hints": [
+      "Look for a piece you can capture. Check the reply too.",
+      "Consider your king on g2.",
+      "King captures on g1"
+    ],
+    "explanation": "Look for material you can win safely. This line finishes by capturing the queen.",
+    "source": {
+      "puzzleId": "11I7B",
+      "gameUrl": "https://lichess.org/1XyXE4se/black#110",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:02.963Z"
+    }
+  },
+  {
+    "id": "0wInZ",
+    "fen": "r3k2r/pp3ppp/2pbb3/8/2q1NP2/P3P3/2PB2PP/RR4K1 w kq - 0 20",
+    "moves": ["e4d6", "e8e7", "d6c4"],
+    "rating": 795,
+    "motif": "capture",
+    "goal": "Win the undefended material",
+    "hints": [
+      "Look for a piece you can capture. Check the reply too.",
+      "Consider your knight on e4.",
+      "Knight captures on d6"
+    ],
+    "explanation": "Look for material you can win safely. This line finishes by capturing the queen.",
+    "source": {
+      "puzzleId": "0wInZ",
+      "gameUrl": "https://lichess.org/mSparRcx/black#38",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:02.724Z"
+    }
+  },
+  {
+    "id": "0CYEU",
+    "fen": "8/8/8/2k2p2/1p3bp1/1P2N1P1/3K4/8 w - - 0 63",
+    "moves": ["g3f4", "c5d4", "e3f5"],
+    "rating": 796,
+    "motif": "capture",
+    "goal": "Win the undefended material",
+    "hints": [
+      "Look for a piece you can capture. Check the reply too.",
+      "Consider your pawn on g3.",
+      "Pawn captures on f4"
+    ],
+    "explanation": "Look for material you can win safely. This line finishes by capturing the pawn.",
+    "source": {
+      "puzzleId": "0CYEU",
+      "gameUrl": "https://lichess.org/Y6NEWPso/black#124",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:00.706Z"
+    }
+  },
+  {
+    "id": "00aZP",
+    "fen": "r1b1k2r/p1p2ppp/1pN2n2/2n5/2B1P3/P1b5/1PP2PPP/R1BR2K1 w kq - 0 14",
+    "moves": ["d1d8"],
+    "rating": 797,
+    "motif": "mate",
+    "goal": "Find checkmate in one",
+    "hints": [
+      "Check the opponent king and look at its escape squares.",
+      "Consider your rook on d1.",
+      "Rook to d8"
+    ],
+    "explanation": "The final move checks the king, and there is no legal escape. Replay the line to see how the pieces cover the escape squares.",
+    "source": {
+      "puzzleId": "00aZP",
+      "gameUrl": "https://lichess.org/7lR4XDLK/black#26",
+      "license": "CC0-1.0"
+    },
+    "verification": {
+      "engine": "Stockfish 19 Lite",
+      "depth": 14,
+      "checkedAt": "2026-10-13T12:01:00.442Z"
+    }
+  }
+]

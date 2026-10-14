@@ -1,5 +1,7 @@
 # Rookie Reps — Plan
 
+> Historical planning notes. The agreed and implemented Practice + Learn MVP is documented in [MVP.md](MVP.md); that scope supersedes the three-challenge limits and deferred learning section below.
+
 Written 2026-10-09 in Milestone 1. Name chosen: **Rookie Reps**.
 
 Progress:

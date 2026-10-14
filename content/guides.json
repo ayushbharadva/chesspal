@@ -1,0 +1,137 @@
+[
+  {
+    "id": "italian-game",
+    "title": "Italian Game",
+    "category": "Opening",
+    "side": "w",
+    "description": "Develop naturally and prepare a safe king.",
+    "idea": "Place a pawn in the centre, develop your knight and bishop, then castle. This quiet example gives your pieces useful squares.",
+    "plans": [
+      "Develop the queenside pieces after castling.",
+      "Prepare a central pawn break when your pieces are ready."
+    ],
+    "mistakes": [
+      "Moving the same piece repeatedly while others stay at home.",
+      "Starting an attack before checking your king's safety."
+    ],
+    "moves": [
+      "e2e4",
+      "e7e5",
+      "g1f3",
+      "b8c6",
+      "f1c4",
+      "f8c5",
+      "c2c3",
+      "g8f6",
+      "d2d3",
+      "d7d6",
+      "e1g1",
+      "e8g8"
+    ],
+    "notes": [
+      "Claim space in the centre.",
+      "Black also claims central space.",
+      "Develop a knight and attack e5.",
+      "Black develops and protects e5.",
+      "Develop the bishop toward f7.",
+      "Black develops the bishop.",
+      "Support a possible future d4 push.",
+      "Black develops another knight.",
+      "Support e4 and open your other bishop's diagonal.",
+      "Black supports the centre.",
+      "Castle to protect your king.",
+      "Black castles too. Continue developing."
+    ],
+    "sourceUrl": "https://www.chess.com/openings/Italian-Game"
+  },
+  {
+    "id": "caro-kann",
+    "title": "Caro-Kann Defence",
+    "category": "Defence",
+    "side": "b",
+    "description": "Meet 1.e4 with a solid central plan.",
+    "idea": "Prepare ...d5 with ...c6. In this Advance example, develop your light-squared bishop before ...e6 closes its diagonal.",
+    "plans": [
+      "Finish development and get your king safe.",
+      "Challenge White's centre with a prepared ...c5 break."
+    ],
+    "mistakes": [
+      "Playing ...e6 before considering your c8 bishop.",
+      "Ignoring White's extra central space."
+    ],
+    "moves": [
+      "e2e4",
+      "c7c6",
+      "d2d4",
+      "d7d5",
+      "e4e5",
+      "c8f5",
+      "g1f3",
+      "e7e6",
+      "f1e2",
+      "b8d7",
+      "e1g1",
+      "g8e7"
+    ],
+    "notes": [
+      "White occupies the centre.",
+      "Prepare ...d5 with pawn support.",
+      "White builds a broad centre.",
+      "Challenge White's e4 pawn.",
+      "White gains space in the Advance Variation.",
+      "Develop the bishop outside the pawn chain.",
+      "White develops a knight.",
+      "Support d5 after developing the bishop.",
+      "White prepares to castle.",
+      "Develop your queenside knight.",
+      "White makes the king safer.",
+      "Develop toward the kingside. Castling needs further preparation."
+    ],
+    "sourceUrl": "https://www.chess.com/openings/Caro-Kann-Defense"
+  },
+  {
+    "id": "queens-gambit",
+    "title": "Queen's Gambit",
+    "category": "Gambit",
+    "side": "w",
+    "description": "Offer a wing pawn to challenge the centre.",
+    "idea": "The c4 pawn challenges Black's d5 pawn. This Accepted example shows how development can help White recover the offered pawn.",
+    "plans": [
+      "Develop and castle rather than rushing to recover material.",
+      "Look for an e4 central expansion when it is well supported."
+    ],
+    "mistakes": [
+      "Assuming Black must accept the pawn; other replies are common.",
+      "Trying to recover the pawn immediately at the cost of development."
+    ],
+    "moves": [
+      "d2d4",
+      "d7d5",
+      "c2c4",
+      "d5c4",
+      "g1f3",
+      "g8f6",
+      "e2e3",
+      "e7e6",
+      "f1c4",
+      "c7c5",
+      "e1g1",
+      "a7a6"
+    ],
+    "notes": [
+      "Occupy the centre with your d-pawn.",
+      "Black mirrors your central claim.",
+      "Challenge d5 with the c-pawn.",
+      "Black accepts and leaves the d-file centre.",
+      "Develop a knight first.",
+      "Black develops a knight.",
+      "Open the bishop's path toward c4.",
+      "Black prepares bishop development.",
+      "Recover the pawn while developing your bishop.",
+      "Black challenges your centre.",
+      "Castle to improve king safety.",
+      "Black prepares queenside development."
+    ],
+    "sourceUrl": "https://www.chess.com/openings/Queens-Gambit"
+  }
+]

@@ -14,7 +14,7 @@ One developer, Android first, offline, a small MVP of 4–5 screens. Chess corre
 - **Testing:** Jest through `jest-expo`, React Native Testing Library v14 with `test-renderer` 1.2, and `expo-router/testing-library` for navigation tests.
 - **Lint and format:** ESLint (`eslint-config-expo`) with Prettier running as a lint rule.
 - **CI:** GitHub Actions runs typecheck, lint, format check and tests on pushes to `main` and on pull requests.
-- **Added later, when their milestone needs them:** chess.js (M3), Zustand + AsyncStorage (M8). Stockfish runs only in dev-time content scripts and never ships in the app (M4).
+- **MVP additions:** chess.js in the chess adapter; react-native-svg for original piece artwork; Zustand + AsyncStorage for local sessions, guide progress and history. Stockfish and tsx are development-only content tools; the engine never ships in the app.
 
 ## Consequences
 
