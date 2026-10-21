@@ -2,36 +2,48 @@ import { puzzles, type Puzzle } from '@/content';
 import { checkPuzzleMove } from '@/content/validate';
 import { type Attempt, type PracticeMode, type Session } from '@/progress/types';
 import { dateKey } from '@/utils/date-key';
+import { reviewQueue, reviewSchedule } from '@/workout/review';
 
-export function latestAttempts(attempts: Attempt[]) {
-  return new Map(attempts.map((attempt) => [attempt.puzzleId, attempt]));
-}
+export function selectPuzzles(
+  attempts: Attempt[],
+  mode: PracticeMode,
+  count = 10,
+  localDate = dateKey(),
+) {
+  const reviews = reviewQueue(attempts, localDate);
+  if (mode === 'review') return reviews.slice(0, count).map((review) => review.puzzleId);
 
-export function selectPuzzles(attempts: Attempt[], mode: PracticeMode, count = 10) {
-  const history = latestAttempts(attempts);
-  const candidates =
-    mode === 'review'
-      ? puzzles.filter((puzzle) => history.has(puzzle.id) && !history.get(puzzle.id)!.independent)
-      : [...puzzles];
-  candidates.sort((first, second) => {
-    const firstAttempt = history.get(first.id);
-    const secondAttempt = history.get(second.id);
-    const firstPriority = !firstAttempt ? 0 : firstAttempt.independent ? 2 : 1;
-    const secondPriority = !secondAttempt ? 0 : secondAttempt.independent ? 2 : 1;
+  const history = reviewSchedule(attempts);
+  const due = reviews.filter((review) => review.dueDate <= localDate);
+  const chosen = due.slice(0, Math.min(3, count)).map((review) => review.puzzleId);
+  const pool = puzzles
+    .filter((puzzle) => !history.has(puzzle.id))
+    .sort((first, second) => first.rating - second.rating);
+  const motifs: Puzzle['motif'][] = ['mate', 'capture', 'fork'];
+  let freshIndex = 0;
+  while (chosen.length < count && pool.length) {
+    const preferred = motifs[freshIndex % motifs.length];
+    const index = pool.findIndex((puzzle) => puzzle.motif === preferred);
+    chosen.push(pool.splice(index < 0 ? 0 : index, 1)[0].id);
+    freshIndex += 1;
+  }
+
+  // When fresh puzzles run out, finish with overdue reviews before revisiting familiar puzzles.
+  const familiar = puzzles.filter(
+    (puzzle) => history.has(puzzle.id) && !chosen.includes(puzzle.id),
+  );
+  familiar.sort((first, second) => {
+    const firstReview = history.get(first.id)!;
+    const secondReview = history.get(second.id)!;
+    const firstDue = firstReview.dueDate <= localDate;
+    const secondDue = secondReview.dueDate <= localDate;
     return (
-      firstPriority - secondPriority ||
-      (firstAttempt?.completedAt ?? '').localeCompare(secondAttempt?.completedAt ?? '') ||
+      Number(secondDue) - Number(firstDue) ||
+      firstReview.dueDate.localeCompare(secondReview.dueDate) ||
       first.rating - second.rating
     );
   });
-  const chosen: string[] = [];
-  const pool = [...candidates];
-  const motifs: Puzzle['motif'][] = ['mate', 'capture', 'fork'];
-  while (chosen.length < count && pool.length) {
-    const preferred = motifs[chosen.length % motifs.length];
-    const index = pool.findIndex((puzzle) => puzzle.motif === preferred && !history.has(puzzle.id));
-    chosen.push(pool.splice(index < 0 ? 0 : index, 1)[0].id);
-  }
+  chosen.push(...familiar.slice(0, count - chosen.length).map((puzzle) => puzzle.id));
   return chosen;
 }
 
@@ -45,7 +57,7 @@ export function makeSession(
     id,
     mode,
     dateKey: localDate,
-    puzzleIds: selectPuzzles(attempts, mode),
+    puzzleIds: selectPuzzles(attempts, mode, 10, localDate),
     index: 0,
     ply: 0,
     phase: 'solve',

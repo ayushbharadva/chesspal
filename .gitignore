@@ -44,3 +44,6 @@ dist-web/
 # generated native folders
 /ios
 /android
+
+# Local research artifacts and REA evidence
+.research/

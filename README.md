@@ -8,6 +8,7 @@ Offline chess practice and opening guides for beginners who already know the rul
 - **100 starter puzzles:** mate in one, hanging pieces and forks; legal moves, progressive hints, solution replay and explanations.
 - **Learn:** Italian Game, Caro-Kann Defence and Queen’s Gambit. Step through the moves and their purpose, then play your side from memory.
 - **Progress:** independent and assisted solves, completed guides, activity and streaks. Workouts and guide positions resume automatically.
+- **Recall:** scheduled reviews return after a delay, including puzzles previously solved independently. Workouts mix due reviews with fresh practice.
 - No account, server, subscription or internet connection needed for learning. Opening references open in your browser.
 
 Current scope: [docs/MVP.md](docs/MVP.md). Puzzle sources and engine checks: [docs/content-pipeline.md](docs/content-pipeline.md).
@@ -60,3 +61,9 @@ docs/            # current scope, content pipeline and decisions
 ```
 
 Conventions and dependency boundaries: [AGENTS.md](AGENTS.md).
+
+## Product research
+
+The [research report](docs/research/2026-10-21-chess-learning.md) links chess-app references to
+specific source evidence and a beginner learning roadmap. [REA workflow](docs/research/README.md)
+documents the optional development-only artifact analyzer and its separate Node requirements.

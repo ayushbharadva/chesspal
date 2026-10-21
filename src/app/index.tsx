@@ -11,7 +11,7 @@ import { Spacing } from '@/constants/theme';
 import { useProgressStore } from '@/progress/store';
 import { dateKey } from '@/utils/date-key';
 import { getGreeting } from '@/utils/greeting';
-import { latestAttempts } from '@/workout/session';
+import { reviewQueue } from '@/workout/review';
 
 export default function HomeScreen() {
   const hydrated = useProgressStore((state) => state.hydrated);
@@ -22,9 +22,7 @@ export default function HomeScreen() {
   const start = useProgressStore((state) => state.startPractice);
   const unfinished = session && session.phase !== 'complete';
   const doneToday = completions.some((completion) => completion.dateKey === dateKey());
-  const reviews = [...latestAttempts(attempts).values()].filter(
-    (attempt) => !attempt.independent,
-  ).length;
+  const reviews = reviewQueue(attempts, dateKey()).length;
   const learned = guides.filter((guide) => lessonProgress[guide.id]?.completedAt).length;
   function openPractice(review = false) {
     if (start(review ? 'review' : 'daily')) router.push('/workout');
@@ -54,7 +52,7 @@ export default function HomeScreen() {
         <ThemedText themeColor="textSecondary">
           {unfinished
             ? `${session.results.length} of ${session.puzzleIds.length} puzzles completed. Your place is saved.`
-            : 'Spot a mate, win a piece, find a fork. Take your time and understand each move.'}
+            : 'Spot a mate, win a piece, find a fork. Your round can include earlier puzzles to help you remember.'}
         </ThemedText>
         <Button
           disabled={!hydrated}
@@ -70,11 +68,18 @@ export default function HomeScreen() {
           onPress={() => openPractice()}
         />
         {!unfinished && reviews > 0 && (
-          <Button
-            variant="secondary"
-            label={`Review ${reviews} puzzle${reviews === 1 ? '' : 's'}`}
-            onPress={() => openPractice(true)}
-          />
+          <>
+            <ThemedText type="small" themeColor="textSecondary">
+              Revisit puzzles ready to try again, including ones you solved without help. Puzzles
+              you needed help with are ready for another try now. Try to solve them without hints or
+              retries. Up to 10 per round.
+            </ThemedText>
+            <Button
+              variant="secondary"
+              label={`Review ${reviews} puzzle${reviews === 1 ? '' : 's'}`}
+              onPress={() => openPractice(true)}
+            />
+          </>
         )}
       </Card>
       <Card>

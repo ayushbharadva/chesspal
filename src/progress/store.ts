@@ -35,7 +35,8 @@ export const useProgressStore = create<ProgressStore>()(
         if (!get().hydrated) return false;
         const active = get().currentSession;
         if (active && active.phase !== 'complete') return true;
-        const today = dateKey();
+        const now = new Date();
+        const today = dateKey(now);
         const dailyDone = get().completions.some(
           (completion) => completion.dateKey === today && completion.mode === 'daily',
         );
@@ -43,7 +44,7 @@ export const useProgressStore = create<ProgressStore>()(
         const id =
           selectedMode === 'daily'
             ? `daily-${today}`
-            : `${selectedMode}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+            : `${selectedMode}-${now.getTime()}-${Math.random().toString(36).slice(2, 8)}`;
         const session = makeSession(id, selectedMode, today, get().attempts);
         if (!session.puzzleIds.length) return false;
         set({ currentSession: session });
