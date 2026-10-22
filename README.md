@@ -6,8 +6,9 @@ Offline chess practice and opening guides for beginners who already know the rul
 
 - **Practice:** 10 puzzles per workout, then keep practicing without a daily limit.
 - **100 starter puzzles:** mate in one, hanging pieces and forks; legal moves, progressive hints, solution replay and explanations.
-- **Learn:** Italian Game, Caro-Kann Defence and Queen’s Gambit. Step through the moves and their purpose, then play your side from memory.
-- **Progress:** independent and assisted solves, completed guides, activity and streaks. Workouts and guide positions resume automatically.
+- **Learn:** Italian Game, Caro-Kann Defence and Queen’s Gambit, with three example branches per guide. Follow a demonstration, practice with guidance, then recall without move notes or hints.
+- **Apply the idea:** six original exercises use unfamiliar positions. Try the stated goal, see its explanation after answering, and return for delayed recall.
+- **Progress:** independent and assisted puzzle solves and lesson recalls, practiced guides, activity and streaks. Workouts, branch positions and exercises resume automatically.
 - **Recall:** scheduled reviews return after a delay, including puzzles previously solved independently. Workouts mix due reviews with fresh practice.
 - No account, server, subscription or internet connection needed for learning. Opening references open in your browser.
 
@@ -35,6 +36,8 @@ The check runs TypeScript, ESLint, formatting and Jest, including actual board i
 
 `npm run content:verify` rebuilds puzzle content from a candidate import and verifies learner moves with Stockfish. Stockfish is a development tool; the app bundles only the resulting JSON.
 
+`npm run content:verify-openings` checks all opening branches and reruns Stockfish verification of the six transfer exercises without rewriting their metadata. [Opening practice sources](content/OPENING-PRACTICE-SOURCES.md) explains the goal-specific answers and finite-depth checks.
+
 ```bash
 npx eas-cli build --platform android --profile preview
 npx eas-cli build --platform android --profile production
@@ -54,6 +57,7 @@ src/
   chess/         # chess.js boundary and legal move adapter
   components/    # board, accessible controls and shared UI
   content/       # typed content access and validation
+  learning/      # pure branch, transfer and lesson recall logic
   workout/       # pure practice session logic
   progress/      # persisted app state
   storage/       # schema validation and serialized local writes

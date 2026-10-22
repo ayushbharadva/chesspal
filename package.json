@@ -52,6 +52,7 @@
     "test": "jest --runInBand --watchman=false",
     "test:watch": "jest --watch --watchman=false",
     "content:verify": "tsx scripts/content/build-puzzles.ts",
+    "content:verify-openings": "tsx scripts/content/verify-opening-practice.ts --check",
     "research:analyze": "node scripts/research/analyze-app.mjs",
     "check": "npm run typecheck && npm run lint && npm run format:check && npm test"
   },

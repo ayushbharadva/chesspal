@@ -2,6 +2,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { act, fireEvent, renderRouter, screen } from 'expo-router/testing-library';
 
 import { guideById, puzzleById } from '@/content';
+import { branchForGuide, transfersForGuide } from '@/content/lessons';
+import { answerLesson, beginLesson, lessonAttempt, lessonKey } from '@/learning/lesson';
+import { describeMove, INITIAL_POSITION } from '@/chess';
 import { useProgressStore } from '@/progress/store';
 import { emptyProgress } from '@/progress/types';
 import { flushProgressWrites, PROGRESS_KEY } from '@/storage/storage';
@@ -21,7 +24,12 @@ beforeEach(async () => {
   await flushProgressWrites();
   await AsyncStorage.clear();
   await useProgressStore.persist.rehydrate();
-  useProgressStore.setState({ ...emptyProgress(), hydrated: true, storageIssue: false });
+  useProgressStore.setState({
+    ...emptyProgress(),
+    hydrated: true,
+    storageIssue: false,
+    lessonNotice: null,
+  });
 });
 afterEach(async () => {
   await flushProgressWrites();
@@ -139,4 +147,165 @@ it('restores a saved session and displays real progress', async () => {
   await fireEvent.press(screen.getByRole('button', { name: 'Your progress' }));
   expect(app.getPathname()).toBe('/progress');
   expect(screen.getByLabelText('Puzzles completed: 0')).toBeOnTheScreen();
+});
+
+it('fades branch help, preserves an interrupted recall and records retries honestly', async () => {
+  await renderApp('/lesson/italian-game');
+  const branch = branchForGuide('italian-game', 'evans-gambit')!;
+  await fireEvent.press(screen.getByRole('button', { name: `Choose ${branch.title}` }));
+  await fireEvent.press(screen.getByRole('button', { name: 'Play line' }));
+  expect(screen.getByText('GUIDED PRACTICE · WITH HELP')).toBeOnTheScreen();
+  expect(screen.getByText(describeMove(INITIAL_POSITION, branch.moves[0]))).toBeOnTheScreen();
+  for (let ply = 0; ply < branch.moves.length; ply += 2) await move(branch.moves[ply]);
+  expect(useProgressStore.getState().lessonProgress.attempts.at(-1)?.independent).toBe(false);
+  await fireEvent.press(screen.getByRole('button', { name: 'Recall line without help' }));
+  expect(screen.getByText('RECALL · TRY WITHOUT HELP')).toBeOnTheScreen();
+  expect(screen.queryByText(describeMove(INITIAL_POSITION, branch.moves[0]))).not.toBeOnTheScreen();
+  expect(screen.queryByText(branch.notes[0])).not.toBeOnTheScreen();
+  await move('g1h3');
+  expect(screen.getByText(/not necessarily a bad chess move/)).toBeOnTheScreen();
+  await move(branch.moves[0]);
+  const key = lessonKey('branch', 'italian-game', branch.id);
+  await flushProgressWrites();
+  const raw = await AsyncStorage.getItem(PROGRESS_KEY);
+  await act(async () => {
+    useProgressStore.setState(emptyProgress());
+    await flushProgressWrites();
+    await AsyncStorage.setItem(PROGRESS_KEY, raw!);
+    await useProgressStore.persist.rehydrate();
+  });
+  expect(useProgressStore.getState().lessonProgress.sessions[key]).toMatchObject({
+    ply: 2,
+    mistakes: 1,
+    scaffold: 'recall',
+  });
+  for (let ply = 2; ply < branch.moves.length; ply += 2) await move(branch.moves[ply]);
+  expect(useProgressStore.getState().lessonProgress.attempts).toHaveLength(2);
+  expect(useProgressStore.getState().lessonProgress.attempts.at(-1)?.independent).toBe(false);
+  expect(useProgressStore.getState().attempts).toEqual([]);
+});
+
+it('returns to the requested main branch after playing a supported alternate', async () => {
+  await renderApp('/lesson/italian-game');
+  const main = branchForGuide('italian-game', 'main')!;
+  const alternate = branchForGuide('italian-game', 'evans-gambit')!;
+  const mainKey = lessonKey('branch', 'italian-game', 'main');
+  const alternateKey = lessonKey('branch', 'italian-game', 'evans-gambit');
+  await fireEvent.press(screen.getByRole('button', { name: 'Play line' }));
+  for (const ply of [0, 2, 4, 6]) await move(alternate.moves[ply]);
+  expect(useProgressStore.getState().lessonProgress.selected['italian-game']).toBe(alternateKey);
+  expect(useProgressStore.getState().lessonProgress.sessions[alternateKey]).toMatchObject({
+    targetId: 'evans-gambit',
+    ply: 8,
+  });
+  await fireEvent.press(screen.getByRole('button', { name: 'Choose Main example' }));
+  expect(screen.getByText(main.description)).toBeOnTheScreen();
+  await fireEvent.press(screen.getByRole('button', { name: 'Play line' }));
+  expect(useProgressStore.getState().lessonProgress.sessions[mainKey]).toMatchObject({
+    targetId: 'main',
+    ply: 6,
+  });
+  for (let ply = 6; ply < main.moves.length; ply += 2) await move(main.moves[ply]);
+  expect(useProgressStore.getState().lessonProgress.attempts.at(-1)?.targetId).toBe('main');
+  expect(useProgressStore.getState().lessonProgress.sessions[alternateKey].ply).toBe(8);
+  await fireEvent.press(screen.getByRole('button', { name: `Choose ${alternate.title}` }));
+  await fireEvent.press(screen.getByRole('button', { name: 'Play line' }));
+  for (let ply = 8; ply < alternate.moves.length; ply += 2) await move(alternate.moves[ply]);
+  expect(
+    useProgressStore.getState().lessonProgress.attempts.map((attempt) => attempt.targetId),
+  ).toEqual(['main', 'evans-gambit']);
+});
+
+it('explains a saved-branch resume and preserves both interrupted attempts', async () => {
+  const now = new Date();
+  const mainKey = lessonKey('branch', 'italian-game', 'main');
+  const alternateKey = lessonKey('branch', 'italian-game', 'evans-gambit');
+  const alternate = branchForGuide('italian-game', 'evans-gambit')!;
+  let guided = beginLesson('italian-game', 'branch', 'evans-gambit', [], now)!;
+  for (let ply = 0; ply < alternate.moves.length; ply += 2)
+    guided = answerLesson(guided, alternate.moves[ply]);
+  const first = lessonAttempt(guided, now);
+  let saved = beginLesson('italian-game', 'branch', 'evans-gambit', [first], now)!;
+  for (const ply of [0, 2, 4, 6, 8]) saved = answerLesson(saved, alternate.moves[ply]);
+  saved = { ...saved, usedHelp: true, hintShown: true, mistakes: 2 };
+  let main = beginLesson('italian-game', 'branch', 'main', [], now)!;
+  for (const ply of [0, 2, 4]) main = answerLesson(main, alternate.moves[ply]);
+  useProgressStore.setState({
+    lessonProgress: {
+      ...emptyProgress().lessonProgress,
+      attempts: [first],
+      sessions: { [mainKey]: main, [alternateKey]: saved },
+      selected: { 'italian-game': mainKey },
+    },
+  });
+  await renderApp('/lesson/italian-game');
+  await move('b2b4');
+  expect(screen.getByText(/Resuming your saved Evans Gambit/)).toBeOnTheScreen();
+  expect(useProgressStore.getState().lessonProgress.sessions[mainKey]).toEqual(main);
+  expect(useProgressStore.getState().lessonProgress.sessions[alternateKey]).toEqual(saved);
+  expect(useProgressStore.getState().lessonProgress.attempts).toEqual([first]);
+  await move(alternate.moves[10]);
+  expect(useProgressStore.getState().lessonProgress.attempts.at(-1)?.independent).toBe(false);
+});
+
+it('tests a separate position, reveals its explanation after answering and tracks optional help', async () => {
+  await renderApp('/lesson/italian-game');
+  const exercise = transfersForGuide('italian-game')[0];
+  await fireEvent.press(screen.getByRole('button', { name: `Try ${exercise.title}` }));
+  expect(screen.queryByText(exercise.explanation)).not.toBeOnTheScreen();
+  await move(exercise.answers[0]);
+  expect(screen.getByText(exercise.explanation)).toBeOnTheScreen();
+  expect(screen.getByText('Solved independently, without hints or retries.')).toBeOnTheScreen();
+  await fireEvent.press(screen.getByRole('button', { name: 'Try idea without help' }));
+  await fireEvent.press(screen.getByRole('button', { name: 'Show idea hint' }));
+  expect(screen.getByText(exercise.hint)).toBeOnTheScreen();
+  await move(exercise.answers[0]);
+  expect(
+    useProgressStore.getState().lessonProgress.attempts.map((attempt) => attempt.independent),
+  ).toEqual([true, false]);
+});
+
+it('opens a delayed learning review through Learn in recall mode', async () => {
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  const attempt = {
+    id: 'guided-yesterday',
+    guideId: 'italian-game',
+    targetId: 'main',
+    kind: 'branch' as const,
+    independent: false,
+    dateKey: dateKey(yesterday),
+    completedAt: yesterday.toISOString(),
+  };
+  useProgressStore.setState({
+    lessonProgress: { ...emptyProgress().lessonProgress, attempts: [attempt] },
+  });
+  const app = await renderApp('/learn');
+  await fireEvent.press(screen.getByRole('button', { name: 'Review Italian Game: Main example' }));
+  expect(app.getPathname()).toBe('/lesson/italian-game');
+  expect(screen.getByText('RECALL · TRY WITHOUT HELP')).toBeOnTheScreen();
+});
+
+it('distinguishes main-line reviews from two different opening guides', async () => {
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  const attempts = ['italian-game', 'caro-kann'].map((guideId) => ({
+    id: `${guideId}-yesterday`,
+    guideId,
+    targetId: 'main',
+    kind: 'branch' as const,
+    independent: false,
+    dateKey: dateKey(yesterday),
+    completedAt: yesterday.toISOString(),
+  }));
+  useProgressStore.setState({ lessonProgress: { ...emptyProgress().lessonProgress, attempts } });
+  const app = await renderApp('/learn');
+  expect(
+    screen.getByRole('button', { name: 'Review Italian Game: Main example' }),
+  ).toBeOnTheScreen();
+  await fireEvent.press(
+    screen.getByRole('button', { name: 'Review Caro-Kann Defence: Main example' }),
+  );
+  expect(app.getPathname()).toBe('/lesson/caro-kann');
+  expect(screen.getByText('Caro-Kann Defence')).toBeOnTheScreen();
 });

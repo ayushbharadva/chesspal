@@ -12,6 +12,7 @@ export default function ProgressScreen() {
   const attempts = useProgressStore((state) => state.attempts);
   const completions = useProgressStore((state) => state.completions);
   const guideProgress = useProgressStore((state) => state.guideProgress);
+  const learning = useProgressStore((state) => state.lessonProgress.attempts);
   const independent = attempts.filter((attempt) => attempt.independent).length;
   const learned = guides.filter((guide) => guideProgress[guide.id]?.completedAt).length;
   const days = completions.map((completion) => completion.dateKey);
@@ -46,6 +47,25 @@ export default function ProgressScreen() {
         />
         <Stat label="Workouts completed" value={String(completions.length)} />
         <Stat label="Guides practiced" value={`${learned} / ${guides.length}`} />
+      </Card>
+      <Card>
+        <ThemedText type="subtitle">Learning practice</ThemedText>
+        <Stat
+          label="Opening lines recalled independently"
+          value={String(
+            learning.filter((attempt) => attempt.kind === 'branch' && attempt.independent).length,
+          )}
+        />
+        <Stat
+          label="New positions solved independently"
+          value={String(
+            learning.filter((attempt) => attempt.kind === 'transfer' && attempt.independent).length,
+          )}
+        />
+        <Stat
+          label="Learning completed with help or retries"
+          value={String(learning.filter((attempt) => !attempt.independent).length)}
+        />
       </Card>
       <Card>
         <ActivityBar />

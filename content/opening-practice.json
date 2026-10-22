@@ -1,0 +1,356 @@
+[
+  {
+    "guideId": "italian-game",
+    "branches": [
+      {
+        "id": "two-knights",
+        "title": "Two Knights: protect the centre",
+        "description": "Black attacks e4 with a knight. Support your pawn and keep developing.",
+        "moves": ["e2e4", "e7e5", "g1f3", "b8c6", "f1c4", "g8f6", "d2d3", "f8e7"],
+        "notes": [
+          "Take central space and clear a path for your bishop.",
+          "Black puts a pawn in the centre too.",
+          "Bring out a knight with a threat against e5.",
+          "Black develops a knight that protects e5.",
+          "Develop your bishop onto the diagonal toward f7.",
+          "Black develops with an attack on your e4 pawn.",
+          "Support e4 with a pawn and open the c1 bishop's diagonal.",
+          "Black clears the king's path to castle. You can prepare king safety too."
+        ],
+        "sourceUrl": "https://www.chess.com/openings/Italian-Game-Two-Knights-Defense"
+      },
+      {
+        "id": "evans-gambit",
+        "title": "Evans Gambit: time for the centre",
+        "description": "Offer a wing pawn to gain time for central pawns. This is a sharper alternative.",
+        "moves": [
+          "e2e4",
+          "e7e5",
+          "g1f3",
+          "b8c6",
+          "f1c4",
+          "f8c5",
+          "b2b4",
+          "c5b4",
+          "c2c3",
+          "b4a5",
+          "d2d4",
+          "e5d4"
+        ],
+        "notes": [
+          "Start with a pawn in the centre and free your bishop.",
+          "Black meets your pawn with a central pawn.",
+          "Develop a knight and put pressure on e5.",
+          "Black protects e5 while developing.",
+          "Your bishop joins the game on an active diagonal.",
+          "Black's bishop develops toward your king's side.",
+          "Offer the b-pawn to draw the bishop away and gain time. You are giving up material.",
+          "Black accepts the pawn. Development now matters more than chasing the pawn back.",
+          "Attack the bishop with a pawn that also supports a later d4 push.",
+          "Black retreats while keeping pressure along the diagonal toward your king.",
+          "Use the time gained to build a second central pawn.",
+          "Black exchanges in the centre. Keep developing and make your king safe before attacking."
+        ],
+        "sourceUrl": "https://www.chess.com/openings/Giuoco-Piano-Game-Evans-Gambit"
+      }
+    ],
+    "transfers": [
+      {
+        "id": "italian-castle-new-setup",
+        "title": "A safer king, a different setup",
+        "prompt": "White to play: move the king to safety and bring the h1 rook into the game in one move.",
+        "idea": "Once the path is clear and the king is safe to cross, castling improves king safety and activates a rook.",
+        "setupMoves": [
+          "e2e4",
+          "e7e5",
+          "g1f3",
+          "b8c6",
+          "f1c4",
+          "f8c5",
+          "d2d3",
+          "g8f6",
+          "b1c3",
+          "d7d6"
+        ],
+        "answers": ["e1g1"],
+        "hint": "Your king and h1 rook can move together. Check the squares between them.",
+        "explanation": "Kingside castling puts the king on g1 and the rook on f1. The extra knight on c3 changes the position, but the king-safety idea still applies.",
+        "sourceUrl": "https://www.chess.com/openings/Italian-Game",
+        "fen": "r1bqk2r/ppp2ppp/2np1n2/2b1p3/2B1P3/2NP1N2/PPP2PPP/R1BQK2R w KQkq - 0 6",
+        "verification": {
+          "engine": "Stockfish 19 Lite",
+          "depth": 14,
+          "checkedAt": "2026-10-22T07:29:52.468Z",
+          "bestMove": "c3a4",
+          "bestScoreCp": 25,
+          "answers": [{ "move": "e1g1", "scoreCp": 8, "lossCp": 17 }]
+        }
+      },
+      {
+        "id": "italian-prepare-centre",
+        "title": "Prepare a central push",
+        "prompt": "White to play: move the c-pawn one square so it supports a future d4 push.",
+        "idea": "A central pawn push is easier to support when a neighbouring pawn can recapture on the same square.",
+        "setupMoves": [
+          "e2e4",
+          "e7e5",
+          "g1f3",
+          "b8c6",
+          "f1c4",
+          "g8f6",
+          "d2d3",
+          "f8c5",
+          "e1g1",
+          "d7d6"
+        ],
+        "answers": ["c2c3"],
+        "hint": "Look for a square from which your c-pawn attacks d4.",
+        "explanation": "The pawn on c3 supports d4. Castling happened earlier in this position; you can still prepare the same central plan. Check Black's replies before pushing d4 later.",
+        "sourceUrl": "https://www.chess.com/openings/Italian-Game",
+        "fen": "r1bqk2r/ppp2ppp/2np1n2/2b1p3/2B1P3/3P1N2/PPP2PPP/RNBQ1RK1 w kq - 0 6",
+        "verification": {
+          "engine": "Stockfish 19 Lite",
+          "depth": 14,
+          "checkedAt": "2026-10-22T07:29:52.595Z",
+          "bestMove": "c2c3",
+          "bestScoreCp": 14,
+          "answers": [{ "move": "c2c3", "scoreCp": 18, "lossCp": 0 }]
+        }
+      }
+    ]
+  },
+  {
+    "guideId": "caro-kann",
+    "branches": [
+      {
+        "id": "classical",
+        "title": "Classical: an active bishop",
+        "description": "Exchange in the centre, develop the light-squared bishop, then give it room when White gains space.",
+        "moves": [
+          "e2e4",
+          "c7c6",
+          "d2d4",
+          "d7d5",
+          "b1d2",
+          "d5e4",
+          "d2e4",
+          "c8f5",
+          "e4g3",
+          "f5g6",
+          "h2h4",
+          "h7h6",
+          "g1f3",
+          "b8d7"
+        ],
+        "notes": [
+          "White takes central space and opens the f1 bishop's diagonal.",
+          "Support a future d5 pawn push with c6.",
+          "White puts another pawn in the centre.",
+          "Challenge e4 with your supported d-pawn.",
+          "White supports e4 with a knight without blocking the c-pawn.",
+          "Exchange your d-pawn for White's e-pawn to reduce the broad centre.",
+          "White recaptures and places the knight in the centre.",
+          "Bring the light-squared bishop out before playing e6, and attack the knight.",
+          "White saves the knight and attacks your bishop on f5.",
+          "Keep the bishop outside your pawn chain by retreating to g6.",
+          "White gains kingside space and may continue h5 against your bishop.",
+          "Make h7 available as a retreat square if the bishop is attacked again.",
+          "White develops the second knight and prepares king safety.",
+          "Develop your queenside knight so it can support f6 and c5."
+        ],
+        "sourceUrl": "https://www.chess.com/openings/Caro-Kann-Defense-Classical-Variation"
+      },
+      {
+        "id": "exchange",
+        "title": "Exchange: rebuild the centre",
+        "description": "White exchanges on d5. Recapture with the c-pawn and develop around your central pawn.",
+        "moves": ["e2e4", "c7c6", "d2d4", "d7d5", "e4d5", "c6d5", "f1d3", "b8c6", "c2c3", "g8f6"],
+        "notes": [
+          "White claims the e4 square and central space.",
+          "Prepare to challenge that pawn with d5.",
+          "White builds a two-pawn centre.",
+          "Put pressure on White's e4 pawn.",
+          "White exchanges rather than advancing or defending e4.",
+          "Recapture with the c-pawn and keep a pawn on d5.",
+          "White develops the bishop and looks toward your kingside.",
+          "The c6 square is now free for your knight, which attacks d4.",
+          "White supports d4 with a neighbouring pawn.",
+          "Develop your other knight and add control of the central e4 square."
+        ],
+        "sourceUrl": "https://www.chess.com/openings/Caro-Kann-Defense-Exchange-Variation"
+      }
+    ],
+    "transfers": [
+      {
+        "id": "caro-bishop-pin",
+        "title": "Let the bishop out",
+        "prompt": "Black to play: develop the light-squared bishop so it pins the f3 knight to White's queen.",
+        "idea": "Consider an active square for the c8 bishop before a pawn on e6 closes its diagonal.",
+        "setupMoves": ["e2e4", "c7c6", "d2d4", "d7d5", "e4d5", "c6d5", "g1f3", "g8f6", "f1d3"],
+        "answers": ["c8g4"],
+        "hint": "Trace the diagonal from c8. Which square lines your bishop up with f3 and d1?",
+        "explanation": "The bishop on g4 pins the f3 knight to the queen on d1. This Exchange position has a different pawn structure from the Advance example, but developing the bishop before e6 is still useful.",
+        "sourceUrl": "https://www.chess.com/openings/Caro-Kann-Defense",
+        "fen": "rnbqkb1r/pp2pppp/5n2/3p4/3P4/3B1N2/PPP2PPP/RNBQK2R b KQkq - 3 5",
+        "verification": {
+          "engine": "Stockfish 19 Lite",
+          "depth": 14,
+          "checkedAt": "2026-10-22T07:29:52.803Z",
+          "bestMove": "c8g4",
+          "bestScoreCp": -13,
+          "answers": [{ "move": "c8g4", "scoreCp": -16, "lossCp": 3 }]
+        }
+      },
+      {
+        "id": "caro-knight-development",
+        "title": "Develop around your pawns",
+        "prompt": "Black to play: develop the b8 knight to a square that supports f6 while leaving your c6 pawn in place.",
+        "idea": "Choose development squares that fit your pawn structure instead of moving the same active piece again.",
+        "setupMoves": ["e2e4", "c7c6", "d2d4", "d7d5", "e4e5", "c8f5", "b1c3", "e7e6", "g1f3"],
+        "answers": ["b8d7"],
+        "hint": "Your c6 pawn occupies one usual knight square. Look at d7 instead.",
+        "explanation": "The knight on d7 supports f6 and can help challenge the centre later. White developed the other knight to c3 here; your own development plan still fits the c6-d5-e6 pawns.",
+        "sourceUrl": "https://www.chess.com/openings/Caro-Kann-Defense",
+        "fen": "rn1qkbnr/pp3ppp/2p1p3/3pPb2/3P4/2N2N2/PPP2PPP/R1BQKB1R b KQkq - 1 5",
+        "verification": {
+          "engine": "Stockfish 19 Lite",
+          "depth": 14,
+          "checkedAt": "2026-10-22T07:29:52.984Z",
+          "bestMove": "b8d7",
+          "bestScoreCp": -20,
+          "answers": [{ "move": "b8d7", "scoreCp": -20, "lossCp": 0 }]
+        }
+      }
+    ]
+  },
+  {
+    "guideId": "queens-gambit",
+    "branches": [
+      {
+        "id": "declined",
+        "title": "Declined: develop against a firm centre",
+        "description": "Black supports d5 with e6. Develop your pieces and keep pressure on the centre.",
+        "moves": [
+          "d2d4",
+          "d7d5",
+          "c2c4",
+          "e7e6",
+          "b1c3",
+          "g8f6",
+          "c1g5",
+          "f8e7",
+          "e2e3",
+          "e8g8",
+          "g1f3",
+          "b8d7"
+        ],
+        "notes": [
+          "Take central space with your d-pawn.",
+          "Black contests the centre with a matching pawn.",
+          "Challenge d5 with a wing pawn instead of moving your d-pawn again.",
+          "Black declines your offer and supports d5 with e6.",
+          "Develop the queenside knight and add pressure to d5.",
+          "Black develops a knight that supports d5.",
+          "Develop your bishop and pin the f6 knight to the queen.",
+          "Black develops the bishop and removes the pin to the queen.",
+          "Support d4 and clear a path for the f1 bishop.",
+          "Black castles before starting further action in the centre.",
+          "Develop your remaining knight. Your bishop must still leave f1 before castling.",
+          "Black brings the queenside knight into play and supports f6."
+        ],
+        "sourceUrl": "https://www.chess.com/openings/Queens-Gambit-Declined-Orthodox-Rubinstein-Attack"
+      },
+      {
+        "id": "slav",
+        "title": "Slav: prepare the pawn recovery",
+        "description": "Black supports d5 with c6 and later captures c4. Develop while preparing to regain the pawn.",
+        "moves": [
+          "d2d4",
+          "d7d5",
+          "c2c4",
+          "c7c6",
+          "g1f3",
+          "g8f6",
+          "b1c3",
+          "d5c4",
+          "a2a4",
+          "c8f5",
+          "e2e3",
+          "e7e6",
+          "f1c4"
+        ],
+        "notes": [
+          "Place a pawn in the centre and open the c1 bishop's diagonal.",
+          "Black puts a pawn on d5 to contest your space.",
+          "Use the c-pawn to challenge Black's central pawn.",
+          "Black supports d5 with c6, keeping the c8 bishop's diagonal open.",
+          "Develop a knight and support d4.",
+          "Black develops a knight toward the centre.",
+          "Develop your second knight and increase pressure on d5.",
+          "Black takes the c4 pawn after developing the kingside knight.",
+          "Control b5 to make it harder for Black to support the extra pawn with a pawn push.",
+          "Black develops the light-squared bishop before playing e6.",
+          "Open the path from your f1 bishop to c4 while supporting d4.",
+          "Black prepares the dark-squared bishop and supports the centre.",
+          "Recover the pawn with a developing move. Your king is now ready to castle."
+        ],
+        "sourceUrl": "https://www.chess.com/openings/Slav-Defense"
+      }
+    ],
+    "transfers": [
+      {
+        "id": "queens-recover-with-development",
+        "title": "Recover and develop",
+        "prompt": "White to play: recover the pawn on c4 while bringing a new piece into play.",
+        "idea": "When a developing move recovers the offered pawn, you can improve your position and regain material together.",
+        "setupMoves": ["d2d4", "d7d5", "c2c4", "d5c4", "e2e3", "g8f6", "g1f3", "a7a6"],
+        "answers": ["f1c4"],
+        "hint": "Your e-pawn has cleared a path for the bishop on f1.",
+        "explanation": "Bishop takes c4 recovers the pawn and develops your bishop. Black played a6 before e6 in this position, so recognise the available diagonal rather than relying on the order you memorised.",
+        "sourceUrl": "https://www.chess.com/openings/Queens-Gambit",
+        "fen": "rnbqkb1r/1pp1pppp/p4n2/8/2pP4/4PN2/PP3PPP/RNBQKB1R w KQkq - 0 5",
+        "verification": {
+          "engine": "Stockfish 19 Lite",
+          "depth": 14,
+          "checkedAt": "2026-10-22T07:29:53.132Z",
+          "bestMove": "f1c4",
+          "bestScoreCp": 31,
+          "answers": [{ "move": "f1c4", "scoreCp": 30, "lossCp": 1 }]
+        }
+      },
+      {
+        "id": "queens-castle-new-setup",
+        "title": "Finish king safety",
+        "prompt": "White to play: make the king safer and bring the h1 rook to f1 in one move.",
+        "idea": "After developing the kingside pieces, king safety still matters when the central pawn structure changes.",
+        "setupMoves": [
+          "d2d4",
+          "d7d5",
+          "c2c4",
+          "e7e6",
+          "g1f3",
+          "g8f6",
+          "b1c3",
+          "f8e7",
+          "e2e3",
+          "e8g8",
+          "f1d3",
+          "c7c5"
+        ],
+        "answers": ["e1g1"],
+        "hint": "Your f1 bishop and g1 knight have moved. Can your king and rook move together?",
+        "explanation": "Castling places the king on g1 and the rook on f1. Black declined the pawn offer here, but the plan to develop and castle still applies.",
+        "sourceUrl": "https://www.chess.com/openings/Queens-Gambit-Declined",
+        "fen": "rnbq1rk1/pp2bppp/4pn2/2pp4/2PP4/2NBPN2/PP3PPP/R1BQK2R w KQ - 0 7",
+        "verification": {
+          "engine": "Stockfish 19 Lite",
+          "depth": 14,
+          "checkedAt": "2026-10-22T07:29:53.309Z",
+          "bestMove": "e1g1",
+          "bestScoreCp": 7,
+          "answers": [{ "move": "e1g1", "scoreCp": 14, "lossCp": 0 }]
+        }
+      }
+    ]
+  }
+]

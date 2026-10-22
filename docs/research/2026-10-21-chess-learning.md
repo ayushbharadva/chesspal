@@ -96,6 +96,14 @@ prove that beginners find a particular app difficult.
 
 ## Concrete development sequence
 
+Implementation update, 22 October: scheduled puzzle recall and the approved
+opening-learning slice are implemented. The three guides now contain nine example
+branches and six original transfer exercises, with demonstrations, guided practice,
+unaided recall, separate assistance records and delayed lesson reviews. See the
+[current scope](../MVP.md) and [content checks](../../content/OPENING-PRACTICE-SOURCES.md).
+The sequence below records the research priorities; a beginner pilot is still
+needed to evaluate learning outcomes.
+
 ### First slice: scheduled independent recall
 
 The starting RookieReps review queue only included the latest assisted completions. A subsequent

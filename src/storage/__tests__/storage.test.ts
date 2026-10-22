@@ -59,3 +59,17 @@ it('rejects a guide resume point on the opponent turn', () => {
   state.guideProgress['caro-kann'].practicePly = 1;
   expect(validProgress(state)).toBe(true);
 });
+
+it('normalizes legacy learning state without losing puzzle history or saved guide positions', async () => {
+  const { lessonProgress: omitted, ...legacy } = emptyProgress();
+  void omitted;
+  legacy.guideProgress['italian-game'] = { viewedPly: 4, practicePly: 2, completedAt: null };
+  legacy.currentSession = makeSession('old-in-progress', 'daily', '2026-10-13', []);
+  const raw = JSON.stringify({ state: legacy, version: 1 });
+  await AsyncStorage.setItem(PROGRESS_KEY, raw);
+  const restored = decodeProgress((await progressStorage.getItem(PROGRESS_KEY))!).state;
+  expect(restored.guideProgress).toEqual(legacy.guideProgress);
+  expect(restored.currentSession).toEqual(legacy.currentSession);
+  expect(restored.lessonProgress).toEqual(emptyProgress().lessonProgress);
+  expect(await AsyncStorage.getItem(`${PROGRESS_KEY}-backup`)).toBeNull();
+});
