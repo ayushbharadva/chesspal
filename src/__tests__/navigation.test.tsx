@@ -412,3 +412,35 @@ it('keeps the recommended lesson disabled until saved progress is restored', asy
   await fireEvent.press(button);
   expect(useProgressStore.getState().lessonProgress).toEqual(emptyProgress().lessonProgress);
 });
+
+it('updates Home recommendations when a mounted screen crosses local midnight', async () => {
+  jest.useFakeTimers();
+  try {
+    const beforeMidnight = new Date(2026, 9, 27, 23, 59, 59);
+    jest.setSystemTime(beforeMidnight);
+    useProgressStore.setState({
+      lessonProgress: {
+        ...emptyProgress().lessonProgress,
+        attempts: [
+          {
+            id: 'today-guided',
+            guideId: 'italian-game',
+            kind: 'branch',
+            targetId: 'main',
+            independent: false,
+            dateKey: dateKey(beforeMidnight),
+            completedAt: beforeMidnight.toISOString(),
+          },
+        ],
+      },
+    });
+    await renderApp();
+    expect(screen.getByRole('button', { name: 'Apply this idea' })).toBeOnTheScreen();
+    await act(async () => {
+      jest.advanceTimersByTime(1000);
+    });
+    expect(screen.getByRole('button', { name: 'Recall this lesson' })).toBeOnTheScreen();
+  } finally {
+    jest.useRealTimers();
+  }
+});

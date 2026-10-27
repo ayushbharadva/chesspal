@@ -7,12 +7,14 @@ import { guideById, guides } from '@/content';
 import { branchesForGuide, transfersForGuide } from '@/content/lessons';
 import { lessonKey, lessonReviews, lessonTarget } from '@/learning/lesson';
 import { useProgressStore } from '@/progress/store';
+import { useLocalDate } from '@/hooks/use-local-date';
 
 export default function LearnScreen() {
+  const today = useLocalDate();
   const progress = useProgressStore((state) => state.guideProgress);
   const lessons = useProgressStore((state) => state.lessonProgress);
   const start = useProgressStore((state) => state.startLesson);
-  const reviews = lessonReviews(lessons.attempts);
+  const reviews = lessonReviews(lessons.attempts, today);
   return (
     <Screen>
       <ThemedText type="title" accessibilityRole="header">

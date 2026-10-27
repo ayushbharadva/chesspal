@@ -11,11 +11,12 @@ import { Spacing } from '@/constants/theme';
 import { lessonTarget } from '@/learning/lesson';
 import { nextLesson } from '@/learning/next-lesson';
 import { useProgressStore } from '@/progress/store';
-import { dateKey } from '@/utils/date-key';
+import { useLocalDate } from '@/hooks/use-local-date';
 import { getGreeting } from '@/utils/greeting';
 import { reviewQueue } from '@/workout/review';
 
 export default function HomeScreen() {
+  const today = useLocalDate();
   const hydrated = useProgressStore((state) => state.hydrated);
   const session = useProgressStore((state) => state.currentSession);
   const attempts = useProgressStore((state) => state.attempts);
@@ -26,10 +27,10 @@ export default function HomeScreen() {
   const startLesson = useProgressStore((state) => state.startLesson);
   const start = useProgressStore((state) => state.startPractice);
   const unfinished = session && session.phase !== 'complete';
-  const doneToday = completions.some((completion) => completion.dateKey === dateKey());
-  const reviews = reviewQueue(attempts, dateKey()).length;
+  const doneToday = completions.some((completion) => completion.dateKey === today);
+  const reviews = reviewQueue(attempts, today).length;
   const learned = guides.filter((guide) => lessonProgress[guide.id]?.completedAt).length;
-  const step = nextLesson(lessons);
+  const step = nextLesson(lessons, today);
   const target = step ? lessonTarget(step.guideId, step.kind, step.targetId) : undefined;
   function openPractice(review = false) {
     if (start(review ? 'review' : 'daily')) router.push('/workout');

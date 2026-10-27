@@ -7,9 +7,11 @@ import { guides, puzzles } from '@/content';
 import { Spacing } from '@/constants/theme';
 import { practiceDates } from '@/progress/activity';
 import { useProgressStore } from '@/progress/store';
-import { activityStreak, bestActivityStreak, dateKey } from '@/utils/date-key';
+import { activityStreak, bestActivityStreak } from '@/utils/date-key';
+import { useLocalDate } from '@/hooks/use-local-date';
 
 export default function ProgressScreen() {
+  const today = useLocalDate();
   const attempts = useProgressStore((state) => state.attempts);
   const completions = useProgressStore((state) => state.completions);
   const guideProgress = useProgressStore((state) => state.guideProgress);
@@ -17,7 +19,7 @@ export default function ProgressScreen() {
   const independent = attempts.filter((attempt) => attempt.independent).length;
   const learned = guides.filter((guide) => guideProgress[guide.id]?.completedAt).length;
   const days = practiceDates(completions, learning);
-  const currentStreak = activityStreak(days, dateKey());
+  const currentStreak = activityStreak(days, today);
   const bestStreak = bestActivityStreak(days);
   return (
     <Screen>
