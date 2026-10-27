@@ -8,7 +8,8 @@ Offline chess practice and opening guides for beginners who already know the rul
 - **100 starter puzzles:** mate in one, hanging pieces and forks; legal moves, progressive hints, solution replay and explanations.
 - **Learn:** Italian Game, Caro-Kann Defence and Queen’s Gambit, with three example branches per guide. Follow a demonstration, practice with guidance, then recall without move notes or hints.
 - **Apply the idea:** six original exercises use unfamiliar positions. Try the stated goal, see its explanation after answering, and return for delayed recall.
-- **Progress:** independent and assisted puzzle solves and lesson recalls, practiced guides, activity and streaks. Workouts, branch positions and exercises resume automatically.
+- **Next step:** Home helps you resume a lesson, return for a due recall, or apply an opening idea in a new position.
+- **Progress:** independent and assisted puzzle solves and lesson recalls, practiced guides, activity and streaks. Completed lessons count toward activity alongside workouts. Workouts, branch positions and exercises resume automatically.
 - **Recall:** scheduled reviews return after a delay, including puzzles previously solved independently. Workouts mix due reviews with fresh practice.
 - No account, server, subscription or internet connection needed for learning. Opening references open in your browser.
 
@@ -32,7 +33,7 @@ npm run check
 npx expo export --platform android
 ```
 
-The check runs TypeScript, ESLint, formatting and Jest, including actual board interactions, complete workouts, all three guides, persisted state and the legality of every bundled puzzle.
+The check runs TypeScript, ESLint, formatting and Jest, including actual board interactions, complete workouts, all three guides, Home learning recommendations, persisted state and the legality of every bundled puzzle. CI also exports the production Android bundle. Device validation is tracked in [docs/DEVICE-TESTING.md](docs/DEVICE-TESTING.md).
 
 `npm run content:verify` rebuilds puzzle content from a candidate import and verifies learner moves with Stockfish. Stockfish is a development tool; the app bundles only the resulting JSON.
 

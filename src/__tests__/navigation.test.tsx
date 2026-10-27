@@ -1,3 +1,4 @@
+import { router } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { act, fireEvent, renderRouter, screen } from 'expo-router/testing-library';
 
@@ -308,4 +309,106 @@ it('distinguishes main-line reviews from two different opening guides', async ()
   );
   expect(app.getPathname()).toBe('/lesson/caro-kann');
   expect(screen.getByText('Caro-Kann Defence')).toBeOnTheScreen();
+});
+
+it('connects Home to a demonstration, related application and lesson-only activity', async () => {
+  const app = await renderApp();
+  await fireEvent.press(screen.getByRole('button', { name: 'Learn this line' }));
+  expect(app.getPathname()).toBe('/lesson/italian-game');
+  expect(screen.getByText('Move 0 of 12')).toBeOnTheScreen();
+  expect(useProgressStore.getState().lessonProgress.attempts).toEqual([]);
+  expect(useProgressStore.getState().lessonProgress.sessions).toEqual({});
+  await fireEvent.press(screen.getByRole('button', { name: 'Play line' }));
+  const branch = branchForGuide('italian-game', 'main')!;
+  for (let ply = 0; ply < branch.moves.length; ply += 2) await move(branch.moves[ply]);
+  await act(() => router.back());
+  expect(app.getPathname()).toBe('/');
+  expect(screen.getByText('1 day of practice')).toBeOnTheScreen();
+  expect(screen.getByRole('button', { name: 'Start practice' })).toBeOnTheScreen();
+  await fireEvent.press(screen.getByRole('button', { name: 'Apply this idea' }));
+  const exercise = transfersForGuide('italian-game')[0];
+  expect(screen.getByText(exercise.prompt)).toBeOnTheScreen();
+  expect(screen.queryByText(exercise.explanation)).not.toBeOnTheScreen();
+  await move(exercise.answers[0]);
+  expect(screen.getByText('Solved independently, without hints or retries.')).toBeOnTheScreen();
+  await act(() => router.back());
+  expect(screen.getByText('1 day of practice')).toBeOnTheScreen();
+  await fireEvent.press(screen.getByRole('button', { name: 'Your progress' }));
+  expect(screen.getByLabelText('Workouts completed: 0')).toBeOnTheScreen();
+  expect(screen.getByLabelText('Current practice streak: 1 day')).toBeOnTheScreen();
+  expect(screen.getByLabelText('New positions solved independently: 1')).toBeOnTheScreen();
+});
+
+it('resumes an interrupted recalled lesson from Home after storage reload without resetting help', async () => {
+  const now = new Date();
+  const first = {
+    id: 'earlier-guided',
+    guideId: 'italian-game',
+    kind: 'branch' as const,
+    targetId: 'main',
+    independent: false,
+    dateKey: dateKey(now),
+    completedAt: now.toISOString(),
+  };
+  let session = beginLesson('italian-game', 'branch', 'main', [first], now)!;
+  session = { ...answerLesson(session, 'e2e4'), usedHelp: true, mistakes: 2 };
+  const key = lessonKey('branch', 'italian-game', 'main');
+  const saved = {
+    ...emptyProgress(),
+    lessonProgress: {
+      ...emptyProgress().lessonProgress,
+      attempts: [first],
+      sessions: { [key]: session },
+      selected: { 'italian-game': key },
+    },
+  };
+  await flushProgressWrites();
+  await AsyncStorage.setItem(PROGRESS_KEY, JSON.stringify({ version: 1, state: saved }));
+  await useProgressStore.persist.rehydrate();
+  const app = await renderApp();
+  await fireEvent.press(screen.getByRole('button', { name: 'Resume lesson' }));
+  expect(app.getPathname()).toBe('/lesson/italian-game');
+  expect(useProgressStore.getState().lessonProgress.sessions[key]).toEqual(session);
+  expect(screen.getByText('RECALL · TRY WITHOUT HELP')).toBeOnTheScreen();
+  const branch = branchForGuide('italian-game', 'main')!;
+  for (let ply = session.ply; ply < branch.moves.length; ply += 2) await move(branch.moves[ply]);
+  expect(useProgressStore.getState().lessonProgress.attempts.at(-1)?.independent).toBe(false);
+});
+
+it('opens a due Home review in recall mode and records revisiting the demonstration as help', async () => {
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  const branch = branchForGuide('italian-game', 'main')!;
+  let completed = beginLesson('italian-game', 'branch', 'main', [], yesterday)!;
+  for (let ply = 0; ply < branch.moves.length; ply += 2)
+    completed = answerLesson(completed, branch.moves[ply]);
+  const key = lessonKey('branch', 'italian-game', 'main');
+  const prior = lessonAttempt(completed, yesterday);
+  useProgressStore.setState({
+    lessonProgress: {
+      ...emptyProgress().lessonProgress,
+      attempts: [prior],
+      sessions: { [key]: completed },
+    },
+  });
+  const app = await renderApp();
+  await fireEvent.press(screen.getByRole('button', { name: 'Recall this lesson' }));
+  expect(app.getPathname()).toBe('/lesson/italian-game');
+  expect(screen.getByText('RECALL · TRY WITHOUT HELP')).toBeOnTheScreen();
+  expect(screen.queryByText(branch.notes[0])).not.toBeOnTheScreen();
+  expect(useProgressStore.getState().lessonProgress.sessions[key].id).not.toBe(completed.id);
+  expect(useProgressStore.getState().lessonProgress.sessions[key].usedHelp).toBe(false);
+  await fireEvent.press(screen.getByRole('button', { name: 'Learn line' }));
+  await fireEvent.press(screen.getByRole('button', { name: 'Play line' }));
+  for (let ply = 0; ply < branch.moves.length; ply += 2) await move(branch.moves[ply]);
+  expect(useProgressStore.getState().lessonProgress.attempts.at(-1)?.independent).toBe(false);
+});
+
+it('keeps the recommended lesson disabled until saved progress is restored', async () => {
+  useProgressStore.setState({ hydrated: false });
+  await renderApp();
+  const button = screen.getByRole('button', { name: 'Restoring your lessons…' });
+  expect(button).toBeDisabled();
+  await fireEvent.press(button);
+  expect(useProgressStore.getState().lessonProgress).toEqual(emptyProgress().lessonProgress);
 });

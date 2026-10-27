@@ -8,6 +8,8 @@ import { Screen } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
 import { guides, puzzles } from '@/content';
 import { Spacing } from '@/constants/theme';
+import { lessonTarget } from '@/learning/lesson';
+import { nextLesson } from '@/learning/next-lesson';
 import { useProgressStore } from '@/progress/store';
 import { dateKey } from '@/utils/date-key';
 import { getGreeting } from '@/utils/greeting';
@@ -19,13 +21,24 @@ export default function HomeScreen() {
   const attempts = useProgressStore((state) => state.attempts);
   const completions = useProgressStore((state) => state.completions);
   const lessonProgress = useProgressStore((state) => state.guideProgress);
+  const lessons = useProgressStore((state) => state.lessonProgress);
+  const selectLesson = useProgressStore((state) => state.selectLesson);
+  const startLesson = useProgressStore((state) => state.startLesson);
   const start = useProgressStore((state) => state.startPractice);
   const unfinished = session && session.phase !== 'complete';
   const doneToday = completions.some((completion) => completion.dateKey === dateKey());
   const reviews = reviewQueue(attempts, dateKey()).length;
   const learned = guides.filter((guide) => lessonProgress[guide.id]?.completedAt).length;
+  const step = nextLesson(lessons);
+  const target = step ? lessonTarget(step.guideId, step.kind, step.targetId) : undefined;
   function openPractice(review = false) {
     if (start(review ? 'review' : 'daily')) router.push('/workout');
+  }
+  function openLesson() {
+    if (!step || !hydrated) return;
+    if (step.reason === 'learn') selectLesson(step.guideId, step.kind, step.targetId);
+    else startLesson(step.guideId, step.kind, step.targetId, step.reason === 'review');
+    router.push({ pathname: '/lesson/[id]', params: { id: step.guideId } });
   }
   return (
     <Screen edges={['top', 'bottom', 'left', 'right']}>
@@ -84,16 +97,44 @@ export default function HomeScreen() {
       </Card>
       <Card>
         <ThemedText type="smallBold" themeColor="primary">
-          LEARN · OPENINGS
+          LEARN · YOUR NEXT STEP
         </ThemedText>
-        <ThemedText type="subtitle">Understand the first moves</ThemedText>
+        <ThemedText type="subtitle">
+          {step ? guides.find((guide) => guide.id === step.guideId)!.title : 'Keep the ideas fresh'}
+        </ThemedText>
         <ThemedText themeColor="textSecondary">
-          Explore an opening, a defence and a gambit. Learn their ideas, then play the line
-          yourself.
+          {step
+            ? {
+                resume: 'Continue your saved lesson. Your earlier hints and retries stay recorded.',
+                review: 'This lesson is ready for a later recall check. Try it without help.',
+                apply:
+                  'You practiced an opening line. Try using its idea in an unfamiliar position.',
+                learn: 'Follow the demonstration, then play the example with guidance.',
+              }[step.reason]
+            : 'You have tried every example. Return for scheduled recall or explore a guide again.'}
         </ThemedText>
         <ThemedText type="small">
           {learned} of {guides.length} guides practiced
         </ThemedText>
+        {step && target && (
+          <>
+            <ThemedText type="smallBold">{target.title}</ThemedText>
+            <Button
+              disabled={!hydrated}
+              label={
+                !hydrated
+                  ? 'Restoring your lessons…'
+                  : {
+                      resume: 'Resume lesson',
+                      review: 'Recall this lesson',
+                      apply: 'Apply this idea',
+                      learn: 'Learn this line',
+                    }[step.reason]
+              }
+              onPress={openLesson}
+            />
+          </>
+        )}
         <Button variant="secondary" label="Explore guides" onPress={() => router.push('/learn')} />
       </Card>
       <ActivityBar />
