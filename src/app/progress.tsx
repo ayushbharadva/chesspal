@@ -5,17 +5,21 @@ import { Screen } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
 import { guides, puzzles } from '@/content';
 import { Spacing } from '@/constants/theme';
+import { practiceDates } from '@/progress/activity';
 import { useProgressStore } from '@/progress/store';
-import { activityStreak, bestActivityStreak, dateKey } from '@/utils/date-key';
+import { activityStreak, bestActivityStreak } from '@/utils/date-key';
+import { useLocalDate } from '@/hooks/use-local-date';
 
 export default function ProgressScreen() {
+  const today = useLocalDate();
   const attempts = useProgressStore((state) => state.attempts);
   const completions = useProgressStore((state) => state.completions);
   const guideProgress = useProgressStore((state) => state.guideProgress);
+  const learning = useProgressStore((state) => state.lessonProgress.attempts);
   const independent = attempts.filter((attempt) => attempt.independent).length;
   const learned = guides.filter((guide) => guideProgress[guide.id]?.completedAt).length;
-  const days = completions.map((completion) => completion.dateKey);
-  const currentStreak = activityStreak(days, dateKey());
+  const days = practiceDates(completions, learning);
+  const currentStreak = activityStreak(days, today);
   const bestStreak = bestActivityStreak(days);
   return (
     <Screen>
@@ -48,6 +52,25 @@ export default function ProgressScreen() {
         <Stat label="Guides practiced" value={`${learned} / ${guides.length}`} />
       </Card>
       <Card>
+        <ThemedText type="subtitle">Learning practice</ThemedText>
+        <Stat
+          label="Opening lines recalled independently"
+          value={String(
+            learning.filter((attempt) => attempt.kind === 'branch' && attempt.independent).length,
+          )}
+        />
+        <Stat
+          label="New positions solved independently"
+          value={String(
+            learning.filter((attempt) => attempt.kind === 'transfer' && attempt.independent).length,
+          )}
+        />
+        <Stat
+          label="Learning completed with help or retries"
+          value={String(learning.filter((attempt) => !attempt.independent).length)}
+        />
+      </Card>
+      <Card>
         <ActivityBar />
         <Stat
           label="Current practice streak"
@@ -59,8 +82,9 @@ export default function ProgressScreen() {
         />
       </Card>
       <ThemedText type="small" themeColor="textSecondary">
-        Progress is saved on this device. Practiced guides are a starting point, not a mastery
-        score.
+        Completed workouts, opening lines and new-position exercises count toward your practice
+        streak. Progress is saved on this device. Practiced guides are a starting point, not a
+        mastery score.
       </ThemedText>
     </Screen>
   );

@@ -26,3 +26,39 @@ export interface OpeningGuide {
   notes: string[];
   sourceUrl: string;
 }
+
+export interface OpeningBranch {
+  id: string;
+  title: string;
+  description: string;
+  moves: string[];
+  notes: string[];
+  sourceUrl: string;
+}
+
+export interface TransferExercise {
+  id: string;
+  title: string;
+  prompt: string;
+  idea: string;
+  setupMoves: string[];
+  fen: string;
+  answers: string[];
+  hint: string;
+  explanation: string;
+  sourceUrl: string;
+  verification: {
+    engine: string;
+    depth: number;
+    checkedAt: string;
+    bestMove: string;
+    bestScoreCp: number;
+    answers: { move: string; scoreCp: number; lossCp: number }[];
+  };
+}
+
+export interface GuideLesson {
+  guideId: string;
+  branches: OpeningBranch[];
+  transfers: TransferExercise[];
+}

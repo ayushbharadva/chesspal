@@ -3,11 +3,21 @@ import { createJSONStorage, persist } from 'zustand/middleware';
 
 import { positionAfter } from '@/chess';
 import { guideById, puzzleById } from '@/content';
+import { branchForGuide } from '@/content/lessons';
+import {
+  answerLesson,
+  beginLesson,
+  lessonAttempt,
+  lessonKey,
+  lessonTarget,
+  wrongLessonMove,
+} from '@/learning/lesson';
 import {
   emptyProgress,
   type GuideProgress,
   type PracticeMode,
   type SavedProgress,
+  type LessonKind,
 } from '@/progress/types';
 import { progressStorage, PROGRESS_KEY, reportStorageIssues } from '@/storage/storage';
 import { dateKey } from '@/utils/date-key';
@@ -16,6 +26,7 @@ import { applyAnswer, attemptFor, makeSession, nextPuzzle } from '@/workout/sess
 interface ProgressStore extends SavedProgress {
   hydrated: boolean;
   storageIssue: boolean;
+  lessonNotice: { key: string; text: string } | null;
   startPractice: (mode?: PracticeMode) => boolean;
   answer: (move: string) => void;
   hint: () => void;
@@ -23,6 +34,12 @@ interface ProgressStore extends SavedProgress {
   replayStep: (delta: number) => void;
   continuePractice: () => boolean;
   saveGuide: (id: string, progress: Partial<GuideProgress>) => void;
+  selectLesson: (guideId: string, kind: LessonKind, targetId: string) => void;
+  viewLesson: (guideId: string, branchId: string, ply: number) => void;
+  startLesson: (guideId: string, kind: LessonKind, targetId: string, restart?: boolean) => void;
+  helpLesson: (key: string, showHint?: boolean) => void;
+  answerLesson: (key: string, move: string) => void;
+  wrongLesson: (key: string) => void;
 }
 
 export const useProgressStore = create<ProgressStore>()(
@@ -31,11 +48,13 @@ export const useProgressStore = create<ProgressStore>()(
       ...emptyProgress(),
       hydrated: false,
       storageIssue: false,
+      lessonNotice: null,
       startPractice(mode = 'daily') {
         if (!get().hydrated) return false;
         const active = get().currentSession;
         if (active && active.phase !== 'complete') return true;
-        const today = dateKey();
+        const now = new Date();
+        const today = dateKey(now);
         const dailyDone = get().completions.some(
           (completion) => completion.dateKey === today && completion.mode === 'daily',
         );
@@ -43,7 +62,7 @@ export const useProgressStore = create<ProgressStore>()(
         const id =
           selectedMode === 'daily'
             ? `daily-${today}`
-            : `${selectedMode}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+            : `${selectedMode}-${now.getTime()}-${Math.random().toString(36).slice(2, 8)}`;
         const session = makeSession(id, selectedMode, today, get().attempts);
         if (!session.puzzleIds.length) return false;
         set({ currentSession: session });
@@ -143,16 +162,143 @@ export const useProgressStore = create<ProgressStore>()(
         merged.practicePly = Math.max(0, Math.min(guide.moves.length, merged.practicePly));
         set({ guideProgress: { ...get().guideProgress, [id]: merged } });
       },
+      selectLesson(guideId, kind, targetId) {
+        if (!get().hydrated || !lessonTarget(guideId, kind, targetId)) return;
+        const progress = get().lessonProgress;
+        const key = lessonKey(kind, guideId, targetId);
+        set({
+          lessonNotice: null,
+          lessonProgress: {
+            ...progress,
+            selected: {
+              ...progress.selected,
+              [guideId]: key,
+            },
+          },
+        });
+      },
+      viewLesson(guideId, branchId, ply) {
+        const branch = branchForGuide(guideId, branchId);
+        if (!get().hydrated || !branch) return;
+        const key = lessonKey('branch', guideId, branchId);
+        get().helpLesson(key, false);
+        const progress = get().lessonProgress;
+        const viewedPly = Math.max(0, Math.min(branch.moves.length, ply));
+        set({ lessonProgress: { ...progress, viewed: { ...progress.viewed, [key]: viewedPly } } });
+        if (branchId === 'main') get().saveGuide(guideId, { viewedPly });
+      },
+      startLesson(guideId, kind, targetId, restart = false) {
+        if (!get().hydrated) return;
+        get().selectLesson(guideId, kind, targetId);
+        const progress = get().lessonProgress;
+        const key = lessonKey(kind, guideId, targetId);
+        const existing = progress.sessions[key];
+        if (existing && !restart) {
+          return;
+        }
+        const session = beginLesson(
+          guideId,
+          kind,
+          targetId,
+          progress.attempts,
+          new Date(),
+          kind === 'branch' && targetId === 'main' ? get().guideProgress[guideId]?.practicePly : 0,
+        );
+        if (!session) return;
+        set({
+          lessonProgress: {
+            ...progress,
+            sessions: { ...progress.sessions, [key]: session },
+            selected: { ...progress.selected, [guideId]: key },
+          },
+        });
+      },
+      helpLesson(key, showHint = true) {
+        const progress = get().lessonProgress;
+        const session = progress.sessions[key];
+        if (!session || session.phase !== 'solve') return;
+        set({
+          lessonProgress: {
+            ...progress,
+            sessions: {
+              ...progress.sessions,
+              [key]: { ...session, usedHelp: true, hintShown: showHint || session.hintShown },
+            },
+          },
+        });
+      },
+      wrongLesson(key) {
+        const progress = get().lessonProgress;
+        const session = progress.sessions[key];
+        if (!session || session.phase !== 'solve') return;
+        set({
+          lessonProgress: {
+            ...progress,
+            sessions: {
+              ...progress.sessions,
+              [key]: wrongLessonMove(session),
+            },
+          },
+        });
+      },
+      answerLesson(key, move) {
+        const progress = get().lessonProgress;
+        const session = progress.sessions[key];
+        if (!session || session.phase !== 'solve') return;
+        const next = answerLesson(session, move);
+        const nextKey = lessonKey(next.kind, next.guideId, next.targetId);
+        const destination = progress.sessions[nextKey];
+        if (nextKey !== key && destination?.phase === 'solve' && destination.id !== session.id) {
+          const target = lessonTarget(next.guideId, next.kind, next.targetId)!;
+          set({
+            lessonNotice: {
+              key: nextKey,
+              text: `Resuming your saved ${target.title} practice, including earlier hints and retries.`,
+            },
+            lessonProgress: {
+              ...progress,
+              selected: { ...progress.selected, [next.guideId]: nextKey },
+            },
+          });
+          return;
+        }
+        const sessions = { ...progress.sessions };
+        if (nextKey !== key) delete sessions[key];
+        sessions[nextKey] = next;
+        const result = next.phase === 'complete' ? lessonAttempt(next, new Date()) : undefined;
+        const attempts =
+          result && !progress.attempts.some((attempt) => attempt.id === result.id)
+            ? [...progress.attempts, result]
+            : progress.attempts;
+        set({
+          lessonNotice: null,
+          lessonProgress: {
+            ...progress,
+            attempts,
+            sessions,
+            selected: { ...progress.selected, [next.guideId]: nextKey },
+          },
+        });
+        if (next.kind === 'branch' && next.targetId === 'main') {
+          get().saveGuide(next.guideId, {
+            practicePly: next.ply,
+            ...(result ? { completedAt: result.completedAt } : {}),
+          });
+        } else if (next.kind === 'branch' && result) {
+          get().saveGuide(next.guideId, { completedAt: result.completedAt });
+        }
+      },
     }),
     {
       name: PROGRESS_KEY,
       version: 1,
       storage: createJSONStorage(() => progressStorage),
-      partialize: ({ attempts, completions, currentSession, guideProgress }) => ({
+      partialize: ({ attempts, completions, currentSession, guideProgress, lessonProgress }) => ({
         attempts,
         completions,
         currentSession,
         guideProgress,
+        lessonProgress,
       }),
       onRehydrateStorage: () => () => {
         useProgressStore.setState({ hydrated: true });

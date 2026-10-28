@@ -20,8 +20,8 @@ export const progressStorage: StateStorage = {
       const raw = await AsyncStorage.getItem(key);
       if (!raw) return null;
       try {
-        decodeProgress(raw);
-        return raw;
+        const decoded = decodeProgress(raw);
+        return JSON.parse(raw).state.lessonProgress !== undefined ? raw : JSON.stringify(decoded);
       } catch {
         await AsyncStorage.setItem(`${key}-backup`, raw);
         onStorageIssue();

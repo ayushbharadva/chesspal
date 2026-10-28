@@ -1,6 +1,8 @@
 import { guideById, puzzleById } from '@/content';
 import { readPosition } from '@/chess';
-import { type SavedProgress } from '@/progress/types';
+import { branchForGuide } from '@/content/lessons';
+import { lessonTarget } from '@/learning/lesson';
+import { emptyLessonProgress, type SavedProgress } from '@/progress/types';
 
 function record(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
@@ -28,6 +30,107 @@ function attempt(value: unknown) {
   );
 }
 
+function lessonIdentity(value: Record<string, unknown>) {
+  return (
+    typeof value.guideId === 'string' &&
+    typeof value.targetId === 'string' &&
+    (value.kind === 'branch' || value.kind === 'transfer') &&
+    Boolean(lessonTarget(value.guideId, value.kind, value.targetId))
+  );
+}
+function validLessonKey(key: string) {
+  const [kind, guideId, targetId, extra] = key.split('/');
+  return (
+    !extra &&
+    (kind === 'branch' || kind === 'transfer') &&
+    Boolean(lessonTarget(guideId, kind, targetId))
+  );
+}
+function lessonProgress(value: unknown) {
+  if (
+    !record(value) ||
+    !Array.isArray(value.attempts) ||
+    !record(value.sessions) ||
+    !record(value.selected) ||
+    !record(value.viewed)
+  )
+    return false;
+  if (
+    !value.attempts.every(
+      (item: unknown) =>
+        record(item) &&
+        lessonIdentity(item) &&
+        typeof item.id === 'string' &&
+        typeof item.independent === 'boolean' &&
+        validDate(item.dateKey) &&
+        typeof item.completedAt === 'string' &&
+        Number.isFinite(Date.parse(item.completedAt)),
+    )
+  )
+    return false;
+  for (const [key, session] of Object.entries(value.sessions)) {
+    if (
+      !validLessonKey(key) ||
+      !record(session) ||
+      !lessonIdentity(session) ||
+      key.split('/')[1] !== session.guideId ||
+      key.split('/')[0] !== session.kind ||
+      key.split('/')[2] !== session.targetId ||
+      typeof session.id !== 'string' ||
+      !integer(session.ply) ||
+      !integer(session.mistakes) ||
+      !['solve', 'complete'].includes(String(session.phase)) ||
+      !['guided', 'recall'].includes(String(session.scaffold)) ||
+      typeof session.usedHelp !== 'boolean' ||
+      typeof session.hintShown !== 'boolean' ||
+      typeof session.lastWrong !== 'boolean' ||
+      (session.scaffold === 'guided' && !session.usedHelp) ||
+      !(
+        session.acceptedMove === null ||
+        (typeof session.acceptedMove === 'string' &&
+          /^[a-h][1-8][a-h][1-8][qrbn]?$/.test(session.acceptedMove))
+      )
+    )
+      return false;
+    if (session.kind === 'branch') {
+      const branch = branchForGuide(String(session.guideId), String(session.targetId))!;
+      const side = guideById[String(session.guideId)].side === 'b' ? 1 : 0;
+      if (
+        session.phase === 'complete'
+          ? session.ply !== branch.moves.length
+          : session.ply >= branch.moves.length || Number(session.ply) % 2 !== side
+      )
+        return false;
+    } else {
+      if (session.scaffold !== 'recall') return false;
+      if (session.phase === 'complete') {
+        const target = lessonTarget(String(session.guideId), 'transfer', String(session.targetId));
+        if (
+          !target ||
+          !('answers' in target) ||
+          session.ply !== 1 ||
+          !target.answers.includes(String(session.acceptedMove))
+        )
+          return false;
+      } else if (session.ply !== 0 || session.acceptedMove !== null) return false;
+    }
+  }
+  for (const [guideId, key] of Object.entries(value.selected)) {
+    if (typeof key !== 'string' || !validLessonKey(key) || key.split('/')[1] !== guideId)
+      return false;
+  }
+  for (const [key, ply] of Object.entries(value.viewed)) {
+    const [kind, guideId, targetId] = key.split('/');
+    if (
+      kind !== 'branch' ||
+      !validLessonKey(key) ||
+      !integer(ply, branchForGuide(guideId, targetId)!.moves.length)
+    )
+      return false;
+  }
+  return true;
+}
+
 export function validProgress(value: unknown): value is SavedProgress {
   if (
     !record(value) ||
@@ -37,6 +140,7 @@ export function validProgress(value: unknown): value is SavedProgress {
     !record(value.guideProgress)
   )
     return false;
+  if (value.lessonProgress !== undefined && !lessonProgress(value.lessonProgress)) return false;
   if (
     !value.completions.every(
       (item: unknown) =>
@@ -126,5 +230,11 @@ export function decodeProgress(raw: string) {
   const envelope: unknown = JSON.parse(raw);
   if (!record(envelope) || envelope.version !== 1 || !validProgress(envelope.state))
     throw new Error('Invalid saved progress');
-  return envelope;
+  return {
+    ...envelope,
+    state: {
+      ...envelope.state,
+      lessonProgress: envelope.state.lessonProgress ?? emptyLessonProgress(),
+    },
+  };
 }

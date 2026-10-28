@@ -22,6 +22,8 @@ The example lines, descriptions and plans were checked against these references:
 
 Each move is validated through the chess domain adapter. A different legal move is described as outside the example line, rather than objectively bad. Guide completion means the learner practiced the example, not that the opening is mastered.
 
+`content/opening-practice.json` adds two branches and two unfamiliar positions per guide. [Opening practice provenance](../content/OPENING-PRACTICE-SOURCES.md) records primary sources, the pinned CC0 Lichess move dataset, and the original teaching text. `npm run content:verify-openings` checks all branches and setup sequences, ensures transfer positions differ from the guide's examples, and reruns depth-14 Stockfish soundness checks for accepted answers. These goal-specific exercises allow for other legal or sound moves; the UI does not invent refutations.
+
 ## Artwork
 
 The chess-piece SVG geometry in `src/components/board/piece.tsx` and the rook/check mark in `assets/images/rookiereps-mark.svg` are original artwork created for this app. Launcher and splash PNGs are exports of that mark. No third-party piece set is included.

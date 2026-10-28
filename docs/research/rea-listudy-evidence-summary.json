@@ -1,0 +1,81 @@
+{
+  "investigatedOn": "2026-10-21",
+  "tool": {
+    "npmIntegrity": "sha512-yhIx2ioJYYT1C/tONfYeitC6LhnKmCh+ZwRUOgYuhSc733lGhkkt73zhug9WmLgxoMdKuqIYGCoBfD4fXkOhFw==",
+    "sourceCommit": "f801b2fbfd28f4e3713adefddc7bd73db44c284c",
+    "name": "rea-agents",
+    "version": "6.7.0"
+  },
+  "target": {
+    "asset": "https://listudy.org/js/tactics-1300e2c0bb457d850356d0e7d22a0777.js?vsn=d",
+    "bytes": 68124,
+    "sha256": "08c110ca43fbbca3cd948852779ae7b7132f9cbffeced1c0043fb40b44492b6a",
+    "page": "https://listudy.org/en"
+  },
+  "evidenceId": "ev_1c7ce97021f11ef83b3503f2e2df33a1f6645e56ad3e5e1f512f757d378ca5f5",
+  "operation": "analyze_javascript_application",
+  "statistics": {
+    "relevant_files": 1,
+    "nested_asar_containers": 0,
+    "text_bytes_read": 68124,
+    "invalid_utf8_files": 0,
+    "parsed_javascript_files": 1,
+    "skipped_javascript_files": 0,
+    "visited_ast_nodes": 24531,
+    "findings": 3,
+    "modules": 3,
+    "parse_failures": 0
+  },
+  "storage": [
+    {
+      "authority": "ast-static-analysis",
+      "name": "achievements_tactics_solved",
+      "location": {
+        "kind": "source-range",
+        "source": "tactics-1300e2c0bb457d850356d0e7d22a0777.js",
+        "start": {
+          "line": 2,
+          "column": 66869
+        },
+        "end": {
+          "line": 2,
+          "column": 66932
+        }
+      },
+      "mechanism": "call:localStorage.setItem",
+      "confidence": "exact"
+    },
+    {
+      "authority": "ast-static-analysis",
+      "name": "achievements_tactics_solved",
+      "location": {
+        "kind": "source-range",
+        "source": "tactics-1300e2c0bb457d850356d0e7d22a0777.js",
+        "start": {
+          "line": 2,
+          "column": 66814
+        },
+        "end": {
+          "line": 2,
+          "column": 66865
+        }
+      },
+      "mechanism": "call:localStorage.getItem",
+      "confidence": "exact"
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "truncated": false,
+    "omitted_count": null,
+    "limits": []
+  },
+  "limitations": [
+    "CommonJS and ESM binding relationships were recovered from inert syntax and resolved only within the inventoried artifact container.",
+    "Graph coverage is incomplete; unavailable facts remain explicit and must not be read as absence.",
+    "JavaScript and HTML were parsed as inert text; bundle bootstrap code was never executed.",
+    "Static imports, entrypoints, workers, endpoints, and storage relationships do not prove runtime execution.",
+    "Static paths and relationships may remain unresolved when expressions are dynamic or obfuscated.",
+    "Webpack/Rspack factories were recovered from AST literals; REA did not invoke push handlers or bundle bootstrap code."
+  ]
+}

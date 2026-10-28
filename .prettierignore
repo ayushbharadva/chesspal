@@ -1,3 +1,5 @@
 package-lock.json
 assets/
 coverage/
+.research/
+tools/rea/package-lock.json

@@ -1,25 +1,24 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { Linking, StyleSheet, View } from 'react-native';
-import { describeMove, INITIAL_POSITION, playMove, positionAfter } from '@/chess';
+import { describeMove, INITIAL_POSITION, playMove, positionAfter, readPosition } from '@/chess';
 import { Board } from '@/components/board/board';
 import { Button } from '@/components/button';
 import { Card } from '@/components/card';
 import { Screen } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
 import { guideById } from '@/content';
+import { branchForGuide, branchesForGuide, transfersForGuide } from '@/content/lessons';
 import { Spacing } from '@/constants/theme';
+import { lessonFen, lessonKey, nextLessonReview } from '@/learning/lesson';
 import { useProgressStore } from '@/progress/store';
 
 export default function LessonScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const guide = guideById[id];
-  const saved = useProgressStore((state) => state.guideProgress[id]);
-  const save = useProgressStore((state) => state.saveGuide);
-  const hydrated = useProgressStore((state) => state.hydrated);
-  const [mode, setMode] = useState<'learn' | 'practice'>('learn');
+  const state = useProgressStore();
+  const [chosenMode, setMode] = useState<'learn' | 'practice' | null>(null);
   const [message, setMessage] = useState('');
-  const [hintShown, setHintShown] = useState(false);
   if (!guide)
     return (
       <Screen>
@@ -27,42 +26,45 @@ export default function LessonScreen() {
         <Button label="Back to Learn" onPress={() => router.replace('/learn')} />
       </Screen>
     );
-  if (!hydrated)
+  if (!state.hydrated)
     return (
       <Screen>
         <ThemedText>Restoring your guide…</ThemedText>
       </Screen>
     );
-  const ply =
-    mode === 'learn'
-      ? (saved?.viewedPly ?? 0)
-      : (saved?.practicePly ?? (guide.side === 'b' ? 1 : 0));
-  const done = ply >= guide.moves.length;
-  const fen = positionAfter(INITIAL_POSITION, guide.moves, ply);
+  const progress = state.lessonProgress;
+  const key = progress.selected[id] ?? lessonKey('branch', id, 'main');
+  const session = progress.sessions[key];
+  const targetId = session?.targetId ?? key.split('/')[2];
+  const transfer = key.startsWith('transfer/')
+    ? transfersForGuide(id).find((exercise) => exercise.id === targetId)
+    : undefined;
+  const branch = branchForGuide(id, transfer ? 'main' : targetId)!;
+  const mode = transfer ? 'practice' : (chosenMode ?? (session ? 'practice' : 'learn'));
+  const practicing = mode === 'practice' && Boolean(session);
+  const done = practicing && session?.phase === 'complete';
+  const viewed =
+    progress.viewed[lessonKey('branch', id, branch.id)] ??
+    (branch.id === 'main' ? (state.guideProgress[id]?.viewedPly ?? 0) : 0);
+  const ply = practicing ? session!.ply : viewed;
+  const fen = practicing ? lessonFen(session!) : positionAfter(INITIAL_POSITION, branch.moves, ply);
+  const hint = practicing && session?.hintShown && !done;
+  const expectedMove = !transfer && ply < branch.moves.length ? branch.moves[ply] : undefined;
+  const expected = expectedMove ? playMove(fen, expectedMove) : undefined;
   const lastMove =
-    ply > 0
-      ? playMove(positionAfter(INITIAL_POSITION, guide.moves, ply - 1), guide.moves[ply - 1])
-      : undefined;
-  const expected = !done ? playMove(fen, guide.moves[ply]) : undefined;
-  function practiceMove(move: string) {
-    if (done) return;
-    if (move !== guide.moves[ply]) {
-      setMessage(
-        'That is a legal move. This exercise follows the example line; try the suggested move.',
-      );
-      return;
-    }
-    const next = Math.min(guide.moves.length, ply + 2);
-    save(id, {
-      practicePly: next,
-      ...(next === guide.moves.length ? { completedAt: new Date().toISOString() } : {}),
-    });
-    setMessage(
-      next === guide.moves.length
-        ? 'Line practiced. Carry the ideas into your next game.'
-        : 'Good. The example reply is shown; now play your next move.',
-    );
-    setHintShown(false);
+    !transfer && ply > 0
+      ? playMove(positionAfter(INITIAL_POSITION, branch.moves, ply - 1), branch.moves[ply - 1])
+      : transfer && session?.acceptedMove
+        ? playMove(transfer.fen, session.acceptedMove)
+        : undefined;
+  const outcome = session
+    ? progress.attempts.find((attempt) => attempt.id === session.id)
+    : undefined;
+  const dueDate = session ? nextLessonReview(progress.attempts, session) : undefined;
+  function start(restart = false) {
+    state.startLesson(id, transfer ? 'transfer' : 'branch', transfer?.id ?? branch.id, restart);
+    setMode('practice');
+    setMessage('');
   }
   return (
     <Screen>
@@ -72,126 +74,209 @@ export default function LessonScreen() {
       <ThemedText type="title" accessibilityRole="header">
         {guide.title}
       </ThemedText>
-      <View style={styles.row}>
-        <View style={styles.action}>
+      <ThemedText themeColor="textSecondary">
+        Choose an example reply, learn its plan, then recall it.
+      </ThemedText>
+      <Card>
+        <ThemedText type="subtitle">Example branches</ThemedText>
+        {branchesForGuide(id).map((item) => (
           <Button
-            variant={mode === 'learn' ? 'primary' : 'secondary'}
-            label="Learn line"
+            key={item.id}
+            variant="secondary"
+            label={`Choose ${item.title}`}
             onPress={() => {
+              state.selectLesson(id, 'branch', item.id);
+              state.helpLesson(lessonKey('branch', id, item.id), false);
               setMode('learn');
               setMessage('');
-              setHintShown(false);
             }}
           />
+        ))}
+      </Card>
+      <ThemedText type="subtitle">{transfer?.title ?? branch.title}</ThemedText>
+      {!transfer && (!practicing || done || session?.scaffold === 'guided') && (
+        <ThemedText themeColor="textSecondary">{branch.description}</ThemedText>
+      )}
+      {!transfer && (
+        <View style={styles.row}>
+          <View style={styles.action}>
+            <Button
+              variant={mode === 'learn' ? 'primary' : 'secondary'}
+              label="Learn line"
+              onPress={() => {
+                state.helpLesson(key, false);
+                setMode('learn');
+                setMessage('');
+              }}
+            />
+          </View>
+          <View style={styles.action}>
+            <Button
+              variant={mode === 'practice' ? 'primary' : 'secondary'}
+              label="Play line"
+              onPress={() => start()}
+            />
+          </View>
         </View>
-        <View style={styles.action}>
-          <Button
-            variant={mode === 'practice' ? 'primary' : 'secondary'}
-            label="Play line"
-            onPress={() => {
-              setMode('practice');
-              setMessage('');
-              setHintShown(false);
-            }}
-          />
-        </View>
-      </View>
+      )}
+      {practicing && !done && (
+        <ThemedText type="smallBold" themeColor="primary">
+          {transfer
+            ? 'TRANSFER · NEW POSITION'
+            : session?.scaffold === 'guided'
+              ? 'GUIDED PRACTICE · WITH HELP'
+              : 'RECALL · TRY WITHOUT HELP'}
+        </ThemedText>
+      )}
+      {transfer && <ThemedText>{transfer.prompt}</ThemedText>}
       <Board
+        key={`${key}-${mode}`}
         fen={fen}
-        orientation={guide.side}
-        interactive={mode === 'practice' && !done}
-        onMove={practiceMove}
-        onIllegalMove={() => setMessage('Choose a highlighted square to make a legal move.')}
+        orientation={transfer ? readPosition(transfer.fen).turn : guide.side}
+        interactive={practicing && !done}
+        onMove={(move) => state.answerLesson(key, move)}
+        onIllegalMove={() => state.wrongLesson(key)}
         lastMove={lastMove}
-        hintSquare={hintShown ? expected?.from : undefined}
+        hintSquare={hint && !transfer ? expected?.from : undefined}
       />
-      {mode === 'learn' && (
+      {state.lessonNotice?.key === key && (
+        <ThemedText accessibilityLiveRegion="polite">{state.lessonNotice.text}</ThemedText>
+      )}
+      {mode === 'learn' && !transfer && (
         <View style={styles.row}>
           <View style={styles.action}>
             <Button
               variant="secondary"
               label="Previous move"
               disabled={ply === 0}
-              onPress={() => save(id, { viewedPly: ply - 1 })}
+              onPress={() => state.viewLesson(id, branch.id, ply - 1)}
             />
           </View>
           <View style={styles.action}>
             <Button
-              label={done ? 'Practice this line' : 'Next move'}
-              onPress={() => {
-                if (done) setMode('practice');
-                else save(id, { viewedPly: ply + 1 });
-              }}
+              label={ply === branch.moves.length ? 'Practice this line' : 'Next move'}
+              onPress={() =>
+                ply === branch.moves.length ? start() : state.viewLesson(id, branch.id, ply + 1)
+              }
             />
           </View>
         </View>
       )}
       <Card accent>
         <ThemedText type="smallBold">
-          {mode === 'learn'
-            ? `Move ${ply} of ${guide.moves.length}`
-            : done
-              ? 'Line practiced'
-              : `Your move · ${guide.side === 'w' ? 'White' : 'Black'} to play`}
+          {done
+            ? transfer
+              ? 'Idea practiced'
+              : 'Line practiced'
+            : mode === 'learn'
+              ? `Move ${ply} of ${branch.moves.length}`
+              : 'Your move'}
         </ThemedText>
         <ThemedText>
-          {mode === 'learn'
-            ? ply === 0
-              ? 'Start from the initial position. Step through the example and notice each move’s purpose.'
-              : guide.notes[ply - 1]
-            : done
-              ? 'You followed this example. Review the plans below before using the opening in a game.'
-              : guide.notes[ply]}
+          {done
+            ? outcome?.independent
+              ? transfer
+                ? 'Solved independently, without hints or retries.'
+                : 'Recalled independently, without hints or retries.'
+              : 'Completed with guidance, hints or retries. Try again without help to check your recall.'
+            : mode === 'learn'
+              ? ply === 0
+                ? 'Step through the example and notice each move’s purpose.'
+                : branch.notes[ply - 1]
+              : transfer
+                ? 'Find a move that fits the goal. Several legal moves may be reasonable.'
+                : session?.scaffold === 'guided'
+                  ? branch.notes[ply]
+                  : 'Recall the next move in a supported example. The answer is hidden until you play it or ask for help.'}
         </ThemedText>
-        {hintShown && !done && (
-          <ThemedText type="smallBold">{describeMove(fen, guide.moves[ply])}</ThemedText>
+        {hint && (
+          <ThemedText type="smallBold">
+            {transfer ? transfer.hint : describeMove(fen, branch.moves[ply])}
+          </ThemedText>
+        )}
+        {done && transfer && <ThemedText>{transfer.explanation}</ThemedText>}
+        {done && dueDate && (
+          <ThemedText type="small">
+            Next recall review: {dueDate}. Practicing early will not postpone it.
+          </ThemedText>
         )}
       </Card>
+      {session?.lastWrong && practicing && !done && (
+        <ThemedText accessibilityLiveRegion="polite">
+          {transfer
+            ? 'This move is not one of the checked examples for this goal. It may still be playable; try another move or ask for a hint.'
+            : 'Try another supported example move. A legal move outside these examples is not necessarily a bad chess move.'}
+        </ThemedText>
+      )}
       {message ? <ThemedText accessibilityLiveRegion="polite">{message}</ThemedText> : null}
-      {mode === 'practice' && (
+      {practicing && !done && (
+        <Button
+          variant="secondary"
+          label={transfer ? 'Show idea hint' : 'Show move hint'}
+          onPress={() => state.helpLesson(key)}
+        />
+      )}
+      {practicing && done && (
+        <Button
+          label={transfer ? 'Try idea without help' : 'Recall line without help'}
+          onPress={() => start(true)}
+        />
+      )}
+      {practicing && done && (
+        <Button
+          variant="secondary"
+          label="Back to Learn"
+          onPress={() => router.replace('/learn')}
+        />
+      )}
+      {(!practicing || done) && !transfer && (
         <>
-          {!done && (
-            <Button variant="secondary" label="Show move hint" onPress={() => setHintShown(true)} />
-          )}
-          <Button
-            variant="secondary"
-            label="Restart practice"
-            onPress={() => {
-              save(id, { practicePly: guide.side === 'b' ? 1 : 0 });
-              setMessage('');
-              setHintShown(false);
-            }}
-          />
-          {done && <Button label="Back to Learn" onPress={() => router.replace('/learn')} />}
+          <Card>
+            <ThemedText type="subtitle">The idea</ThemedText>
+            <ThemedText>{guide.idea}</ThemedText>
+          </Card>
+          <Card>
+            <ThemedText type="subtitle">In your next game</ThemedText>
+            {guide.plans.map((plan) => (
+              <ThemedText key={plan}>• {plan}</ThemedText>
+            ))}
+          </Card>
+          <Card>
+            <ThemedText type="subtitle">Common mistakes</ThemedText>
+            {guide.mistakes.map((mistake) => (
+              <ThemedText key={mistake}>• {mistake}</ThemedText>
+            ))}
+          </Card>
         </>
       )}
       <Card>
-        <ThemedText type="subtitle">The idea</ThemedText>
-        <ThemedText>{guide.idea}</ThemedText>
-      </Card>
-      <Card>
-        <ThemedText type="subtitle">In your next game</ThemedText>
-        {guide.plans.map((plan) => (
-          <ThemedText key={plan}>• {plan}</ThemedText>
-        ))}
-      </Card>
-      <Card>
-        <ThemedText type="subtitle">Common mistakes</ThemedText>
-        {guide.mistakes.map((mistake) => (
-          <ThemedText key={mistake}>• {mistake}</ThemedText>
+        <ThemedText type="subtitle">Use the idea in a new position</ThemedText>
+        <ThemedText themeColor="textSecondary">
+          Try a separate position, then return for a later recall check.
+        </ThemedText>
+        {transfersForGuide(id).map((exercise) => (
+          <Button
+            key={exercise.id}
+            variant="secondary"
+            label={`Try ${exercise.title}`}
+            onPress={() => {
+              state.startLesson(id, 'transfer', exercise.id);
+              setMode('practice');
+              setMessage('');
+            }}
+          />
         ))}
       </Card>
       <ThemedText type="small" themeColor="textSecondary">
-        This is one example. If your opponent chooses another move, check the threats and use the
-        plan rather than forcing the line.
+        These are checked examples, not a forced script or an evaluation of every legal move.
       </ThemedText>
       <Button
         variant="secondary"
         label="Opening reference"
         onPress={() => {
-          void Linking.openURL(guide.sourceUrl).catch(() =>
+          void Linking.openURL(transfer?.sourceUrl ?? branch.sourceUrl).catch(() =>
             setMessage(
-              'The reference needs an internet connection. The guide itself works offline.',
+              'The reference needs an internet connection. The lesson itself works offline.',
             ),
           );
         }}
