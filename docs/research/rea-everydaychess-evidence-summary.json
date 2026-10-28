@@ -1,0 +1,100 @@
+{
+  "investigatedOn": "2026-10-28",
+  "tool": {
+    "name": "rea-agents",
+    "version": "6.7.0",
+    "operation": "analyze_javascript_application"
+  },
+  "target": {
+    "product": "Every Day Chess",
+    "pages": [
+      "https://everydaychess.app/app.html",
+      "https://everydaychess.app/learn.html",
+      "https://everydaychess.app/study-plan/1000"
+    ],
+    "assetVersion": "v=202608052226",
+    "files": [
+      {
+        "file": "core.js",
+        "url": "https://everydaychess.app/core.js?v=202608052226",
+        "bytes": 24686,
+        "sha256": "ff58a433a7674290c641049a96f167054bcb3b046f456e5915183dd83f433dd7"
+      },
+      {
+        "file": "app.js",
+        "url": "https://everydaychess.app/app.js?v=202608052226",
+        "bytes": 45334,
+        "sha256": "f5b8a01ced93ee80e5d8ecc4d4cf3dccafc7ae6fafd8f4dc1ddba98c96a7bab4"
+      },
+      {
+        "file": "pieces.js",
+        "url": "https://everydaychess.app/pieces.js?v=202608052226",
+        "bytes": 921,
+        "sha256": "ef14320060e869c87c69758cb8937321972b52f558a7024b2b8f2932117e10b5"
+      },
+      {
+        "file": "learn.js",
+        "url": "https://everydaychess.app/learn.js?v=202608052226",
+        "bytes": 47147,
+        "sha256": "70b0535fba63884d2cc45b9d0bf2fd32f131534403e80f8adc9703a904718f8f"
+      },
+      {
+        "file": "cards.js",
+        "url": "https://everydaychess.app/cards.js?v=202608052226",
+        "bytes": 7672,
+        "sha256": "f4922e91b0f0ca80eaadd2e1d2497ff6f4476ac8ce56b6038f5c56b7d0b844f5"
+      },
+      {
+        "file": "study-drill.js",
+        "url": "https://everydaychess.app/study-drill.js?v=202608052226",
+        "bytes": 7662,
+        "sha256": "8a316697fb1eeadfd3f0f956fac4dca50631bdc5fa1cecc0a42e55a8424041c6"
+      },
+      {
+        "file": "puzzles.v1.json",
+        "url": "https://everydaychess.app/puzzles.v1.json",
+        "bytes": 634231,
+        "sha256": "ef3a1374d1472c8e23f5d4e5d249a9c1aa94685423298720313c61f7bdac2d4a"
+      }
+    ],
+    "rootArtifactSha256": "423367410c3f826f759c33b87b671d79e393a6a6850e628953c2f70cc835d1f1"
+  },
+  "evidenceId": "ev_4f2145b082c3b81c314d41545ec36a415c11bbf9ca832dda8f160c7a5f28b005",
+  "statistics": {
+    "relevant_files": 10,
+    "parsed_javascript_files": 6,
+    "parse_failures": 0,
+    "visited_ast_nodes": 21626,
+    "findings": 75,
+    "semantic_functions": 373,
+    "unknowns": 4409
+  },
+  "observedLocalStorageKeys": [
+    "cd_level",
+    "cd_today_state",
+    "cd_history",
+    "cd_streak",
+    "cd_last_done",
+    "cd_requeue",
+    "cd_rematch_day",
+    "cd_rematch_history",
+    "cd_skills",
+    "cd_track",
+    "cd_seen",
+    "cd_pending_band",
+    "cd_sound",
+    "cd_survey_done",
+    "cd_auth_migrated"
+  ],
+  "observedNetworkEndpoints": [
+    "puzzles.v1.json",
+    "/api/score",
+    "/api/sync",
+    "/api/event",
+    "/api/error"
+  ],
+  "notes": [
+    "Most cd_* keys are read through an app-local LS wrapper (app.js:13, learn.js:11). REA reported those calls as network endpoint candidates; manual reading confirmed they are localStorage keys.",
+    "Static analysis only: bundle bootstrap code was never executed, so runtime ordering is inferred from source, not observed."
+  ]
+}
