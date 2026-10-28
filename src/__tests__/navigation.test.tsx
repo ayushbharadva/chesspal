@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { act, fireEvent, renderRouter, screen } from 'expo-router/testing-library';
+import { act, cleanup, fireEvent, renderRouter, screen } from 'expo-router/testing-library';
 
 import { guideById, puzzleById } from '@/content';
 import { branchForGuide, transfersForGuide } from '@/content/lessons';
@@ -441,6 +441,7 @@ it('updates Home recommendations when a mounted screen crosses local midnight', 
     });
     expect(screen.getByRole('button', { name: 'Recall this lesson' })).toBeOnTheScreen();
   } finally {
+    await cleanup();
     jest.useRealTimers();
   }
 });
