@@ -37,7 +37,13 @@ yarn-error.*
 *.tsbuildinfo
 
 example
+content/puzzle-candidates.json
+dist-android/
+dist-web/
 
 # generated native folders
 /ios
 /android
+
+# Local research artifacts and REA evidence
+.research/
