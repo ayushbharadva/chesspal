@@ -1,17 +1,17 @@
 {
   "expo": {
-    "name": "Rookie Reps",
-    "slug": "rookiereps",
+    "name": "ChessPal",
+    "slug": "chesspal",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "rookiereps",
+    "scheme": "chesspal",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "bundleIdentifier": "com.ayushbharadva.rookiereps"
+      "bundleIdentifier": "com.ayushbharadva.chesspal"
     },
     "android": {
-      "package": "com.ayushbharadva.rookiereps",
+      "package": "com.ayushbharadva.chesspal",
       "adaptiveIcon": {
         "backgroundColor": "#0F766E",
         "foregroundImage": "./assets/images/android-icon-foreground.png",

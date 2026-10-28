@@ -1,6 +1,6 @@
 # Rookie Reps — Plan
 
-> Historical planning notes. The agreed and implemented Practice + Learn MVP is documented in [MVP.md](MVP.md); that scope supersedes the three-challenge limits and deferred learning section below.
+> Historical planning notes. The app was renamed from Rookie Reps to **ChessPal** on 2026-10-28 ([decision 0002](decisions/0002-chesspal-name.md)); names below are kept as originally written. The agreed and implemented Practice + Learn MVP is documented in [MVP.md](MVP.md); that scope supersedes the three-challenge limits and deferred learning section below.
 
 Written 2026-10-09 in Milestone 1. Name chosen: **Rookie Reps**.
 

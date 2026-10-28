@@ -1,6 +1,6 @@
-# Rookie Reps
+# ChessPal
 
-Offline chess practice and opening guides for beginners who already know the rules.
+Offline chess practice and opening guides for beginners who already know the rules. Formerly Rookie Reps ([why the name changed](docs/decisions/0002-chesspal-name.md)).
 
 ## MVP
 

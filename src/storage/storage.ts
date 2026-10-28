@@ -3,7 +3,7 @@ import { type StateStorage } from 'zustand/middleware';
 
 import { decodeProgress } from '@/storage/schema';
 
-export const PROGRESS_KEY = 'rookiereps-progress';
+export const PROGRESS_KEY = 'chesspal-progress';
 let writeQueue = Promise.resolve();
 let onStorageIssue: () => void = () => undefined;
 export function flushProgressWrites() {

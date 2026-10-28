@@ -45,7 +45,7 @@ export default function HomeScreen() {
     <Screen edges={['top', 'bottom', 'left', 'right']}>
       <View style={styles.header}>
         <ThemedText type="smallBold" themeColor="textSecondary">
-          ROOKIE REPS
+          CHESSPAL
         </ThemedText>
         <ThemedText type="title" accessibilityRole="header">
           {getGreeting(new Date().getHours())}.

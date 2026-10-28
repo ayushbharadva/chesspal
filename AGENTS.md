@@ -1,4 +1,4 @@
-# Rookie Reps
+# ChessPal
 
 A chess learning app for beginners who know the rules: practice easy puzzles, learn opening ideas, and save progress.
 Android first, offline, no account, no backend. Current scope: [docs/MVP.md](docs/MVP.md). Decisions: [docs/decisions/](docs/decisions/). The original plan is historical.
