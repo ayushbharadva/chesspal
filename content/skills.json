@@ -1,0 +1,88 @@
+{
+  "units": [
+    {
+      "id": "checkmates",
+      "title": "Checkmate patterns",
+      "skills": ["mateIn1", "backRankMate", "mateIn2"]
+    },
+    {
+      "id": "material",
+      "title": "Winning material",
+      "skills": ["hangingPiece", "fork", "pin", "skewer", "discoveredAttack"]
+    }
+  ],
+  "skills": [
+    {
+      "id": "mateIn1",
+      "name": "Mate in one",
+      "summary": "Finish the game in a single move.",
+      "card": "Checkmate means the king is in check and has no way out: it cannot step to a safe square, the check cannot be blocked, and the checking piece cannot be captured. Before choosing a move, look at every check you have. One of them often leaves the king with nowhere to go.",
+      "lookFor": "Try every check, then count the king's safe squares.",
+      "goal": "Find checkmate in one",
+      "hint": "Check the king and look at its escape squares."
+    },
+    {
+      "id": "backRankMate",
+      "name": "Back-rank mate",
+      "summary": "Trap a king behind its own pawns.",
+      "card": "A castled king often sits behind pawns that have not moved. Those pawns block its escape, so a rook or queen that reaches the back rank can give a check the king cannot step away from. Count the defenders of that rank before you strike.",
+      "lookFor": "A king boxed in by its pawns and an open back rank.",
+      "goal": "Find the back-rank mate",
+      "hint": "Can a rook or queen reach the king's back rank?"
+    },
+    {
+      "id": "mateIn2",
+      "name": "Mate in two",
+      "summary": "Force mate with two moves in a row.",
+      "card": "Some mates need a first move that forces the reply, such as a check or a sacrifice the opponent has to take. After that forced answer, the finish is a simple mate. Picture the position after their reply, then look for the final check.",
+      "lookFor": "A forcing first move, then a mate in one.",
+      "goal": "Find mate in two",
+      "hint": "Start with a check that leaves only one reply."
+    },
+    {
+      "id": "hangingPiece",
+      "name": "Hanging pieces",
+      "summary": "Win a piece nobody defends.",
+      "card": "A hanging piece is attacked and not defended, so capturing it wins material for free. Before you take, check that the capture does not walk into a trap. After every move, make sure none of your own pieces are left hanging.",
+      "lookFor": "Ask of every enemy piece: is it defended?",
+      "goal": "Win the undefended piece",
+      "hint": "Look for a piece you can capture safely."
+    },
+    {
+      "id": "fork",
+      "name": "Forks",
+      "summary": "Attack two targets with one piece.",
+      "card": "A fork is a single move that attacks two things at once, often the king and another piece. Your opponent can only save one of them. Knights are famous for forks, but queens, pawns and every other piece can fork too.",
+      "lookFor": "A square where one piece would hit two targets.",
+      "goal": "Find the fork",
+      "hint": "Look for a move that attacks two pieces at once."
+    },
+    {
+      "id": "pin",
+      "name": "Pins",
+      "summary": "Freeze a piece in front of a bigger one.",
+      "card": "A pin happens when a piece cannot move without exposing something more valuable behind it, on a line from your rook, bishop or queen. A pinned piece is a weak piece: attack it again, or take advantage of the fact that it cannot really defend.",
+      "lookFor": "Two enemy pieces on one line with your long-range piece.",
+      "goal": "Use the pin",
+      "hint": "Look along lines where two enemy pieces stand one behind the other."
+    },
+    {
+      "id": "skewer",
+      "name": "Skewers",
+      "summary": "Attack a big piece to win the one behind it.",
+      "card": "A skewer is a pin in reverse. You attack a valuable piece, it has to move, and the piece behind it is left to be captured. Kings and queens are the usual targets because they must step out of the way.",
+      "lookFor": "A king or queen with another piece behind it on a line.",
+      "goal": "Find the skewer",
+      "hint": "Attack the most valuable piece on a line and see what is behind it."
+    },
+    {
+      "id": "discoveredAttack",
+      "name": "Discovered attacks",
+      "summary": "Move one piece to unleash another.",
+      "card": "When a piece moves out of the way, it can uncover an attack from a rook, bishop or queen behind it. That gives you two threats with one move: the uncovered attack and whatever the moving piece does. If the uncovered attack is a check, it is even stronger.",
+      "lookFor": "Your piece standing between your long-range piece and a target.",
+      "goal": "Uncover the attack",
+      "hint": "Which of your pieces is blocking a rook, bishop or queen?"
+    }
+  ]
+}

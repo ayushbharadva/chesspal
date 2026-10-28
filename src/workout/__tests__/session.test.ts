@@ -1,7 +1,14 @@
 import { legalMoves, playMove, readPosition } from '@/chess';
 import { puzzleById, puzzles } from '@/content';
 import { type Attempt } from '@/progress/types';
-import { applyAnswer, attemptFor, makeSession, nextPuzzle, selectPuzzles } from '@/workout/session';
+import {
+  applyAnswer,
+  attemptFor,
+  levelMix,
+  makeSession,
+  nextPuzzle,
+  selectPuzzles,
+} from '@/workout/session';
 
 const today = '2026-10-13';
 function attempt(puzzleId: string, independent: boolean, localDate = today): Attempt {
@@ -17,7 +24,8 @@ it('selects ten unique, varied, unseen puzzles', () => {
   const ids = selectPuzzles([], 'daily', 10, today);
   expect(ids).toHaveLength(10);
   expect(new Set(ids).size).toBe(10);
-  expect(new Set(ids.map((id) => puzzleById[id].motif)).size).toBe(3);
+  expect(new Set(ids.map((id) => puzzleById[id].theme)).size).toBeGreaterThanOrEqual(6);
+  expect(ids.map((id) => puzzleById[id].level)).toEqual([1, 1, 1, 1, 1, 1, 1, 1, 2, 2]);
   expect(
     selectPuzzles(
       ids.map((id) => attempt(id, true)),
@@ -26,6 +34,28 @@ it('selects ten unique, varied, unseen puzzles', () => {
       today,
     ).some((id) => ids.includes(id)),
   ).toBe(false);
+});
+it('mixes two easier, six level and two harder puzzles, easiest first', () => {
+  expect(levelMix(10)).toEqual([-1, -1, 0, 0, 0, 0, 0, 0, 1, 1]);
+  expect(levelMix(7)).toEqual([-1, 0, 0, 0, 0, 0, 1]);
+  const ids = selectPuzzles([], 'daily', 10, today, 2);
+  expect(ids.map((id) => puzzleById[id].level)).toEqual([1, 1, 2, 2, 2, 2, 2, 2, 3, 3]);
+  expect(selectPuzzles([], 'daily', 10, today, 3).map((id) => puzzleById[id].level)).toEqual([
+    2, 2, 3, 3, 3, 3, 3, 3, 3, 3,
+  ]);
+});
+it('includes one fresh puzzle from the weakest theme', () => {
+  const pins = puzzles.filter((puzzle) => puzzle.themes.includes('pin')).slice(0, 6);
+  const solved = puzzles
+    .filter((puzzle) => !puzzle.themes.includes('pin') && puzzle.level === 1)
+    .slice(0, 12);
+  const attempts = [
+    ...pins.map((puzzle) => attempt(puzzle.id, false)),
+    ...solved.map((puzzle) => attempt(puzzle.id, true)),
+  ];
+  const ids = selectPuzzles(attempts, 'extra', 10, today, 1);
+  const fresh = ids.filter((id) => !attempts.some((item) => item.puzzleId === id));
+  expect(fresh.some((id) => puzzleById[id].themes.includes('pin'))).toBe(true);
 });
 it('reviews the latest assisted attempt and removes corrected items', () => {
   const ids = puzzles.slice(0, 3).map((puzzle) => puzzle.id);
@@ -58,7 +88,7 @@ it.each(['daily', 'extra'] as const)(
     expect(new Set(ids).size).toBe(10);
     expect(ids.slice(0, 3)).toEqual(puzzles.slice(0, 3).map((puzzle) => puzzle.id));
     expect(ids.filter((id) => attempts.some((item) => item.puzzleId === id))).toHaveLength(3);
-    expect(new Set(ids.slice(3).map((id) => puzzleById[id].motif)).size).toBe(3);
+    expect(new Set(ids.slice(3).map((id) => puzzleById[id].theme)).size).toBeGreaterThanOrEqual(5);
     expect(selectPuzzles(attempts, mode, 2, '2026-10-14')).toEqual(ids.slice(0, 2));
   },
 );

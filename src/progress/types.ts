@@ -1,3 +1,7 @@
+import { type PuzzleLevel, type SkillTheme } from '@/content/types';
+import { type Rung, type SkillProgress } from '@/skills/ladder';
+import { emptyVisionScores, type VisionScores } from '@/vision/coordinates';
+
 export interface Attempt {
   id: string;
   puzzleId: string;
@@ -6,7 +10,7 @@ export interface Attempt {
   completedAt: string;
 }
 
-export type PracticeMode = 'daily' | 'extra' | 'review';
+export type PracticeMode = 'daily' | 'extra' | 'review' | 'skill';
 
 export interface Session {
   id: string;
@@ -23,6 +27,8 @@ export interface Session {
   acceptedFen: string | null;
   acceptedMove: string | null;
   results: Attempt[];
+  /** Present on skill ladder runs: the theme, rung and run number that seeded the puzzles. */
+  skill?: { theme: SkillTheme; rung: Rung; run: number };
 }
 
 export interface GuideProgress {
@@ -79,6 +85,10 @@ export interface SavedProgress {
   currentSession: Session | null;
   guideProgress: Record<string, GuideProgress>;
   lessonProgress: LessonProgress;
+  /** Chosen once by the player; null until then. */
+  level: PuzzleLevel | null;
+  skillProgress: Partial<Record<SkillTheme, SkillProgress>>;
+  visionScores: VisionScores;
 }
 
 export function emptyProgress(): SavedProgress {
@@ -88,5 +98,8 @@ export function emptyProgress(): SavedProgress {
     currentSession: null,
     guideProgress: {},
     lessonProgress: emptyLessonProgress(),
+    level: null,
+    skillProgress: {},
+    visionScores: emptyVisionScores(),
   };
 }
