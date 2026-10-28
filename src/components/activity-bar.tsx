@@ -2,16 +2,18 @@ import { StyleSheet, View } from 'react-native';
 import { ThemedText } from '@/components/themed-text';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
+import { useLocalDate } from '@/hooks/use-local-date';
 import { practiceDates } from '@/progress/activity';
 import { useProgressStore } from '@/progress/store';
 import { activityStreak, dateKey } from '@/utils/date-key';
 
 export function ActivityBar() {
+  const today = useLocalDate();
   const theme = useTheme();
   const completions = useProgressStore((state) => state.completions);
   const lessons = useProgressStore((state) => state.lessonProgress.attempts);
   const dates = practiceDates(completions, lessons);
-  const streak = activityStreak(dates, dateKey());
+  const streak = activityStreak(dates, today);
   return (
     <View style={styles.row}>
       <ThemedText type="smallBold">
