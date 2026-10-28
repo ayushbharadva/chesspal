@@ -1,10 +1,19 @@
 import { StyleSheet, Text, type TextProps } from 'react-native';
 
-import { type ThemeColor } from '@/constants/theme';
+import { Fonts, type ThemeColor } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 
 export type ThemedTextProps = TextProps & {
-  type?: 'default' | 'title' | 'subtitle' | 'small' | 'smallBold';
+  type?:
+    | 'display'
+    | 'title'
+    | 'headline'
+    | 'subtitle'
+    | 'default'
+    | 'small'
+    | 'smallBold'
+    | 'overline'
+    | 'stat';
   themeColor?: ThemeColor;
 };
 
@@ -15,27 +24,19 @@ export function ThemedText({ style, type = 'default', themeColor, ...rest }: The
 }
 
 const styles = StyleSheet.create({
-  default: {
-    fontSize: 16,
-    lineHeight: 24,
+  display: { fontFamily: Fonts.display, fontSize: 34, lineHeight: 40, letterSpacing: -0.6 },
+  title: { fontFamily: Fonts.display, fontSize: 30, lineHeight: 36, letterSpacing: -0.4 },
+  headline: { fontFamily: Fonts.display, fontSize: 22, lineHeight: 28, letterSpacing: -0.2 },
+  subtitle: { fontFamily: Fonts.semibold, fontSize: 17, lineHeight: 24, letterSpacing: -0.1 },
+  default: { fontFamily: Fonts.regular, fontSize: 16, lineHeight: 24 },
+  small: { fontFamily: Fonts.regular, fontSize: 14, lineHeight: 20 },
+  smallBold: { fontFamily: Fonts.semibold, fontSize: 14, lineHeight: 20 },
+  overline: {
+    fontFamily: Fonts.bold,
+    fontSize: 11,
+    lineHeight: 16,
+    letterSpacing: 1.4,
+    textTransform: 'uppercase',
   },
-  title: {
-    fontSize: 32,
-    lineHeight: 40,
-    fontWeight: 700,
-  },
-  subtitle: {
-    fontSize: 20,
-    lineHeight: 28,
-    fontWeight: 600,
-  },
-  small: {
-    fontSize: 14,
-    lineHeight: 20,
-  },
-  smallBold: {
-    fontSize: 14,
-    lineHeight: 20,
-    fontWeight: 700,
-  },
+  stat: { fontFamily: Fonts.display, fontSize: 40, lineHeight: 46, letterSpacing: -0.8 },
 });

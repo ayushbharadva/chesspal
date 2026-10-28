@@ -16,7 +16,7 @@ TARGETS = {"mateIn1": 45, "hangingPiece": 35, "fork": 20}
 selected = {theme: [] for theme in TARGETS}
 request = Request(
     "https://database.lichess.org/lichess_db_puzzle.csv.zst",
-    headers={"User-Agent": "RookieReps-content/1.0"},
+    headers={"User-Agent": "ChessPal-content/1.0"},
 )
 with urlopen(request, timeout=60) as response:
     with zstandard.ZstdDecompressor().stream_reader(response) as decompressed:

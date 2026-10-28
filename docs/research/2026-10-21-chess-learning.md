@@ -1,4 +1,4 @@
-# RookieReps: REA investigation and learning direction
+# ChessPal: REA investigation and learning direction
 
 Research date: 21 October 2026. Starting app: pushed MVP `eff08b9`, PR #1.
 Audience remains beginners who know the rules. Android, offline learning, no required account.
@@ -59,7 +59,7 @@ Specific findings:
 
 - **Mobile:** its [queue filler](https://github.com/lichess-org/mobile/blob/5599f91235c64be577b056489f5286156eef74ef/lib/src/model/puzzle/puzzle_queue_filler.dart#L79-L135)
   avoids refilling around pending solves and rereads queue state before merging a response. This is a
-  future synchronization reference; RookieReps currently needs local persistence rather than networking.
+  future synchronization reference; ChessPal currently needs local persistence rather than networking.
 - **Listudy:** [move handling](https://github.com/ArneVogel/listudy/blob/804b69bc5ef436e7786c8b96dadcb3ef756c06ec/assets/js/study.js#L113-L205)
   supports repertoire alternatives and reduces arrow assistance after repetitions;
   [comments explain moves](https://github.com/ArneVogel/listudy/blob/804b69bc5ef436e7786c8b96dadcb3ef756c06ec/assets/js/study.js#L319-L345).
@@ -68,7 +68,7 @@ Specific findings:
 - **Lila:** [outcome transitions](https://github.com/lichess-org/lila/blob/e30aebb975e4d1e6e2718b9c4a9beb8d2867ef1e/ui/puzzle/src/ctrl.ts#L423-L445)
   preserve the difference between a first failure and later retry success.
   [Hints and reveals](https://github.com/lichess-org/lila/blob/e30aebb975e4d1e6e2718b9c4a9beb8d2867ef1e/ui/puzzle/src/ctrl.ts#L628-L648)
-  affect assisted outcomes. RookieReps should continue treating completion and independent success separately.
+  affect assisted outcomes. ChessPal should continue treating completion and independent success separately.
 - **Chessli:** [mistake extraction](https://github.com/pwenker/chessli/blob/e9c17d236745b98686c1e0b897313c84a9ca44f7/chessli/mistakes.py#L95-L128)
   retains position, played move and a better continuation from annotated PGNs. This is a later import
   feature, not a reason to add accounts or remote analysis now.
@@ -76,7 +76,7 @@ Specific findings:
   and [review updates](https://github.com/gtim/chessdriller/blob/b0de0f32e6a406c78af2564d59c9fe5aafa570e4/src/routes/api/study/move/%2Bserver.js#L66-L139)
   are useful conceptual references. No code from these files was imported.
 
-All new RookieReps logic is independently written. Keep original artwork and lesson text, and record
+All new ChessPal logic is independently written. Keep original artwork and lesson text, and record
 any future component reuse with its actual license and notices. Public source availability alone is
 not a reuse license. The existing CC0 puzzle-data provenance remains separate from app-source licenses.
 
@@ -106,7 +106,7 @@ needed to evaluate learning outcomes.
 
 ### First slice: scheduled independent recall
 
-The starting RookieReps review queue only included the latest assisted completions. A subsequent
+The starting ChessPal review queue only included the latest assisted completions. A subsequent
 independent success removed a puzzle from that queue, so it did not provide a later recall check.
 
 Add a deterministic calendar schedule derived from the existing attempt log. Start with next-day

@@ -30,7 +30,9 @@ const styles = StyleSheet.create({
     width: '100%',
     maxWidth: MaxContentWidth,
     alignSelf: 'center',
-    padding: Spacing.three,
+    paddingHorizontal: Spacing.three + Spacing.one,
+    paddingTop: Spacing.two,
+    paddingBottom: Spacing.five,
     gap: Spacing.three,
   },
 });

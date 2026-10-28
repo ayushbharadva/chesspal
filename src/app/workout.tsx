@@ -6,10 +6,13 @@ import { describeMove, playMove, positionAfter, readPosition, type Square } from
 import { Board } from '@/components/board/board';
 import { Button } from '@/components/button';
 import { Card } from '@/components/card';
+import { type IconName } from '@/components/icon';
 import { Screen } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
+import { IconBadge, ProgressBar } from '@/components/ui';
 import { puzzleById } from '@/content';
 import { Spacing } from '@/constants/theme';
+import { useTheme } from '@/hooks/use-theme';
 import { useProgressStore } from '@/progress/store';
 
 export default function WorkoutScreen() {
@@ -53,14 +56,23 @@ export default function WorkoutScreen() {
             puzzle.moves[session.ply - 1],
           )
         : undefined;
+  const lastResult = session.results.at(-1);
   return (
     <Screen>
       <View style={styles.heading}>
-        <ThemedText type="smallBold" themeColor="textSecondary">
-          Puzzle {session.index + 1} of {session.puzzleIds.length}
-          {session.mode === 'review' ? ' · Review' : ''}
-        </ThemedText>
-        <ThemedText type="subtitle" accessibilityRole="header">
+        <View style={styles.progressRow}>
+          <ThemedText type="overline" themeColor="textSecondary">
+            Puzzle {session.index + 1} of {session.puzzleIds.length}
+            {session.mode === 'review' ? ' · Review' : ''}
+          </ThemedText>
+          <TurnBadge color={orientation} />
+        </View>
+        <ProgressBar
+          value={
+            (session.index + (session.phase === 'feedback' ? 1 : 0)) / session.puzzleIds.length
+          }
+        />
+        <ThemedText type="headline" accessibilityRole="header">
           {puzzle.goal}
         </ThemedText>
         <ThemedText type="small" themeColor="textSecondary">
@@ -83,38 +95,39 @@ export default function WorkoutScreen() {
         hintSquare={session.hintsShown >= 2 ? expected?.from : undefined}
       />
       {ruleMessage ? (
-        <ThemedText type="small" accessibilityLiveRegion="polite">
+        <ThemedText type="small" themeColor="textSecondary" accessibilityLiveRegion="polite">
           {ruleMessage}
         </ThemedText>
       ) : null}
       {session.lastWrong && (
-        <Card>
-          <ThemedText type="smallBold" accessibilityLiveRegion="polite">
-            Try again. That move does not finish this tactic.
-          </ThemedText>
-          <ThemedText type="small">
+        <Card variant="danger">
+          <Feedback
+            icon="x"
+            tone="danger"
+            title="Try again. That move does not finish this tactic.">
             Look at checks, captures and threats. A hint is available whenever you need one.
-          </ThemedText>
+          </Feedback>
         </Card>
       )}
       {session.phase === 'solve' && (
         <>
           {session.hintsShown > 0 && (
-            <Card>
-              <ThemedText type="smallBold">Hint {session.hintsShown}</ThemedText>
-              <ThemedText>
+            <Card variant="accent">
+              <Feedback icon="lightbulb" tone="accent" title={`Hint ${session.hintsShown}`}>
                 {session.hintsShown === 1
                   ? puzzle.hints[0]
                   : session.hintsShown === 2
                     ? `Look at the piece on ${expected?.from}.`
                     : describeMove(fen, puzzle.moves[session.ply])}
-              </ThemedText>
+              </Feedback>
             </Card>
           )}
           <View style={styles.actions}>
             <View style={styles.action}>
               <Button
+                size="compact"
                 variant="secondary"
+                icon="lightbulb"
                 label={session.hintsShown ? 'Another hint' : 'Get a hint'}
                 disabled={session.hintsShown >= 3}
                 onPress={() => {
@@ -125,7 +138,9 @@ export default function WorkoutScreen() {
             </View>
             <View style={styles.action}>
               <Button
+                size="compact"
                 variant="secondary"
+                icon="eye"
                 label="Show solution"
                 onPress={() => {
                   setRuleMessage('');
@@ -134,22 +149,25 @@ export default function WorkoutScreen() {
               />
             </View>
           </View>
-          <ThemedText type="small" themeColor="textSecondary">
+          <ThemedText type="small" themeColor="textSecondary" style={styles.note}>
             Hints support learning. Assisted solves are tracked separately.
           </ThemedText>
         </>
       )}
       {session.phase === 'replay' && (
         <>
-          <Card>
-            <ThemedText type="smallBold">
-              One solution · Move {session.ply} of {puzzle.moves.length}
-            </ThemedText>
-            <ThemedText>{describeMove(fen, puzzle.moves[session.ply])}</ThemedText>
+          <Card variant="accent">
+            <Feedback
+              icon="play"
+              tone="accent"
+              title={`One solution · Move ${session.ply} of ${puzzle.moves.length}`}>
+              {describeMove(fen, puzzle.moves[session.ply])}
+            </Feedback>
           </Card>
           <View style={styles.actions}>
             <View style={styles.action}>
               <Button
+                size="compact"
                 variant="secondary"
                 label="Previous move"
                 disabled={session.ply === 0}
@@ -157,20 +175,24 @@ export default function WorkoutScreen() {
               />
             </View>
             <View style={styles.action}>
-              <Button label="Show next move" onPress={() => replayStep(1)} />
+              <Button size="compact" label="Show next move" onPress={() => replayStep(1)} />
             </View>
           </View>
         </>
       )}
       {session.phase === 'feedback' && (
         <>
-          <Card accent>
-            <ThemedText type="subtitle" accessibilityLiveRegion="polite">
-              {session.results.at(-1)?.independent ? 'Well spotted!' : 'A useful rep.'}
-            </ThemedText>
-            <ThemedText>{puzzle.explanation}</ThemedText>
+          <Card variant={lastResult?.independent ? 'success' : 'accent'}>
+            <Feedback
+              icon={lastResult?.independent ? 'check' : 'sparkles'}
+              tone={lastResult?.independent ? 'success' : 'accent'}
+              title={lastResult?.independent ? 'Well spotted!' : 'A useful rep.'}
+              live>
+              {puzzle.explanation}
+            </Feedback>
           </Card>
           <Button
+            icon="arrow-right"
             label={session.index === session.puzzleIds.length - 1 ? 'See results' : 'Next puzzle'}
             onPress={() => {
               setRuleMessage('');
@@ -179,14 +201,71 @@ export default function WorkoutScreen() {
           />
         </>
       )}
-      <ThemedText type="small" themeColor="textSecondary">
+      <ThemedText type="small" themeColor="textSecondary" style={styles.note}>
         Your place is saved automatically. Leave and resume anytime.
       </ThemedText>
     </Screen>
   );
 }
+
+function TurnBadge({ color }: { color: 'w' | 'b' }) {
+  const theme = useTheme();
+  return (
+    <View style={styles.turn}>
+      <View
+        style={[
+          styles.turnDot,
+          {
+            backgroundColor: color === 'w' ? theme.pieceWhite : theme.pieceBlack,
+            borderColor: theme.textSecondary,
+          },
+        ]}
+      />
+      <ThemedText type="overline" themeColor="textSecondary">
+        {color === 'w' ? 'White' : 'Black'}
+      </ThemedText>
+    </View>
+  );
+}
+
+/** Icon, title and body for hint, mistake and success messages. */
+function Feedback({
+  icon,
+  tone,
+  title,
+  children,
+  live = false,
+}: {
+  icon: IconName;
+  tone: 'accent' | 'success' | 'danger';
+  title: string;
+  children: string;
+  live?: boolean;
+}) {
+  return (
+    <View style={styles.feedback}>
+      <IconBadge name={icon} tone={tone} size={36} solid />
+      <View style={styles.feedbackText}>
+        <ThemedText
+          type={live ? 'headline' : 'smallBold'}
+          themeColor={live ? 'text' : tone}
+          accessibilityLiveRegion="polite">
+          {title}
+        </ThemedText>
+        <ThemedText>{children}</ThemedText>
+      </View>
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
-  heading: { gap: Spacing.one },
+  heading: { gap: Spacing.two },
+  progressRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  turn: { flexDirection: 'row', alignItems: 'center', gap: Spacing.one + Spacing.half },
+  turnDot: { width: 12, height: 12, borderRadius: 6, borderWidth: 1 },
   actions: { flexDirection: 'row', gap: Spacing.two },
   action: { flex: 1 },
+  feedback: { flexDirection: 'row', gap: Spacing.three, alignItems: 'flex-start' },
+  feedbackText: { flex: 1, gap: Spacing.one },
+  note: { textAlign: 'center' },
 });

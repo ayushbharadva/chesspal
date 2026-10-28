@@ -26,4 +26,9 @@ Each move is validated through the chess domain adapter. A different legal move 
 
 ## Artwork
 
-The chess-piece SVG geometry in `src/components/board/piece.tsx` and the rook/check mark in `assets/images/rookiereps-mark.svg` are original artwork created for this app. Launcher and splash PNGs are exports of that mark. No third-party piece set is included.
+- **Pieces:** the Chessnut set by [Alexis Luengas](https://github.com/LexLuengas/chessnut-pieces), Apache License 2.0 ([licence](../licenses/chessnut-apache-2.0.txt)), stored as SVG strings in `src/components/board/piece-set.ts`. The only change is removing a CSS `style` attribute that React Native does not use.
+- **Brand mark and launcher icons:** the Chessnut knight in brass on an ink tile. `assets/images/chesspal-icon.svg` is the source; `icon.png`, the Android adaptive foreground and monochrome layers, `splash-icon.png` and `favicon.png` are exports of it.
+- **Interface icons:** paths from [Lucide](https://lucide.dev), ISC License ([licence](../licenses/lucide-isc.txt)), in `src/components/icon.tsx`.
+- **Fonts:** Fraunces and Inter from Google Fonts via `@expo-google-fonts`, SIL Open Font License.
+
+Design choices and alternatives: [decision 0003](decisions/0003-design-system.md).

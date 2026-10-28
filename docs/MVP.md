@@ -1,4 +1,4 @@
-# Rookie Reps MVP
+# ChessPal MVP
 
 Audience: beginners who know the rules and want very easy puzzles plus opening ideas.
 

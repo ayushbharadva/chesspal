@@ -28,7 +28,7 @@ For each investigation, record:
 2. Source locations or REA Evidence IDs supporting the answer.
 3. Which findings are observed syntax, inferred behavior, documented product features or hypotheses.
 4. Coverage limits, unresolved questions and license/provenance facts.
-5. An independently written RookieReps change and an observable acceptance check.
+5. An independently written ChessPal change and an observable acceptance check.
 
 Keep raw artifacts/evidence in ignored `.research/`; commit concise reports and original code.
 Do not put tool dependencies, copied app bundles or competitor lesson material in the mobile bundle.

@@ -2,7 +2,7 @@
 
 The extra lines in `opening-practice.json` expand the three existing guides. All
 move-by-move reasons, descriptions, hints and transfer prompts were written for
-RookieReps. No commercial course annotations, screenshots or exercise text were
+ChessPal. No commercial course annotations, screenshots or exercise text were
 copied. Opening names and established move sequences describe shared chess
 positions; their inclusion does not imply endorsement by the referenced sites.
 
@@ -22,7 +22,7 @@ the longer sequences, with the exact snapshot pinned below.
 | Queen's Gambit: Slav     | [Slav Defense](https://www.chess.com/openings/Slav-Defense), Main Line through 7.Bxc4                                                                                                                           | The primary page prints this complete sequence                                                                                                                    |
 
 The official Lichess dataset's [CC0 dedication](https://github.com/lichess-org/chess-openings/blob/a6189a30dc273ccb21fc2536a9a2fefd5592a67a/COPYING.txt)
-applies to its move data. RookieReps does not copy Chess.com prose. The branch
+applies to its move data. ChessPal does not copy Chess.com prose. The branch
 lines are examples of supported play, not claims that every alternative is a
 mistake or that the line forces a favourable outcome.
 
