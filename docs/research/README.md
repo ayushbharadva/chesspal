@@ -36,5 +36,6 @@ An Android/Flutter target needs its own artifact-specific plan; JADX inspection 
 Flutter app's original Dart learning logic.
 
 First investigation: [chess learning references and product direction](2026-10-21-chess-learning.md).
+Second investigation: [Every Day Chess and Lichess mechanics and feature plan](2026-10-28-everydaychess-lichess.md).
 Tool documentation: [REA](https://github.com/morluto/rea) and its
 [investigation workflow](https://github.com/morluto/rea/blob/f801b2fbfd28f4e3713adefddc7bd73db44c284c/.agents/skills/reverse-engineer-anything/SKILL.md).
