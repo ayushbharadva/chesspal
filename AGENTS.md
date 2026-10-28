@@ -18,7 +18,8 @@ Android first, offline, no account, no backend. Current scope: [docs/MVP.md](doc
 - React Native Testing Library v14 is async: `await render(...)`, `await fireEvent.press(...)`. For navigation tests see `src/__tests__/navigation.test.tsx`.
 - Naming: descriptive names, no abbreviations or single letters. Files kebab-case, components PascalCase, imports via `@/`.
 - Comments only where the logic is not obvious; one line where possible.
-- Colors only through `useTheme()`. Text colors must keep WCAG AA contrast; `src/constants/__tests__/theme.test.ts` enforces it.
+- Colors only through `useTheme()`. Text colors must keep WCAG AA contrast; `src/constants/__tests__/theme.test.ts` enforces it. Add every new text/background pair to that test.
+- Design system ([decision 0003](docs/decisions/0003-design-system.md)): ivory, ink and brass with a walnut board. Use the `ThemedText` types and `Fonts` tokens (each weight is its own family; never set `fontWeight`), and build screens from `Card`, `Button`, `Pill`, `ListRow`, `Segmented`, `Chip`, `IconBadge` and `Icon` before styling raw views. Icons are Lucide paths in `src/components/icon.tsx`; pieces are the Chessnut set in `src/components/board/piece-set.ts`. Keep their licence files in `licenses/`.
 - In network-restricted environments `npx expo install` needs `EXPO_OFFLINE=1` (it reads versions bundled in the `expo` package).
 
 ## Expo has changed — do not trust your training data

@@ -13,7 +13,7 @@
     "android": {
       "package": "com.ayushbharadva.chesspal",
       "adaptiveIcon": {
-        "backgroundColor": "#0F766E",
+        "backgroundColor": "#1B1D24",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
@@ -28,11 +28,16 @@
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#0F766E",
+          "backgroundColor": "#F6F3EC",
           "image": "./assets/images/splash-icon.png",
-          "imageWidth": 200
+          "imageWidth": 120,
+          "dark": {
+            "backgroundColor": "#0E0F13",
+            "image": "./assets/images/splash-icon.png"
+          }
         }
-      ]
+      ],
+      "expo-font"
     ],
     "experiments": {
       "typedRoutes": true,

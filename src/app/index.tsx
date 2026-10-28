@@ -2,18 +2,46 @@ import { router } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 
 import { ActivityBar } from '@/components/activity-bar';
+import { BrandMark } from '@/components/brand-mark';
 import { Button } from '@/components/button';
 import { Card } from '@/components/card';
+import { Icon, type IconName } from '@/components/icon';
 import { Screen } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
+import { IconBadge, ListRow, Pill, ProgressBar, SectionTitle } from '@/components/ui';
 import { guides, puzzles } from '@/content';
 import { Spacing } from '@/constants/theme';
 import { lessonTarget } from '@/learning/lesson';
 import { nextLesson } from '@/learning/next-lesson';
+import { practiceDates } from '@/progress/activity';
 import { useProgressStore } from '@/progress/store';
 import { useLocalDate } from '@/hooks/use-local-date';
+import { activityStreak } from '@/utils/date-key';
 import { getGreeting } from '@/utils/greeting';
 import { reviewQueue } from '@/workout/review';
+
+const LESSON_REASONS = {
+  resume: {
+    label: 'Continue',
+    text: 'Continue your saved lesson. Your earlier hints and retries stay recorded.',
+    action: 'Resume lesson',
+  },
+  review: {
+    label: 'Ready to recall',
+    text: 'This lesson is ready for a later recall check. Try it without help.',
+    action: 'Recall this lesson',
+  },
+  apply: {
+    label: 'Apply the idea',
+    text: 'You practiced an opening line. Try using its idea in an unfamiliar position.',
+    action: 'Apply this idea',
+  },
+  learn: {
+    label: 'New line',
+    text: 'Follow the demonstration, then play the example with guidance.',
+    action: 'Learn this line',
+  },
+} as const;
 
 export default function HomeScreen() {
   const today = useLocalDate();
@@ -30,8 +58,10 @@ export default function HomeScreen() {
   const doneToday = completions.some((completion) => completion.dateKey === today);
   const reviews = reviewQueue(attempts, today).length;
   const learned = guides.filter((guide) => lessonProgress[guide.id]?.completedAt).length;
+  const streak = activityStreak(practiceDates(completions, lessons.attempts), today);
   const step = nextLesson(lessons, today);
   const target = step ? lessonTarget(step.guideId, step.kind, step.targetId) : undefined;
+  const reason = step ? LESSON_REASONS[step.reason] : undefined;
   function openPractice(review = false) {
     if (start(review ? 'review' : 'daily')) router.push('/workout');
   }
@@ -43,32 +73,55 @@ export default function HomeScreen() {
   }
   return (
     <Screen edges={['top', 'bottom', 'left', 'right']}>
-      <View style={styles.header}>
-        <ThemedText type="smallBold" themeColor="textSecondary">
-          CHESSPAL
-        </ThemedText>
-        <ThemedText type="title" accessibilityRole="header">
+      <View style={styles.topBar}>
+        <View style={styles.brand}>
+          <BrandMark size={34} />
+          <ThemedText type="headline">ChessPal</ThemedText>
+        </View>
+        <View
+          accessible
+          accessibilityLabel={`Practice streak: ${streak} ${streak === 1 ? 'day' : 'days'}`}>
+          <Pill icon="flame" tone={streak ? 'accent' : 'muted'} label={String(streak)} />
+        </View>
+      </View>
+      <View style={styles.greeting}>
+        <ThemedText type="display" accessibilityRole="header">
           {getGreeting(new Date().getHours())}.
         </ThemedText>
-        <ThemedText themeColor="textSecondary">Small reps. Better chess.</ThemedText>
+        <ThemedText themeColor="textSecondary">A few minutes a day. Sharper chess.</ThemedText>
       </View>
-      <Card accent>
-        <ThemedText type="smallBold" themeColor="primary">
-          PRACTICE · BEGINNER
-        </ThemedText>
-        <ThemedText type="subtitle">
-          {unfinished
-            ? 'Pick up where you left off'
-            : doneToday
-              ? 'Ready for another round?'
-              : 'Your next 10 puzzles'}
-        </ThemedText>
-        <ThemedText themeColor="textSecondary">
-          {unfinished
-            ? `${session.results.length} of ${session.puzzleIds.length} puzzles completed. Your place is saved.`
-            : 'Spot a mate, win a piece, find a fork. Your round can include earlier puzzles to help you remember.'}
-        </ThemedText>
+
+      <Card variant="hero">
+        <Pill tone="onHero" icon="puzzle" label="Practice · Beginner" />
+        <View style={styles.heroText}>
+          <ThemedText type="title" themeColor="onHero">
+            {unfinished
+              ? 'Pick up where you left off'
+              : doneToday
+                ? 'Ready for another round?'
+                : 'Your next 10 puzzles'}
+          </ThemedText>
+          <ThemedText themeColor="onHeroSecondary">
+            {unfinished
+              ? `${session.results.length} of ${session.puzzleIds.length} puzzles completed. Your place is saved.`
+              : 'Spot a mate, win a piece, find a fork. Your round can include earlier puzzles to help you remember.'}
+          </ThemedText>
+        </View>
+        {unfinished ? (
+          <ProgressBar
+            value={session.results.length / session.puzzleIds.length}
+            track="heroOverlay"
+            fill="heroAccent"
+          />
+        ) : (
+          <View style={styles.meta}>
+            <HeroMeta icon="lightbulb" label="Hints anytime" />
+            <HeroMeta icon="check" label="Saves as you go" />
+          </View>
+        )}
         <Button
+          variant="accent"
+          icon={hydrated ? 'play' : undefined}
           disabled={!hydrated}
           label={
             !hydrated
@@ -82,68 +135,115 @@ export default function HomeScreen() {
           onPress={() => openPractice()}
         />
         {!unfinished && reviews > 0 && (
-          <>
-            <ThemedText type="small" themeColor="textSecondary">
-              Revisit puzzles ready to try again, including ones you solved without help. Puzzles
-              you needed help with are ready for another try now. Try to solve them without hints or
-              retries. Up to 10 per round.
+          <View style={[styles.review, styles.heroText]}>
+            <ThemedText type="small" themeColor="onHeroSecondary">
+              Revisit puzzles ready for another try, including ones you solved without help. Aim to
+              solve them without hints or retries. Up to 10 per round.
             </ThemedText>
             <Button
-              variant="secondary"
+              variant="onHero"
+              icon="rotate-ccw"
               label={`Review ${reviews} puzzle${reviews === 1 ? '' : 's'}`}
               onPress={() => openPractice(true)}
             />
-          </>
+          </View>
         )}
       </Card>
+
+      <SectionTitle>Learn · Your next step</SectionTitle>
       <Card>
-        <ThemedText type="smallBold" themeColor="primary">
-          LEARN · YOUR NEXT STEP
-        </ThemedText>
-        <ThemedText type="subtitle">
-          {step ? guides.find((guide) => guide.id === step.guideId)!.title : 'Keep the ideas fresh'}
-        </ThemedText>
+        <View style={styles.learnHeader}>
+          <IconBadge name="graduation-cap" size={44} />
+          <View style={styles.learnTitle}>
+            <ThemedText type="overline" themeColor="accent">
+              {reason?.label ?? 'All examples tried'}
+            </ThemedText>
+            <ThemedText type="headline">
+              {step
+                ? guides.find((guide) => guide.id === step.guideId)!.title
+                : 'Keep the ideas fresh'}
+            </ThemedText>
+          </View>
+        </View>
         <ThemedText themeColor="textSecondary">
-          {step
-            ? {
-                resume: 'Continue your saved lesson. Your earlier hints and retries stay recorded.',
-                review: 'This lesson is ready for a later recall check. Try it without help.',
-                apply:
-                  'You practiced an opening line. Try using its idea in an unfamiliar position.',
-                learn: 'Follow the demonstration, then play the example with guidance.',
-              }[step.reason]
-            : 'You have tried every example. Return for scheduled recall or explore a guide again.'}
-        </ThemedText>
-        <ThemedText type="small">
-          {learned} of {guides.length} guides practiced
+          {reason?.text ??
+            'You have tried every example. Return for scheduled recall or explore a guide again.'}
         </ThemedText>
         {step && target && (
-          <>
-            <ThemedText type="smallBold">{target.title}</ThemedText>
-            <Button
-              disabled={!hydrated}
-              label={
-                !hydrated
-                  ? 'Restoring your lessons…'
-                  : {
-                      resume: 'Resume lesson',
-                      review: 'Recall this lesson',
-                      apply: 'Apply this idea',
-                      learn: 'Learn this line',
-                    }[step.reason]
-              }
-              onPress={openLesson}
-            />
-          </>
+          <View style={styles.nextLine}>
+            <Icon name="arrow-right" size={16} color="accent" />
+            <ThemedText type="smallBold" style={styles.nextLineText}>
+              {target.title}
+            </ThemedText>
+          </View>
         )}
-        <Button variant="secondary" label="Explore guides" onPress={() => router.push('/learn')} />
+        <View style={styles.guideProgress}>
+          <ThemedText type="small" themeColor="textSecondary">
+            {learned} of {guides.length} guides practiced
+          </ThemedText>
+          <ProgressBar value={learned / guides.length} />
+        </View>
+        {step && target && reason && (
+          <Button
+            disabled={!hydrated}
+            label={!hydrated ? 'Restoring your lessons…' : reason.action}
+            onPress={openLesson}
+          />
+        )}
+        <Button
+          variant="secondary"
+          icon="book-open"
+          label="Explore guides"
+          onPress={() => router.push('/learn')}
+        />
       </Card>
-      <ActivityBar />
-      <Button variant="secondary" label="Your progress" onPress={() => router.push('/progress')} />
-      <ThemedText type="small" themeColor="textSecondary">
+
+      <SectionTitle>This week</SectionTitle>
+      <Card>
+        <ActivityBar />
+      </Card>
+
+      <ListRow
+        icon="chart"
+        title="Your progress"
+        detail="Solves, recalls and streaks"
+        onPress={() => router.push('/progress')}
+      />
+      <ThemedText type="small" themeColor="textSecondary" style={styles.footer}>
         {puzzles.length} starter puzzles · Works offline · No daily limit
       </ThemedText>
     </Screen>
   );
 }
-const styles = StyleSheet.create({ header: { gap: Spacing.one, paddingVertical: Spacing.three } });
+
+function HeroMeta({ icon, label }: { icon: IconName; label: string }) {
+  return (
+    <View style={styles.metaItem}>
+      <Icon name={icon} size={16} color="heroAccent" />
+      <ThemedText type="small" themeColor="onHeroSecondary">
+        {label}
+      </ThemedText>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  topBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingTop: Spacing.two,
+  },
+  brand: { flexDirection: 'row', alignItems: 'center', gap: Spacing.two + Spacing.one },
+  greeting: { gap: Spacing.one, paddingTop: Spacing.three, paddingBottom: Spacing.two },
+  heroText: { gap: Spacing.two, paddingRight: Spacing.five },
+  meta: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.three },
+  metaItem: { flexDirection: 'row', alignItems: 'center', gap: Spacing.two - Spacing.half },
+  review: { paddingRight: 0, paddingTop: Spacing.one },
+  learnHeader: { flexDirection: 'row', alignItems: 'center', gap: Spacing.three },
+  learnTitle: { flex: 1, gap: Spacing.half },
+  nextLine: { flexDirection: 'row', alignItems: 'center', gap: Spacing.two },
+  nextLineText: { flex: 1 },
+  guideProgress: { gap: Spacing.two },
+  footer: { textAlign: 'center', paddingTop: Spacing.two },
+});

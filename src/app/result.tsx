@@ -1,9 +1,13 @@
 import { router } from 'expo-router';
+import { StyleSheet, View } from 'react-native';
+
 import { ActivityBar } from '@/components/activity-bar';
 import { Button } from '@/components/button';
 import { Card } from '@/components/card';
 import { Screen } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
+import { IconBadge, Pill, ProgressBar } from '@/components/ui';
+import { Spacing } from '@/constants/theme';
 import { useProgressStore } from '@/progress/store';
 
 export default function ResultScreen() {
@@ -17,33 +21,54 @@ export default function ResultScreen() {
       </Screen>
     );
   const independent = session.results.filter((result) => result.independent).length;
+  const assisted = session.results.length - independent;
   return (
     <Screen>
-      <ThemedText type="smallBold" themeColor="primary">
-        PRACTICE COMPLETE
-      </ThemedText>
-      <ThemedText type="title" accessibilityRole="header">
-        Another good rep.
-      </ThemedText>
-      <Card accent>
-        <ThemedText type="title">
-          {independent} / {session.results.length}
-        </ThemedText>
-        <ThemedText>solved independently</ThemedText>
-        <ThemedText themeColor="textSecondary">
-          {session.results.length - independent} completed with help or a retry. Every explanation
-          is a chance to learn.
+      <Card variant="hero">
+        <IconBadge name="trophy" tone="hero" size={52} />
+        <View style={styles.heroText}>
+          <Pill tone="onHero" label="Practice complete" />
+          <ThemedText type="title" themeColor="onHero" accessibilityRole="header">
+            Another good rep.
+          </ThemedText>
+        </View>
+        <View style={styles.score}>
+          <ThemedText type="stat" themeColor="heroAccent">
+            {independent} / {session.results.length}
+          </ThemedText>
+          <ThemedText themeColor="onHeroSecondary">solved independently</ThemedText>
+        </View>
+        <ProgressBar
+          value={independent / session.results.length}
+          track="heroOverlay"
+          fill="heroAccent"
+        />
+        <ThemedText type="small" themeColor="onHeroSecondary">
+          {assisted} completed with help or a retry. Every explanation is a chance to learn.
         </ThemedText>
       </Card>
-      <ActivityBar />
+      <Card>
+        <ActivityBar />
+      </Card>
       <Button
+        icon="play"
         label="Keep practicing"
         onPress={() => {
           if (start('extra')) router.replace('/workout');
         }}
       />
-      <Button variant="secondary" label="Explore guides" onPress={() => router.replace('/learn')} />
-      <Button variant="secondary" label="Done" onPress={() => router.dismissTo('/')} />
+      <Button
+        variant="secondary"
+        icon="book-open"
+        label="Explore guides"
+        onPress={() => router.replace('/learn')}
+      />
+      <Button variant="ghost" label="Done" onPress={() => router.dismissTo('/')} />
     </Screen>
   );
 }
+
+const styles = StyleSheet.create({
+  heroText: { gap: Spacing.two },
+  score: { gap: Spacing.half },
+});

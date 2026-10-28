@@ -56,13 +56,15 @@ scripts/content/ # import and engine verification
 src/
   app/           # Expo Router screens
   chess/         # chess.js boundary and legal move adapter
-  components/    # board, accessible controls and shared UI
+  components/    # board, Chessnut pieces, icons and shared UI (cards, buttons, rows)
+  constants/     # design tokens: colors, fonts, spacing, elevation
   content/       # typed content access and validation
   learning/      # pure branch, transfer and lesson recall logic
   workout/       # pure practice session logic
   progress/      # persisted app state
   storage/       # schema validation and serialized local writes
 docs/            # current scope, content pipeline and decisions
+licenses/        # notices for bundled third-party artwork and icons
 ```
 
 Conventions and dependency boundaries: [AGENTS.md](AGENTS.md).
