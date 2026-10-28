@@ -2,7 +2,9 @@ import { guideById, puzzleById } from '@/content';
 import { readPosition } from '@/chess';
 import { branchForGuide } from '@/content/lessons';
 import { lessonTarget } from '@/learning/lesson';
+import { SKILL_THEMES } from '@/content/types';
 import { emptyLessonProgress, type SavedProgress } from '@/progress/types';
+import { emptyVisionScores, KEPT_SCORES } from '@/vision/coordinates';
 
 function record(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
@@ -131,6 +133,39 @@ function lessonProgress(value: unknown) {
   return true;
 }
 
+const MODES = ['daily', 'extra', 'review', 'skill'];
+function rung(value: unknown) {
+  return value === 1 || value === 2 || value === 3;
+}
+function skillTheme(value: unknown) {
+  return SKILL_THEMES.some((theme) => theme === value);
+}
+function skillProgress(value: unknown) {
+  return (
+    record(value) &&
+    Object.entries(value).every(
+      ([theme, progress]) =>
+        skillTheme(theme) &&
+        record(progress) &&
+        integer(progress.runs) &&
+        Array.isArray(progress.cleared) &&
+        progress.cleared.every(rung) &&
+        new Set(progress.cleared).size === progress.cleared.length,
+    )
+  );
+}
+function visionScores(value: unknown) {
+  return (
+    record(value) &&
+    [value.w, value.b].every(
+      (scores) =>
+        Array.isArray(scores) &&
+        scores.length <= KEPT_SCORES &&
+        scores.every((score) => integer(score, 1000)),
+    )
+  );
+}
+
 export function validProgress(value: unknown): value is SavedProgress {
   if (
     !record(value) ||
@@ -141,6 +176,9 @@ export function validProgress(value: unknown): value is SavedProgress {
   )
     return false;
   if (value.lessonProgress !== undefined && !lessonProgress(value.lessonProgress)) return false;
+  if (value.level !== undefined && value.level !== null && !rung(value.level)) return false;
+  if (value.skillProgress !== undefined && !skillProgress(value.skillProgress)) return false;
+  if (value.visionScores !== undefined && !visionScores(value.visionScores)) return false;
   if (
     !value.completions.every(
       (item: unknown) =>
@@ -149,7 +187,7 @@ export function validProgress(value: unknown): value is SavedProgress {
         validDate(item.dateKey) &&
         integer(item.total, 100) &&
         integer(item.independent, Number(item.total)) &&
-        ['daily', 'extra', 'review'].includes(String(item.mode)),
+        MODES.includes(String(item.mode)),
     )
   )
     return false;
@@ -205,7 +243,16 @@ export function validProgress(value: unknown): value is SavedProgress {
   ))
     return false;
   if (
-    !['daily', 'extra', 'review'].includes(String(session.mode)) ||
+    session.mode === 'skill'
+      ? !record(session.skill) ||
+        !skillTheme(session.skill.theme) ||
+        !rung(session.skill.rung) ||
+        !integer(session.skill.run)
+      : session.skill !== undefined
+  )
+    return false;
+  if (
+    !MODES.includes(String(session.mode)) ||
     !['solve', 'replay', 'feedback', 'complete'].includes(String(session.phase)) ||
     !Array.isArray(session.results) ||
     !session.results.every(attempt)
@@ -235,6 +282,9 @@ export function decodeProgress(raw: string) {
     state: {
       ...envelope.state,
       lessonProgress: envelope.state.lessonProgress ?? emptyLessonProgress(),
+      level: envelope.state.level ?? null,
+      skillProgress: envelope.state.skillProgress ?? {},
+      visionScores: envelope.state.visionScores ?? emptyVisionScores(),
     },
   };
 }

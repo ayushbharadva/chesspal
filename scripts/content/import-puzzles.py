@@ -1,7 +1,8 @@
 """Import a bounded beginner subset from the CC0 Lichess database.
 
-Install zstandard, then run this script. The stream closes once enough candidates
-are collected; the full database is never saved to the repository.
+Install zstandard, then run this script. Rows are streamed and filtered on the fly;
+the full database is never saved. The stream closes once every theme and level quota
+is filled and the source rows of all bundled puzzles have been found.
 """
 
 import csv
@@ -12,40 +13,87 @@ from urllib.request import Request, urlopen
 
 import zstandard
 
-TARGETS = {"mateIn1": 45, "hangingPiece": 35, "fork": 20}
-selected = {theme: [] for theme in TARGETS}
+ROOT = Path(__file__).resolve().parents[2]
+# Most specific first: a back-rank mate in one is trained as a back-rank mate.
+THEMES = [
+    "backRankMate",
+    "mateIn2",
+    "mateIn1",
+    "discoveredAttack",
+    "skewer",
+    "pin",
+    "fork",
+    "hangingPiece",
+]
+MATE_THEMES = {"backRankMate", "mateIn2", "mateIn1"}
+# ChessPal levels: Beginner, Easy and Medium puzzle ratings.
+LEVELS = {1: (400, 699), 2: (700, 999), 3: (1000, 1300)}
+QUOTA = 40
+
+existing_ids = {
+    puzzle["id"] for puzzle in json.loads((ROOT / "content" / "puzzles.json").read_text())
+}
+existing_rows = {}
+selected = {(theme, level): [] for theme in THEMES for level in LEVELS}
+
+
+def level_for(rating):
+    for level, (low, high) in LEVELS.items():
+        if low <= rating <= high:
+            return level
+    return None
+
+
+def primary_theme(themes):
+    for theme in THEMES:
+        if theme not in themes:
+            continue
+        if theme not in MATE_THEMES and "mate" in themes:
+            continue
+        return theme
+    return None
+
+
+def done():
+    return len(existing_rows) == len(existing_ids) and all(
+        len(rows) >= QUOTA for rows in selected.values()
+    )
+
+
 request = Request(
     "https://database.lichess.org/lichess_db_puzzle.csv.zst",
     headers={"User-Agent": "ChessPal-content/1.0"},
 )
+scanned = 0
 with urlopen(request, timeout=60) as response:
     with zstandard.ZstdDecompressor().stream_reader(response) as decompressed:
         rows = csv.DictReader(io.TextIOWrapper(decompressed, encoding="utf-8"))
-        scanned = 0
         for row in rows:
             scanned += 1
-            themes = row["Themes"].split()
-            moves = row["Moves"].split()
-            if not (250 <= int(row["Rating"]) <= 800):
-                continue
-            if int(row["Popularity"]) < 80 or int(row["NbPlays"]) < 100:
-                continue
-            if len(moves) not in (2, 4):
-                continue
-            for theme, target in TARGETS.items():
-                if theme != "mateIn1" and "mate" in themes:
-                    continue
-                if theme in themes and len(selected[theme]) < target:
-                    row["PrimaryMotif"] = theme
-                    selected[theme].append(row)
-                    break
-            if all(len(selected[theme]) >= target for theme, target in TARGETS.items()):
-                break
-            if scanned >= 1_000_000:
+            if scanned % 500_000 == 0:
+                print(f"Scanned {scanned} rows")
+            if row["PuzzleId"] in existing_ids:
+                existing_rows[row["PuzzleId"]] = row
+            elif int(row["Popularity"]) >= 80 and int(row["NbPlays"]) >= 100:
+                level = level_for(int(row["Rating"]))
+                themes = row["Themes"].split()
+                theme = primary_theme(themes) if level else None
+                if theme and len(row["Moves"].split()) in (2, 4):
+                    bucket = selected[(theme, level)]
+                    if len(bucket) < QUOTA:
+                        row["PrimaryTheme"] = theme
+                        bucket.append(row)
+            if done():
                 break
 
-output = Path(__file__).resolve().parents[2] / "content" / "puzzle-candidates.json"
-output.parent.mkdir(parents=True, exist_ok=True)
-output.write_text(json.dumps([row for group in selected.values() for row in group], indent=2) + "\n", encoding="utf-8")
-print(f"Scanned {scanned} rows; imported {sum(len(group) for group in selected.values())} candidates")
-print({theme: len(group) for theme, group in selected.items()})
+missing = sorted(existing_ids - existing_rows.keys())
+for row in existing_rows.values():
+    row["PrimaryTheme"] = primary_theme(row["Themes"].split()) or "hangingPiece"
+    row["Existing"] = True
+candidates = list(existing_rows.values()) + [row for rows in selected.values() for row in rows]
+output = ROOT / "content" / "puzzle-candidates.json"
+output.write_text(json.dumps(candidates, indent=2) + "\n", encoding="utf-8")
+print(f"Scanned {scanned} rows; wrote {len(candidates)} candidates")
+print({f"{theme}/{level}": len(rows) for (theme, level), rows in selected.items()})
+if missing:
+    print(f"Source rows not found for {len(missing)} bundled puzzles: {', '.join(missing)}")

@@ -66,6 +66,10 @@ export default function RootLayout() {
         <Stack.Screen name="progress" options={{ title: 'Your Progress' }} />
         <Stack.Screen name="learn" options={{ title: 'Learn' }} />
         <Stack.Screen name="lesson/[id]" options={{ title: 'Opening Guide' }} />
+        <Stack.Screen name="level" options={{ title: 'Your Level' }} />
+        <Stack.Screen name="skills" options={{ title: 'Skills' }} />
+        <Stack.Screen name="skill/[id]" options={{ title: 'Skill' }} />
+        <Stack.Screen name="vision" options={{ title: 'Board Vision' }} />
       </Stack>
       {storageIssue && (
         <View style={[styles.banner, { backgroundColor: colors.dangerSurface }]}>

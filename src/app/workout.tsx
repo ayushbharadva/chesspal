@@ -11,8 +11,10 @@ import { Screen } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
 import { IconBadge, ProgressBar } from '@/components/ui';
 import { puzzleById } from '@/content';
+import { skillById } from '@/content/skills';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
+import { RUNG_NAMES } from '@/skills/ladder';
 import { useProgressStore } from '@/progress/store';
 
 export default function WorkoutScreen() {
@@ -64,6 +66,9 @@ export default function WorkoutScreen() {
           <ThemedText type="overline" themeColor="textSecondary">
             Puzzle {session.index + 1} of {session.puzzleIds.length}
             {session.mode === 'review' ? ' · Review' : ''}
+            {session.skill
+              ? ` · ${skillById[session.skill.theme].name} · ${RUNG_NAMES[session.skill.rung]}`
+              : ''}
           </ThemedText>
           <TurnBadge color={orientation} />
         </View>
@@ -73,7 +78,8 @@ export default function WorkoutScreen() {
           }
         />
         <ThemedText type="headline" accessibilityRole="header">
-          {puzzle.goal}
+          {/* Only the warm-up names the theme; later rounds test recognition. */}
+          {session.skill && session.skill.rung > 1 ? 'Find the best move' : puzzle.goal}
         </ThemedText>
         <ThemedText type="small" themeColor="textSecondary">
           {orientation === 'w' ? 'White' : 'Black'} to play ·{' '}

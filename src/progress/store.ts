@@ -1,8 +1,9 @@
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
-import { positionAfter } from '@/chess';
+import { positionAfter, type ChessColor } from '@/chess';
 import { guideById, puzzleById } from '@/content';
+import { type PuzzleLevel, type SkillTheme } from '@/content/types';
 import { branchForGuide } from '@/content/lessons';
 import {
   answerLesson,
@@ -19,8 +20,10 @@ import {
   type SavedProgress,
   type LessonKind,
 } from '@/progress/types';
+import { RUNG_SIZE, rungCleared, type Rung } from '@/skills/ladder';
 import { progressStorage, PROGRESS_KEY, reportStorageIssues } from '@/storage/storage';
 import { dateKey } from '@/utils/date-key';
+import { recordScore } from '@/vision/coordinates';
 import { applyAnswer, attemptFor, makeSession, nextPuzzle } from '@/workout/session';
 
 interface ProgressStore extends SavedProgress {
@@ -28,6 +31,10 @@ interface ProgressStore extends SavedProgress {
   storageIssue: boolean;
   lessonNotice: { key: string; text: string } | null;
   startPractice: (mode?: PracticeMode) => boolean;
+  setLevel: (level: PuzzleLevel) => void;
+  /** Starts a ladder run; false while another practice round is unfinished. */
+  startSkill: (theme: SkillTheme, rung: Rung) => boolean;
+  recordVision: (side: ChessColor, score: number) => void;
   answer: (move: string) => void;
   hint: () => void;
   reveal: () => void;
@@ -63,10 +70,36 @@ export const useProgressStore = create<ProgressStore>()(
           selectedMode === 'daily'
             ? `daily-${today}`
             : `${selectedMode}-${now.getTime()}-${Math.random().toString(36).slice(2, 8)}`;
-        const session = makeSession(id, selectedMode, today, get().attempts);
+        const session = makeSession(id, selectedMode, today, get().attempts, get().level ?? 1);
         if (!session.puzzleIds.length) return false;
         set({ currentSession: session });
         return true;
+      },
+      setLevel(level) {
+        set({ level });
+      },
+      startSkill(theme, rung) {
+        if (!get().hydrated) return false;
+        const active = get().currentSession;
+        if (active && active.phase !== 'complete') {
+          return active.skill?.theme === theme && active.skill.rung === rung;
+        }
+        const now = new Date();
+        const run = get().skillProgress[theme]?.runs ?? 0;
+        const session = makeSession(
+          `skill-${theme}-${rung}-${now.getTime()}`,
+          'skill',
+          dateKey(now),
+          get().attempts,
+          get().level ?? 1,
+          { theme, rung, run },
+        );
+        if (session.puzzleIds.length !== RUNG_SIZE) return false;
+        set({ currentSession: session });
+        return true;
+      },
+      recordVision(side, score) {
+        set({ visionScores: recordScore(get().visionScores, side, score) });
       },
       answer(move) {
         const session = get().currentSession;
@@ -144,6 +177,20 @@ export const useProgressStore = create<ProgressStore>()(
             currentSession: next,
             completions: [...get().completions.filter((item) => item.id !== next.id), completion],
           });
+          if (next.skill) {
+            const { theme, rung } = next.skill;
+            const progress = get().skillProgress[theme] ?? { cleared: [], runs: 0 };
+            const cleared =
+              rungCleared(completion.independent) && !progress.cleared.includes(rung)
+                ? [...progress.cleared, rung].sort()
+                : progress.cleared;
+            set({
+              skillProgress: {
+                ...get().skillProgress,
+                [theme]: { cleared, runs: progress.runs + 1 },
+              },
+            });
+          }
           return true;
         }
         set({ currentSession: next });
@@ -293,12 +340,24 @@ export const useProgressStore = create<ProgressStore>()(
       name: PROGRESS_KEY,
       version: 1,
       storage: createJSONStorage(() => progressStorage),
-      partialize: ({ attempts, completions, currentSession, guideProgress, lessonProgress }) => ({
+      partialize: ({
         attempts,
         completions,
         currentSession,
         guideProgress,
         lessonProgress,
+        level,
+        skillProgress,
+        visionScores,
+      }) => ({
+        attempts,
+        completions,
+        currentSession,
+        guideProgress,
+        lessonProgress,
+        level,
+        skillProgress,
+        visionScores,
       }),
       onRehydrateStorage: () => () => {
         useProgressStore.setState({ hydrated: true });

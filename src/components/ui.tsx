@@ -226,6 +226,30 @@ export function SectionTitle({ children, action }: { children: string; action?: 
   );
 }
 
+/** Small dots for multi-step progress, such as cleared skill rounds. */
+export function StepDots({ steps }: { steps: readonly { done: boolean; available: boolean }[] }) {
+  const theme = useTheme();
+  return (
+    <View
+      style={styles.dots}
+      accessibilityElementsHidden
+      importantForAccessibility="no-hide-descendants">
+      {steps.map((step, index) => (
+        <View
+          key={index}
+          style={[
+            styles.dot,
+            step.done
+              ? { backgroundColor: theme.accentFill }
+              : { borderColor: theme.border, borderWidth: 1.5 },
+            !step.available && styles.unavailable,
+          ]}
+        />
+      ))}
+    </View>
+  );
+}
+
 /** Bulleted line with a small brass marker, for plans and tips. */
 export function Bullet({ children }: { children: string }) {
   const theme = useTheme();
@@ -284,6 +308,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginTop: Spacing.two,
   },
+  dots: { flexDirection: 'row', gap: Spacing.one },
+  dot: { width: 10, height: 10, borderRadius: 5 },
+  unavailable: { opacity: 0.3 },
   bullet: { flexDirection: 'row', gap: Spacing.three, alignItems: 'flex-start' },
   marker: { width: 6, height: 6, borderRadius: 3, marginTop: 9 },
   bulletText: { flex: 1 },

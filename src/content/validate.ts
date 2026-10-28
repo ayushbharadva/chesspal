@@ -1,5 +1,5 @@
 import { INITIAL_POSITION, playMove, positionAfter, readPosition } from '@/chess';
-import { type OpeningGuide, type Puzzle } from '@/content/types';
+import { MATE_THEMES, SKILL_THEMES, type OpeningGuide, type Puzzle } from '@/content/types';
 
 export function validatePuzzle(puzzle: Puzzle) {
   if (!puzzle.id || !puzzle.moves.length || puzzle.moves.length % 2 !== 1)
@@ -8,7 +8,14 @@ export function validatePuzzle(puzzle: Puzzle) {
     throw new Error('Puzzle teaching or verification data missing');
   readPosition(puzzle.fen);
   const final = positionAfter(puzzle.fen, puzzle.moves);
-  if (puzzle.motif === 'mate' && !readPosition(final).checkmate)
+  if (
+    !SKILL_THEMES.includes(puzzle.theme) ||
+    !puzzle.themes.includes(puzzle.theme) ||
+    !puzzle.themes.every((theme) => SKILL_THEMES.includes(theme)) ||
+    ![1, 2, 3].includes(puzzle.level)
+  )
+    throw new Error('Puzzle theme or level missing');
+  if (MATE_THEMES.includes(puzzle.theme) && !readPosition(final).checkmate)
     throw new Error('Mate puzzle does not end in checkmate');
   return true;
 }

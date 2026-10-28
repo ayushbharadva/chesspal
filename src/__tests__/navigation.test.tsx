@@ -2,7 +2,8 @@ import { router } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { act, cleanup, fireEvent, renderRouter, screen } from 'expo-router/testing-library';
 
-import { guideById, puzzleById } from '@/content';
+import { guideById, puzzleById, puzzles } from '@/content';
+import { skillById } from '@/content/skills';
 import { branchForGuide, transfersForGuide } from '@/content/lessons';
 import { answerLesson, beginLesson, lessonAttempt, lessonKey } from '@/learning/lesson';
 import { describeMove, INITIAL_POSITION } from '@/chess';
@@ -27,6 +28,7 @@ beforeEach(async () => {
   await useProgressStore.persist.rehydrate();
   useProgressStore.setState({
     ...emptyProgress(),
+    level: 1,
     hydrated: true,
     storageIssue: false,
     lessonNotice: null,
@@ -444,4 +446,85 @@ it('updates Home recommendations when a mounted screen crosses local midnight', 
     await cleanup();
     jest.useRealTimers();
   }
+});
+
+it('asks a new player for a level once, then starts practice at that level', async () => {
+  useProgressStore.setState({ level: null });
+  const app = await renderApp();
+  await fireEvent.press(screen.getByRole('button', { name: 'Start practice' }));
+  expect(app.getPathname()).toBe('/level');
+  await fireEvent.press(screen.getByRole('button', { name: /^Easy:/ }));
+  expect(app.getPathname()).toBe('/workout');
+  expect(useProgressStore.getState().level).toBe(2);
+  const ids = useProgressStore.getState().currentSession!.puzzleIds;
+  expect(ids.map((id) => puzzleById[id].level)).toEqual([1, 1, 2, 2, 2, 2, 2, 2, 3, 3]);
+});
+
+it('clears a skill round with four independent solves and records it', async () => {
+  const app = await renderApp('/skill/fork');
+  expect(screen.getByText(skillById.fork.lookFor)).toBeOnTheScreen();
+  await fireEvent.press(screen.getByRole('button', { name: 'Start warm-up' }));
+  expect(app.getPathname()).toBe('/workout');
+  expect(screen.getByText(/Puzzle 1 of 5 · Forks · Warm-up/)).toBeOnTheScreen();
+  for (let index = 0; index < 5; index += 1) {
+    const session = useProgressStore.getState().currentSession!;
+    const puzzle = puzzleById[session.puzzleIds[index]];
+    expect(puzzle.themes).toContain('fork');
+    if (index === 0) await fireEvent.press(screen.getByRole('button', { name: 'Get a hint' }));
+    for (let ply = 0; ply < puzzle.moves.length; ply += 2) await move(puzzle.moves[ply]);
+    await fireEvent.press(
+      screen.getByRole('button', { name: index === 4 ? 'See results' : 'Next puzzle' }),
+    );
+  }
+  expect(app.getPathname()).toBe('/result');
+  expect(screen.getByText('Round cleared.')).toBeOnTheScreen();
+  expect(screen.getByText('4 / 5')).toBeOnTheScreen();
+  expect(useProgressStore.getState().skillProgress.fork).toEqual({ cleared: [1], runs: 1 });
+  await fireEvent.press(screen.getByRole('button', { name: 'Next: at your level' }));
+  expect(app.getPathname()).toBe('/workout');
+  expect(screen.getByText('Find the best move')).toBeOnTheScreen();
+});
+
+it('plays a timed board vision round and saves the score', async () => {
+  jest.useFakeTimers({ now: new Date('2026-10-28T10:00:00Z') });
+  try {
+    await renderApp('/vision');
+    await fireEvent.press(screen.getByRole('button', { name: 'Start round' }));
+    for (let found = 0; found < 3; found += 1) {
+      const prompt = screen.getByText(/^[a-h][1-8]$/);
+      await fireEvent.press(screen.getByTestId(`vision-${prompt.props.children}`));
+    }
+    expect(screen.getByText('3 found')).toBeOnTheScreen();
+    await act(async () => {
+      jest.advanceTimersByTime(31_000);
+    });
+    expect(screen.getByText('3 squares found.')).toBeOnTheScreen();
+    expect(useProgressStore.getState().visionScores.w).toEqual([3]);
+  } finally {
+    await act(async () => {
+      cleanup();
+    });
+    jest.useRealTimers();
+  }
+});
+
+it('shows theme strengths and weaknesses on Progress', async () => {
+  const forks = puzzles.filter((puzzle) => puzzle.themes.join() === 'fork').slice(0, 5);
+  const pins = puzzles.filter((puzzle) => puzzle.themes.join() === 'pin').slice(0, 5);
+  const now = new Date();
+  const attempts = [...forks, ...pins].map((puzzle, index) => ({
+    id: `seed-${index}`,
+    puzzleId: puzzle.id,
+    independent: forks.includes(puzzle) || index === 5,
+    dateKey: dateKey(now),
+    completedAt: now.toISOString(),
+  }));
+  useProgressStore.setState({ attempts });
+  await renderApp('/progress');
+  expect(
+    screen.getByLabelText(/^Forks: 100% solved without help in 5 puzzles, a strength$/),
+  ).toBeOnTheScreen();
+  expect(
+    screen.getByLabelText(/^Pins: 20% solved without help in 5 puzzles, worth practicing$/),
+  ).toBeOnTheScreen();
 });

@@ -73,3 +73,47 @@ it('normalizes legacy learning state without losing puzzle history or saved guid
   expect(restored.lessonProgress).toEqual(emptyProgress().lessonProgress);
   expect(await AsyncStorage.getItem(`${PROGRESS_KEY}-backup`)).toBeNull();
 });
+it('fills level, skill and vision defaults into saves from earlier versions', async () => {
+  const { level, skillProgress, visionScores, ...earlier } = emptyProgress();
+  expect([level, skillProgress, visionScores]).toEqual([null, {}, { w: [], b: [] }]);
+  await AsyncStorage.setItem(PROGRESS_KEY, JSON.stringify({ state: earlier, version: 1 }));
+  const restored = JSON.parse((await progressStorage.getItem(PROGRESS_KEY)) as string);
+  expect(restored.state).toMatchObject({
+    level: null,
+    skillProgress: {},
+    visionScores: { w: [], b: [] },
+  });
+});
+it('rejects malformed levels, skill progress, vision scores and skill sessions', () => {
+  const valid = {
+    ...emptyProgress(),
+    level: 2,
+    skillProgress: { fork: { cleared: [1, 3], runs: 4 } },
+    visionScores: { w: [12, 15], b: [] },
+  };
+  expect(validProgress(valid)).toBe(true);
+  expect(validProgress({ ...valid, level: 4 })).toBe(false);
+  expect(validProgress({ ...valid, skillProgress: { castling: { cleared: [], runs: 0 } } })).toBe(
+    false,
+  );
+  expect(validProgress({ ...valid, skillProgress: { fork: { cleared: [1, 1], runs: 2 } } })).toBe(
+    false,
+  );
+  expect(validProgress({ ...valid, visionScores: { w: Array(21).fill(1), b: [] } })).toBe(false);
+  const session = makeSession('skill', 'skill', '2026-10-13', [], 1, {
+    theme: 'fork',
+    rung: 1,
+    run: 0,
+  });
+  expect(session.puzzleIds).toHaveLength(5);
+  expect(validProgress({ ...valid, currentSession: session })).toBe(true);
+  const { skill, ...withoutSkill } = session;
+  expect(skill).toBeDefined();
+  expect(validProgress({ ...valid, currentSession: withoutSkill })).toBe(false);
+  expect(
+    validProgress({
+      ...valid,
+      currentSession: { ...makeSession('d', 'daily', '2026-10-13', []), skill },
+    }),
+  ).toBe(false);
+});

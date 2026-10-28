@@ -1,5 +1,6 @@
 import { router } from 'expo-router';
-import { StyleSheet, View } from 'react-native';
+import { useMemo } from 'react';
+import { Pressable, StyleSheet, View } from 'react-native';
 
 import { ActivityBar } from '@/components/activity-bar';
 import { BrandMark } from '@/components/brand-mark';
@@ -8,15 +9,20 @@ import { Card } from '@/components/card';
 import { Icon, type IconName } from '@/components/icon';
 import { Screen } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
-import { IconBadge, ListRow, Pill, ProgressBar, SectionTitle } from '@/components/ui';
-import { guides, puzzles } from '@/content';
+import { IconBadge, ListRow, Pill, ProgressBar, SectionTitle, StepDots } from '@/components/ui';
+import { guides, puzzleById, puzzles } from '@/content';
+import { levelName } from '@/content/levels';
+import { skillById, skillUnits } from '@/content/skills';
 import { Spacing } from '@/constants/theme';
 import { lessonTarget } from '@/learning/lesson';
 import { nextLesson } from '@/learning/next-lesson';
 import { practiceDates } from '@/progress/activity';
 import { useProgressStore } from '@/progress/store';
 import { useLocalDate } from '@/hooks/use-local-date';
+import { availableRungs, RUNGS, skillMastered } from '@/skills/ladder';
+import { strengthsAndWeaknesses } from '@/skills/themes';
 import { activityStreak } from '@/utils/date-key';
+import { bestScore } from '@/vision/coordinates';
 import { getGreeting } from '@/utils/greeting';
 import { reviewQueue } from '@/workout/review';
 
@@ -54,6 +60,18 @@ export default function HomeScreen() {
   const selectLesson = useProgressStore((state) => state.selectLesson);
   const startLesson = useProgressStore((state) => state.startLesson);
   const start = useProgressStore((state) => state.startPractice);
+  const level = useProgressStore((state) => state.level);
+  const skillProgress = useProgressStore((state) => state.skillProgress);
+  const visionScores = useProgressStore((state) => state.visionScores);
+  const nextSkill = useMemo(() => {
+    const weakest = strengthsAndWeaknesses(attempts, puzzleById).weak[0]?.theme;
+    if (weakest) return { theme: weakest, weak: true };
+    const unmastered = skillUnits
+      .flatMap((unit) => unit.skills)
+      .find((theme) => !skillMastered(skillProgress[theme], availableRungs(theme, level ?? 1)));
+    return unmastered ? { theme: unmastered, weak: false } : null;
+  }, [attempts, skillProgress, level]);
+  const bestVision = bestScore(visionScores);
   const unfinished = session && session.phase !== 'complete';
   const doneToday = completions.some((completion) => completion.dateKey === today);
   const reviews = reviewQueue(attempts, today).length;
@@ -63,6 +81,10 @@ export default function HomeScreen() {
   const target = step ? lessonTarget(step.guideId, step.kind, step.targetId) : undefined;
   const reason = step ? LESSON_REASONS[step.reason] : undefined;
   function openPractice(review = false) {
+    if (!review && level === null && !unfinished) {
+      router.push({ pathname: '/level', params: { then: 'practice' } });
+      return;
+    }
     if (start(review ? 'review' : 'daily')) router.push('/workout');
   }
   function openLesson() {
@@ -92,7 +114,14 @@ export default function HomeScreen() {
       </View>
 
       <Card variant="hero">
-        <Pill tone="onHero" icon="puzzle" label="Practice · Beginner" />
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={`Change level, currently ${levelName(level)}`}
+          onPress={() => router.push('/level')}
+          style={styles.levelPill}>
+          <Pill tone="onHero" icon="puzzle" label={`Practice · ${levelName(level)}`} />
+          <Icon name="chevron-right" size={16} color="onHeroSecondary" />
+        </Pressable>
         <View style={styles.heroText}>
           <ThemedText type="title" themeColor="onHero">
             {unfinished
@@ -150,6 +179,42 @@ export default function HomeScreen() {
         )}
       </Card>
 
+      {nextSkill && (
+        <>
+          <SectionTitle>Skills · Train a pattern</SectionTitle>
+          <Card>
+            <View style={styles.learnHeader}>
+              <IconBadge name="target" size={44} />
+              <View style={styles.learnTitle}>
+                <ThemedText type="overline" themeColor="accent">
+                  {nextSkill.weak ? 'Worth practicing' : 'Next skill'}
+                </ThemedText>
+                <ThemedText type="headline">{skillById[nextSkill.theme].name}</ThemedText>
+              </View>
+              <StepDots
+                steps={RUNGS.map((rung) => ({
+                  done: skillProgress[nextSkill.theme]?.cleared.includes(rung) ?? false,
+                  available: true,
+                }))}
+              />
+            </View>
+            <ThemedText themeColor="textSecondary">{skillById[nextSkill.theme].summary}</ThemedText>
+            <Button
+              label={`Train ${skillById[nextSkill.theme].name.toLowerCase()}`}
+              onPress={() =>
+                router.push({ pathname: '/skill/[id]', params: { id: nextSkill.theme } })
+              }
+            />
+            <Button
+              variant="secondary"
+              icon="puzzle"
+              label="All skills"
+              onPress={() => router.push('/skills')}
+            />
+          </Card>
+        </>
+      )}
+
       <SectionTitle>Learn · Your next step</SectionTitle>
       <Card>
         <View style={styles.learnHeader}>
@@ -204,13 +269,21 @@ export default function HomeScreen() {
       </Card>
 
       <ListRow
+        icon="eye"
+        title="Board vision"
+        detail={
+          bestVision === null ? 'A 30-second square-finding drill' : `Best: ${bestVision} squares`
+        }
+        onPress={() => router.push('/vision')}
+      />
+      <ListRow
         icon="chart"
         title="Your progress"
         detail="Solves, recalls and streaks"
         onPress={() => router.push('/progress')}
       />
       <ThemedText type="small" themeColor="textSecondary" style={styles.footer}>
-        {puzzles.length} starter puzzles · Works offline · No daily limit
+        {puzzles.length} puzzles · Works offline · No daily limit
       </ThemedText>
     </Screen>
   );
@@ -228,6 +301,12 @@ function HeroMeta({ icon, label }: { icon: IconName; label: string }) {
 }
 
 const styles = StyleSheet.create({
+  levelPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.one,
+    alignSelf: 'flex-start',
+  },
   topBar: {
     flexDirection: 'row',
     alignItems: 'center',
