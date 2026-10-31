@@ -226,6 +226,23 @@ export function SectionTitle({ children, action }: { children: string; action?: 
   );
 }
 
+/** Quiet text action, such as "All skills" beside a section title. */
+export function TextLink({ label, onPress }: { label: string; onPress: () => void }) {
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      hitSlop={Spacing.two}
+      onPress={onPress}
+      style={({ pressed }) => [styles.textLink, pressed && styles.pressed]}>
+      <ThemedText type="smallBold" themeColor="accent">
+        {label}
+      </ThemedText>
+      <Icon name="chevron-right" size={16} color="accent" />
+    </Pressable>
+  );
+}
+
 /** Small dots for multi-step progress, such as cleared skill rounds. */
 export function StepDots({ steps }: { steps: readonly { done: boolean; available: boolean }[] }) {
   const theme = useTheme();
@@ -302,6 +319,7 @@ const styles = StyleSheet.create({
     borderRadius: Radius.pill,
     borderWidth: 1,
   },
+  textLink: { flexDirection: 'row', alignItems: 'center', gap: Spacing.half },
   section: {
     flexDirection: 'row',
     alignItems: 'center',

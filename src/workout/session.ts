@@ -1,4 +1,5 @@
 import { puzzleById, puzzles, type Puzzle } from '@/content';
+import { planRoute, ROUTE_FORKS } from '@/daily-route/route';
 import { SKILL_THEMES, type PuzzleLevel, type SkillTheme } from '@/content/types';
 import { checkPuzzleMove } from '@/content/validate';
 import { type Attempt, type PracticeMode, type Session } from '@/progress/types';
@@ -105,8 +106,43 @@ export function makeSession(
   };
 }
 
+export function makeRouteSession(
+  id: string,
+  localDate: string,
+  attempts: Attempt[],
+  level: PuzzleLevel = 1,
+): Session {
+  const plan = planRoute(localDate, level, attempts);
+  return {
+    ...makeSession(id, 'route', localDate, attempts, level),
+    puzzleIds: plan.puzzleIds,
+    route: { theme: plan.theme, steepIds: plan.steepIds, taken: [], choosing: false },
+  };
+}
+
+/** Answers the fork at the current square; the steep path swaps in the harder puzzle. */
+export function chooseFork(session: Session, steep: boolean): Session {
+  if (!session.route?.choosing) return session;
+  const fork = ROUTE_FORKS.findIndex((index) => index === session.index);
+  if (fork < 0) return session;
+  const route = { ...session.route, choosing: false };
+  if (!steep) return { ...session, route };
+  const puzzleIds = [...session.puzzleIds];
+  puzzleIds[session.index] = session.route.steepIds[fork];
+  return {
+    ...session,
+    puzzleIds,
+    route: { ...route, taken: [...route.taken, session.index] },
+  };
+}
+
 export function applyAnswer(session: Session, puzzle: Puzzle, move: string): Session {
-  if (session.phase !== 'solve' || session.puzzleIds[session.index] !== puzzle.id) return session;
+  if (
+    session.phase !== 'solve' ||
+    session.route?.choosing ||
+    session.puzzleIds[session.index] !== puzzle.id
+  )
+    return session;
   const result = checkPuzzleMove(puzzle, session.ply, move);
   if (!result.fen) return session;
   if (!result.correct) return { ...session, mistakes: session.mistakes + 1, lastWrong: true };
@@ -145,5 +181,8 @@ export function nextPuzzle(session: Session): Session {
     lastWrong: false,
     acceptedFen: null,
     acceptedMove: null,
+    ...(session.route
+      ? { route: { ...session.route, choosing: ROUTE_FORKS.some((fork) => fork === index) } }
+      : {}),
   };
 }

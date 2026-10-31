@@ -8,6 +8,7 @@ import { Screen } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
 import { Pill, ProgressBar, Segmented } from '@/components/ui';
 import { Radius, Spacing } from '@/constants/theme';
+import { useHaptics } from '@/hooks/use-haptics';
 import { useElevation, useTheme } from '@/hooks/use-theme';
 import { useProgressStore } from '@/progress/store';
 import { bestScore, nextTarget, ROUND_SECONDS, secondsLeft } from '@/vision/coordinates';
@@ -17,6 +18,7 @@ type Round = { startedAt: number; target: Square; score: number; misses: number 
 export default function VisionScreen() {
   const scores = useProgressStore((state) => state.visionScores);
   const recordVision = useProgressStore((state) => state.recordVision);
+  const haptic = useHaptics();
   const [side, setSide] = useState<ChessColor>('w');
   const [round, setRound] = useState<Round | null>(null);
   const [now, setNow] = useState(0);
@@ -54,9 +56,11 @@ export default function VisionScreen() {
   function tap(square: Square) {
     if (!round) return;
     if (square === round.target) {
+      haptic('tick');
       setWrong(null);
       setRound({ ...round, target: nextTarget(round.target), score: round.score + 1 });
     } else {
+      haptic('error');
       setWrong(square);
       setRound({ ...round, misses: round.misses + 1 });
     }

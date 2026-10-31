@@ -51,7 +51,7 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={navigationTheme}>
-      <StatusBar style="auto" />
+      <StatusBar style={schemeName === 'dark' ? 'light' : 'dark'} />
       <Stack
         screenOptions={{
           headerShadowVisible: false,
@@ -70,6 +70,8 @@ export default function RootLayout() {
         <Stack.Screen name="skills" options={{ title: 'Skills' }} />
         <Stack.Screen name="skill/[id]" options={{ title: 'Skill' }} />
         <Stack.Screen name="vision" options={{ title: 'Board Vision' }} />
+        <Stack.Screen name="daily-route" options={{ title: 'Daily Route' }} />
+        <Stack.Screen name="settings" options={{ title: 'Settings' }} />
       </Stack>
       {storageIssue && (
         <View style={[styles.banner, { backgroundColor: colors.dangerSurface }]}>

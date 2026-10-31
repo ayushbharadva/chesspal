@@ -3,7 +3,8 @@ import { readPosition } from '@/chess';
 import { branchForGuide } from '@/content/lessons';
 import { lessonTarget } from '@/learning/lesson';
 import { SKILL_THEMES } from '@/content/types';
-import { emptyLessonProgress, type SavedProgress } from '@/progress/types';
+import { ROUTE_FORKS } from '@/daily-route/route';
+import { defaultSettings, emptyLessonProgress, type SavedProgress } from '@/progress/types';
 import { emptyVisionScores, KEPT_SCORES } from '@/vision/coordinates';
 
 function record(value: unknown): value is Record<string, unknown> {
@@ -133,7 +134,7 @@ function lessonProgress(value: unknown) {
   return true;
 }
 
-const MODES = ['daily', 'extra', 'review', 'skill'];
+const MODES = ['daily', 'extra', 'review', 'skill', 'route'];
 function rung(value: unknown) {
   return value === 1 || value === 2 || value === 3;
 }
@@ -166,6 +167,39 @@ function visionScores(value: unknown) {
   );
 }
 
+function routeRuns(value: unknown) {
+  return (
+    Array.isArray(value) &&
+    value.every(
+      (run: unknown) =>
+        record(run) &&
+        validDate(run.dateKey) &&
+        integer(run.score, 100) &&
+        integer(run.steepTaken, ROUTE_FORKS.length) &&
+        rung(run.level),
+    )
+  );
+}
+function settings(value: unknown) {
+  return (
+    record(value) &&
+    ['system', 'light', 'dark'].includes(String(value.appearance)) &&
+    typeof value.haptics === 'boolean'
+  );
+}
+function routeState(value: unknown) {
+  return (
+    record(value) &&
+    skillTheme(value.theme) &&
+    Array.isArray(value.steepIds) &&
+    value.steepIds.length === ROUTE_FORKS.length &&
+    value.steepIds.every((id: unknown) => typeof id === 'string' && puzzleById[id]) &&
+    Array.isArray(value.taken) &&
+    value.taken.every((index: unknown) => ROUTE_FORKS.some((fork) => fork === index)) &&
+    typeof value.choosing === 'boolean'
+  );
+}
+
 export function validProgress(value: unknown): value is SavedProgress {
   if (
     !record(value) ||
@@ -179,6 +213,8 @@ export function validProgress(value: unknown): value is SavedProgress {
   if (value.level !== undefined && value.level !== null && !rung(value.level)) return false;
   if (value.skillProgress !== undefined && !skillProgress(value.skillProgress)) return false;
   if (value.visionScores !== undefined && !visionScores(value.visionScores)) return false;
+  if (value.routeRuns !== undefined && !routeRuns(value.routeRuns)) return false;
+  if (value.settings !== undefined && !settings(value.settings)) return false;
   if (
     !value.completions.every(
       (item: unknown) =>
@@ -251,6 +287,8 @@ export function validProgress(value: unknown): value is SavedProgress {
       : session.skill !== undefined
   )
     return false;
+  if (session.mode === 'route' ? !routeState(session.route) : session.route !== undefined)
+    return false;
   if (
     !MODES.includes(String(session.mode)) ||
     !['solve', 'replay', 'feedback', 'complete'].includes(String(session.phase)) ||
@@ -285,6 +323,8 @@ export function decodeProgress(raw: string) {
       level: envelope.state.level ?? null,
       skillProgress: envelope.state.skillProgress ?? {},
       visionScores: envelope.state.visionScores ?? emptyVisionScores(),
+      routeRuns: envelope.state.routeRuns ?? [],
+      settings: envelope.state.settings ?? defaultSettings(),
     },
   };
 }

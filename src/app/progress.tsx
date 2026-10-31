@@ -12,6 +12,7 @@ import { IconBadge, Pill, ProgressBar, SectionTitle } from '@/components/ui';
 import { guides, puzzleById, puzzles } from '@/content';
 import { levelName } from '@/content/levels';
 import { skillById, skillUnits } from '@/content/skills';
+import { bestRun, routePar } from '@/daily-route/route';
 import { Radius, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { practiceDates } from '@/progress/activity';
@@ -57,6 +58,9 @@ export default function ProgressScreen() {
     skillMastered(skillProgress[theme], availableRungs(theme, level ?? 1)),
   ).length;
   const bestVision = bestScore(visionScores);
+  const routeRuns = useProgressStore((state) => state.routeRuns);
+  const routeBest = bestRun(routeRuns);
+  const routeParScore = routePar(routeRuns, today);
   return (
     <Screen>
       <View style={styles.intro}>
@@ -122,16 +126,24 @@ export default function ProgressScreen() {
             label="Completed with help or retries"
             value={String(attempts.length - independent)}
           />
-          <Stat
-            label="Independent solve rate"
-            value={
-              attempts.length
-                ? `${Math.round((independent / attempts.length) * 100)}%`
-                : 'No attempts yet'
-            }
-          />
           <Stat label="Unique puzzles practiced" value={`${uniquePuzzles} / ${puzzles.length}`} />
           <Stat label="Workouts completed" value={String(completions.length)} last />
+        </View>
+      </Card>
+
+      <SectionTitle>Daily route</SectionTitle>
+      <Card>
+        <View style={styles.list}>
+          <Stat label="Routes finished" value={String(routeRuns.length)} />
+          <Stat
+            label="Best route"
+            value={routeBest === null ? 'Not played yet' : `${routeBest} points`}
+          />
+          <Stat
+            label="Your par"
+            value={routeParScore === null ? 'After three routes' : `${routeParScore} points`}
+            last
+          />
         </View>
       </Card>
 

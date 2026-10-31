@@ -1,6 +1,6 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
-import { Linking, StyleSheet, View } from 'react-native';
+import { Linking, ScrollView, StyleSheet, View } from 'react-native';
 import { describeMove, INITIAL_POSITION, playMove, positionAfter, readPosition } from '@/chess';
 import { Board } from '@/components/board/board';
 import { Button } from '@/components/button';
@@ -13,6 +13,8 @@ import { guideById } from '@/content';
 import { branchForGuide, branchesForGuide, transfersForGuide } from '@/content/lessons';
 import { Spacing } from '@/constants/theme';
 import { lessonFen, lessonKey, nextLessonReview } from '@/learning/lesson';
+import { useHaptics } from '@/hooks/use-haptics';
+import { useReplyPause } from '@/hooks/use-reply-pause';
 import { useProgressStore } from '@/progress/store';
 
 export default function LessonScreen() {
@@ -21,6 +23,14 @@ export default function LessonScreen() {
   const state = useProgressStore();
   const [chosenMode, setMode] = useState<'learn' | 'practice' | null>(null);
   const [message, setMessage] = useState('');
+  const haptic = useHaptics();
+  const activeKey = state.lessonProgress.selected[id] ?? lessonKey('branch', id, 'main');
+  const activeSession = state.lessonProgress.sessions[activeKey];
+  const pausing = useReplyPause(
+    activeKey,
+    activeSession?.ply ?? 0,
+    activeSession?.phase === 'solve',
+  );
   if (!guide)
     return (
       <Screen>
@@ -49,12 +59,19 @@ export default function LessonScreen() {
     progress.viewed[lessonKey('branch', id, branch.id)] ??
     (branch.id === 'main' ? (state.guideProgress[id]?.viewedPly ?? 0) : 0);
   const ply = practicing ? session!.ply : viewed;
-  const fen = practicing ? lessonFen(session!) : positionAfter(INITIAL_POSITION, branch.moves, ply);
+  // Rest on the player's move for a moment before showing the opponent's reply.
+  const replying = pausing && practicing && !transfer && ply >= 2;
+  const fen = replying
+    ? positionAfter(INITIAL_POSITION, branch.moves, ply - 1)
+    : practicing
+      ? lessonFen(session!)
+      : positionAfter(INITIAL_POSITION, branch.moves, ply);
   const hint = practicing && session?.hintShown && !done;
   const expectedMove = !transfer && ply < branch.moves.length ? branch.moves[ply] : undefined;
-  const expected = expectedMove ? playMove(fen, expectedMove) : undefined;
-  const lastMove =
-    !transfer && ply > 0
+  const expected = expectedMove && !replying ? playMove(fen, expectedMove) : undefined;
+  const lastMove = replying
+    ? playMove(positionAfter(INITIAL_POSITION, branch.moves, ply - 2), branch.moves[ply - 2])
+    : !transfer && ply > 0
       ? playMove(positionAfter(INITIAL_POSITION, branch.moves, ply - 1), branch.moves[ply - 1])
       : transfer && session?.acceptedMove
         ? playMove(transfer.fen, session.acceptedMove)
@@ -82,12 +99,19 @@ export default function LessonScreen() {
         <ThemedText type="title" accessibilityRole="header">
           {guide.title}
         </ThemedText>
-        <ThemedText themeColor="textSecondary">
-          Choose an example reply, learn its plan, then recall it.
-        </ThemedText>
+        {!practicing && (
+          <ThemedText themeColor="textSecondary">
+            Choose an example reply, learn its plan, then recall it.
+          </ThemedText>
+        )}
       </View>
       <SectionTitle>Example branches</SectionTitle>
-      <View style={styles.chips}>
+      {/* One scrolling row, so the board stays on screen while playing. */}
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={styles.chipRow}
+        contentContainerStyle={styles.chips}>
         {branchesForGuide(id).map((item) => (
           <Chip
             key={item.id}
@@ -102,7 +126,7 @@ export default function LessonScreen() {
             }}
           />
         ))}
-      </View>
+      </ScrollView>
       <View style={styles.lineHeading}>
         <ThemedText type="headline">{transfer?.title ?? branch.title}</ThemedText>
         {!transfer && (!practicing || done || session?.scaffold === 'guided') && (
@@ -136,10 +160,19 @@ export default function LessonScreen() {
         key={`${key}-${mode}`}
         fen={fen}
         orientation={transfer ? readPosition(transfer.fen).turn : guide.side}
-        interactive={practicing && !done}
-        onMove={(move) => state.answerLesson(key, move)}
-        onIllegalMove={() => state.wrongLesson(key)}
+        interactive={practicing && !done && !replying}
+        onMove={(move) => {
+          state.answerLesson(key, move);
+          const after = useProgressStore.getState().lessonProgress;
+          const played = after.sessions[after.selected[id]];
+          haptic(played?.phase === 'complete' ? 'success' : played?.lastWrong ? 'error' : 'tick');
+        }}
+        onIllegalMove={() => {
+          haptic('error');
+          state.wrongLesson(key);
+        }}
         lastMove={lastMove}
+        shakeKey={practicing ? (session?.mistakes ?? 0) : 0}
         hintSquare={hint && !transfer ? expected?.from : undefined}
       />
       {state.lessonNotice?.key === key && (
@@ -207,7 +240,12 @@ export default function LessonScreen() {
             </ThemedText>
             {hint && (
               <ThemedText type="smallBold" themeColor="accent">
-                {transfer ? transfer.hint : describeMove(fen, branch.moves[ply])}
+                {transfer
+                  ? transfer.hint
+                  : describeMove(
+                      positionAfter(INITIAL_POSITION, branch.moves, ply),
+                      branch.moves[ply],
+                    )}
               </ThemedText>
             )}
             {done && transfer && <ThemedText>{transfer.explanation}</ThemedText>}
@@ -325,7 +363,8 @@ function CardHeading({ icon, title }: { icon: IconName; title: string }) {
 
 const styles = StyleSheet.create({
   intro: { gap: Spacing.two, paddingTop: Spacing.two },
-  chips: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.two },
+  chipRow: { flexGrow: 0 },
+  chips: { flexDirection: 'row', gap: Spacing.two },
   lineHeading: { gap: Spacing.one, paddingTop: Spacing.two },
   row: { flexDirection: 'row', gap: Spacing.two },
   action: { flex: 1 },

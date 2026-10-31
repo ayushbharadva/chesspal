@@ -10,6 +10,8 @@ import { ThemedText } from '@/components/themed-text';
 import { IconBadge, Pill, ProgressBar } from '@/components/ui';
 import { puzzleById } from '@/content';
 import { skillById } from '@/content/skills';
+import { RoutePath } from '@/components/route-path';
+import { bestRun, ROUTE_MAX_SCORE, routePar, routeScore, routeSteps } from '@/daily-route/route';
 import { Spacing } from '@/constants/theme';
 import { useProgressStore } from '@/progress/store';
 import {
@@ -29,6 +31,7 @@ export default function ResultScreen() {
   const attempts = useProgressStore((state) => state.attempts);
   const level = useProgressStore((state) => state.level) ?? 1;
   const skillProgress = useProgressStore((state) => state.skillProgress);
+  const routeRuns = useProgressStore((state) => state.routeRuns);
   const insight = useMemo(() => strengthsAndWeaknesses(attempts, puzzleById), [attempts]);
   if (session?.phase !== 'complete')
     return (
@@ -44,6 +47,11 @@ export default function ResultScreen() {
   const available = skill ? availableRungs(skill.theme, level) : [];
   const mastered = skill ? skillMastered(skillProgress[skill.theme], available) : false;
   const nextRung = skill && cleared ? available.find((rung) => rung > skill.rung) : undefined;
+  const route = session.route;
+  const points = route ? routeScore(route.taken, session.results) : 0;
+  const par = routePar(routeRuns, session.dateKey);
+  const earlierBest = bestRun(routeRuns, session.dateKey);
+  const newBest = route !== undefined && earlierBest !== null && points > earlierBest;
   function playSkill(rung: Rung) {
     if (skill && startSkill(skill.theme, rung)) router.replace('/workout');
   }
@@ -57,7 +65,9 @@ export default function ResultScreen() {
             label={
               skill
                 ? `${skillById[skill.theme].name} · ${RUNG_NAMES[skill.rung]}`
-                : 'Practice complete'
+                : route
+                  ? `Daily route · ${skillById[route.theme].name}`
+                  : 'Practice complete'
             }
           />
           <ThemedText type="title" themeColor="onHero" accessibilityRole="header">
@@ -67,24 +77,42 @@ export default function ResultScreen() {
                 : cleared
                   ? 'Round cleared.'
                   : 'Not cleared yet.'
-              : 'Another good rep.'}
+              : route
+                ? newBest
+                  ? 'A new best route.'
+                  : par !== null && points >= par
+                    ? 'At or above your par.'
+                    : 'Route complete.'
+                : 'Another good rep.'}
           </ThemedText>
         </View>
         <View style={styles.score}>
           <ThemedText type="stat" themeColor="heroAccent">
-            {independent} / {session.results.length}
+            {route ? `${points} points` : `${independent} / ${session.results.length}`}
           </ThemedText>
-          <ThemedText themeColor="onHeroSecondary">solved independently</ThemedText>
+          <ThemedText themeColor="onHeroSecondary">
+            {route
+              ? `out of ${ROUTE_MAX_SCORE} · ${independent} of ${session.results.length} solved independently`
+              : 'solved independently'}
+          </ThemedText>
         </View>
-        <ProgressBar
-          value={independent / session.results.length}
-          track="heroOverlay"
-          fill="heroAccent"
-        />
+        {route ? (
+          <RoutePath steps={routeSteps(session)} onHero />
+        ) : (
+          <ProgressBar
+            value={independent / session.results.length}
+            track="heroOverlay"
+            fill="heroAccent"
+          />
+        )}
         <ThemedText type="small" themeColor="onHeroSecondary">
-          {skill && !cleared
-            ? `Solve ${RUNG_PASS} of ${session.results.length} without hints or retries to clear this round. Your next try uses fresh puzzles.`
-            : `${assisted} completed with help or a retry. Every explanation is a chance to learn.`}
+          {route
+            ? par === null
+              ? 'Finish three routes to set your par: the middle score of your earlier runs.'
+              : `Your par is ${par}, the middle score of your earlier runs.`
+            : skill && !cleared
+              ? `Solve ${RUNG_PASS} of ${session.results.length} without hints or retries to clear this round. Your next try uses fresh puzzles.`
+              : `${assisted} completed with help or a retry. Every explanation is a chance to learn.`}
         </ThemedText>
       </Card>
       {!skill && (insight.strong[0] || insight.weak[0]) && (

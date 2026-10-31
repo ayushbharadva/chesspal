@@ -1,5 +1,6 @@
 import { router } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { renderHook } from '@testing-library/react-native';
 import { act, cleanup, fireEvent, renderRouter, screen } from 'expo-router/testing-library';
 
 import { guideById, puzzleById, puzzles } from '@/content';
@@ -7,6 +8,7 @@ import { skillById } from '@/content/skills';
 import { branchForGuide, transfersForGuide } from '@/content/lessons';
 import { answerLesson, beginLesson, lessonAttempt, lessonKey } from '@/learning/lesson';
 import { describeMove, INITIAL_POSITION } from '@/chess';
+import { useColorSchemeName } from '@/hooks/use-theme';
 import { useProgressStore } from '@/progress/store';
 import { emptyProgress } from '@/progress/types';
 import { flushProgressWrites, PROGRESS_KEY } from '@/storage/storage';
@@ -527,4 +529,134 @@ it('shows theme strengths and weaknesses on Progress', async () => {
   expect(
     screen.getByLabelText(/^Pins: 20% solved without help in 5 puzzles, worth practicing$/),
   ).toBeOnTheScreen();
+});
+
+describe('daily route', () => {
+  async function solveCurrentPuzzle(label: 'Next puzzle' | 'See results') {
+    const session = useProgressStore.getState().currentSession!;
+    const puzzle = puzzleById[session.puzzleIds[session.index]];
+    for (let ply = 0; ply < puzzle.moves.length; ply += 2) await move(puzzle.moves[ply]);
+    await fireEvent.press(screen.getByRole('button', { name: label }));
+  }
+
+  it('plays a route with one steep fork, then scores and saves the run', async () => {
+    const app = await renderApp();
+    await fireEvent.press(screen.getByRole('button', { name: 'Open daily route' }));
+    expect(app.getPathname()).toBe('/daily-route');
+    await fireEvent.press(screen.getByRole('button', { name: 'Start route' }));
+    expect(app.getPathname()).toBe('/workout');
+    expect(screen.getByText(/^Square 1 of 5/)).toBeOnTheScreen();
+    const planned = useProgressStore.getState().currentSession!;
+
+    await solveCurrentPuzzle('Next puzzle');
+    expect(screen.getByText('A fork in the route.')).toBeOnTheScreen();
+    await fireEvent.press(screen.getByRole('button', { name: 'Take the steep path' }));
+    expect(screen.getByText(/Steep path/)).toBeOnTheScreen();
+    expect(useProgressStore.getState().currentSession!.puzzleIds[1]).toBe(
+      planned.route!.steepIds[0],
+    );
+    await solveCurrentPuzzle('Next puzzle');
+    await solveCurrentPuzzle('Next puzzle');
+    await fireEvent.press(screen.getByRole('button', { name: 'Take the safe path' }));
+    await solveCurrentPuzzle('Next puzzle');
+    await solveCurrentPuzzle('See results');
+
+    expect(app.getPathname()).toBe('/result');
+    // Four safe squares at 2 points and one steep square at 4.
+    expect(screen.getByText('12 points')).toBeOnTheScreen();
+    const state = useProgressStore.getState();
+    expect(state.routeRuns).toEqual([{ dateKey: dateKey(), score: 12, steepTaken: 1, level: 1 }]);
+    expect(state.attempts).toHaveLength(5);
+    expect(state.completions.at(-1)?.mode).toBe('route');
+
+    await fireEvent.press(screen.getByRole('button', { name: 'Done' }));
+    expect(screen.getByText('12 points today')).toBeOnTheScreen();
+    expect(screen.getByLabelText('Practice streak: 1 day')).toBeOnTheScreen();
+    expect(screen.getByRole('button', { name: 'Start practice' })).toBeOnTheScreen();
+    await fireEvent.press(screen.getByRole('button', { name: "See today's route" }));
+    expect(screen.queryByRole('button', { name: 'Start route' })).not.toBeOnTheScreen();
+    expect(useProgressStore.getState().startRoute()).toBe(false);
+  });
+
+  it('gives nothing for a steep puzzle solved with help', async () => {
+    useProgressStore.getState().startRoute();
+    await renderApp('/workout');
+    await solveCurrentPuzzle('Next puzzle');
+    await fireEvent.press(screen.getByRole('button', { name: 'Take the steep path' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Get a hint' }));
+    await solveCurrentPuzzle('Next puzzle');
+    await solveCurrentPuzzle('Next puzzle');
+    await fireEvent.press(screen.getByRole('button', { name: 'Take the safe path' }));
+    await solveCurrentPuzzle('Next puzzle');
+    await solveCurrentPuzzle('See results');
+    expect(screen.getByText('8 points')).toBeOnTheScreen();
+  });
+
+  it('resumes a saved route at a fork after storage reload', async () => {
+    useProgressStore.getState().startRoute();
+    await renderApp('/workout');
+    await solveCurrentPuzzle('Next puzzle');
+    await flushProgressWrites();
+    const raw = await AsyncStorage.getItem(PROGRESS_KEY);
+    await act(async () => {
+      useProgressStore.setState(emptyProgress());
+      await flushProgressWrites();
+      await AsyncStorage.setItem(PROGRESS_KEY, raw!);
+      await useProgressStore.persist.rehydrate();
+    });
+    expect(useProgressStore.getState().currentSession?.route?.choosing).toBe(true);
+    expect(useProgressStore.getState().storageIssue).toBe(false);
+    expect(screen.getByRole('button', { name: 'Take the safe path' })).toBeOnTheScreen();
+  });
+
+  it('asks a new player for a level before the first route', async () => {
+    useProgressStore.setState({ level: null });
+    const app = await renderApp('/daily-route');
+    await fireEvent.press(screen.getByRole('button', { name: 'Start route' }));
+    expect(app.getPathname()).toBe('/level');
+    await fireEvent.press(screen.getByRole('button', { name: /^Medium:/ }));
+    expect(app.getPathname()).toBe('/workout');
+    const session = useProgressStore.getState().currentSession!;
+    expect(session.mode).toBe('route');
+    expect(session.puzzleIds.every((id) => puzzleById[id].level === 3)).toBe(true);
+  });
+
+  it('asks the player to finish another round first', async () => {
+    useProgressStore.getState().startPractice();
+    const app = await renderApp('/daily-route');
+    expect(screen.getByText(/You have a practice round in progress/)).toBeOnTheScreen();
+    expect(useProgressStore.getState().startRoute()).toBe(false);
+    await fireEvent.press(screen.getByRole('button', { name: 'Resume practice' }));
+    expect(app.getPathname()).toBe('/workout');
+    expect(useProgressStore.getState().currentSession?.mode).toBe('daily');
+  });
+});
+
+describe('settings', () => {
+  it('opens from Home and saves appearance and haptics', async () => {
+    const app = await renderApp();
+    await fireEvent.press(screen.getByRole('button', { name: 'Settings' }));
+    expect(app.getPathname()).toBe('/settings');
+    await fireEvent.press(screen.getByRole('button', { name: 'Dark' }));
+    expect(useProgressStore.getState().settings.appearance).toBe('dark');
+    await fireEvent(screen.getByLabelText('Haptic feedback'), 'valueChange', false);
+    expect(useProgressStore.getState().settings.haptics).toBe(false);
+    await flushProgressWrites();
+    const saved = JSON.parse((await AsyncStorage.getItem(PROGRESS_KEY))!);
+    expect(saved.state.settings).toEqual({ appearance: 'dark', haptics: false });
+  });
+
+  it('applies the chosen appearance to the theme', async () => {
+    useProgressStore.setState({
+      settings: { ...useProgressStore.getState().settings, appearance: 'dark' },
+    });
+    const dark = await renderHook(() => useColorSchemeName());
+    expect(dark.result.current).toBe('dark');
+    await act(async () => {
+      useProgressStore.setState({
+        settings: { ...useProgressStore.getState().settings, appearance: 'light' },
+      });
+    });
+    expect(dark.result.current).toBe('light');
+  });
 });

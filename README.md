@@ -14,6 +14,8 @@ Offline chess practice and opening guides for beginners who already know the rul
 - **Next step:** Home helps you resume a lesson, return for a due recall, or apply an opening idea in a new position.
 - **Progress:** independent and assisted puzzle solves and lesson recalls, practiced guides, activity and streaks. Completed lessons count toward activity alongside workouts. Workouts, branch positions and exercises resume automatically.
 - **Recall:** scheduled reviews return after a delay, including puzzles previously solved independently. Workouts mix due reviews with fresh practice.
+- **Daily route:** five themed puzzles a day with two safe-or-steep forks, scored against your own earlier runs.
+- **Settings:** light, dark or system appearance and optional haptic feedback.
 - No account, server, subscription or internet connection needed for learning. Opening references open in your browser.
 
 Current scope: [docs/MVP.md](docs/MVP.md). Puzzle sources and engine checks: [docs/content-pipeline.md](docs/content-pipeline.md).

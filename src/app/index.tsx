@@ -9,11 +9,21 @@ import { Card } from '@/components/card';
 import { Icon, type IconName } from '@/components/icon';
 import { Screen } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
-import { IconBadge, ListRow, Pill, ProgressBar, SectionTitle, StepDots } from '@/components/ui';
+import { RoutePath } from '@/components/route-path';
+import {
+  IconBadge,
+  ListRow,
+  Pill,
+  ProgressBar,
+  SectionTitle,
+  StepDots,
+  TextLink,
+} from '@/components/ui';
 import { guides, puzzleById, puzzles } from '@/content';
 import { levelName } from '@/content/levels';
 import { skillById, skillUnits } from '@/content/skills';
 import { Spacing } from '@/constants/theme';
+import { routeSteps, routeTheme } from '@/daily-route/route';
 import { lessonTarget } from '@/learning/lesson';
 import { nextLesson } from '@/learning/next-lesson';
 import { practiceDates } from '@/progress/activity';
@@ -63,6 +73,7 @@ export default function HomeScreen() {
   const level = useProgressStore((state) => state.level);
   const skillProgress = useProgressStore((state) => state.skillProgress);
   const visionScores = useProgressStore((state) => state.visionScores);
+  const routeRuns = useProgressStore((state) => state.routeRuns);
   const nextSkill = useMemo(() => {
     const weakest = strengthsAndWeaknesses(attempts, puzzleById).weak[0]?.theme;
     if (weakest) return { theme: weakest, weak: true };
@@ -73,7 +84,11 @@ export default function HomeScreen() {
   }, [attempts, skillProgress, level]);
   const bestVision = bestScore(visionScores);
   const unfinished = session && session.phase !== 'complete';
-  const doneToday = completions.some((completion) => completion.dateKey === today);
+  const doneToday = completions.some(
+    (completion) => completion.dateKey === today && completion.mode !== 'route',
+  );
+  const routeToday = routeRuns.find((run) => run.dateKey === today);
+  const routeActive = session?.mode === 'route' && session.phase !== 'complete' ? session : null;
   const reviews = reviewQueue(attempts, today).length;
   const learned = guides.filter((guide) => lessonProgress[guide.id]?.completedAt).length;
   const streak = activityStreak(practiceDates(completions, lessons.attempts), today);
@@ -100,10 +115,19 @@ export default function HomeScreen() {
           <BrandMark size={34} />
           <ThemedText type="headline">ChessPal</ThemedText>
         </View>
-        <View
-          accessible
-          accessibilityLabel={`Practice streak: ${streak} ${streak === 1 ? 'day' : 'days'}`}>
-          <Pill icon="flame" tone={streak ? 'accent' : 'muted'} label={String(streak)} />
+        <View style={styles.topActions}>
+          <View
+            accessible
+            accessibilityLabel={`Practice streak: ${streak} ${streak === 1 ? 'day' : 'days'}`}>
+            <Pill icon="flame" tone={streak ? 'accent' : 'muted'} label={String(streak)} />
+          </View>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Settings"
+            hitSlop={Spacing.two}
+            onPress={() => router.push('/settings')}>
+            <Icon name="settings" size={22} color="textSecondary" />
+          </Pressable>
         </View>
       </View>
       <View style={styles.greeting}>
@@ -133,7 +157,7 @@ export default function HomeScreen() {
           <ThemedText themeColor="onHeroSecondary">
             {unfinished
               ? `${session.results.length} of ${session.puzzleIds.length} puzzles completed. Your place is saved.`
-              : 'Spot a mate, win a piece, find a fork. Your round can include earlier puzzles to help you remember.'}
+              : 'Spot a mate, win a piece, find a fork.'}
           </ThemedText>
         </View>
         {unfinished ? (
@@ -164,10 +188,9 @@ export default function HomeScreen() {
           onPress={() => openPractice()}
         />
         {!unfinished && reviews > 0 && (
-          <View style={[styles.review, styles.heroText]}>
+          <View style={[styles.heroText, styles.review]}>
             <ThemedText type="small" themeColor="onHeroSecondary">
-              Revisit puzzles ready for another try, including ones you solved without help. Aim to
-              solve them without hints or retries. Up to 10 per round.
+              Puzzles ready for another try, including ones you solved without help.
             </ThemedText>
             <Button
               variant="onHero"
@@ -179,43 +202,63 @@ export default function HomeScreen() {
         )}
       </Card>
 
+      <SectionTitle>{`Daily route · ${skillById[routeTheme(today)].name}`}</SectionTitle>
+      <Card>
+        <View style={styles.learnHeader}>
+          <IconBadge name="route" size={44} />
+          <View style={styles.learnTitle}>
+            <ThemedText type="headline">
+              {routeToday
+                ? `${routeToday.score} points today`
+                : routeActive
+                  ? 'Your route is waiting'
+                  : 'Five squares, two forks'}
+            </ThemedText>
+            <ThemedText type="small" themeColor="textSecondary">
+              {routeToday ? 'A new route opens tomorrow.' : 'Play it safe or take the steep path.'}
+            </ThemedText>
+          </View>
+        </View>
+        {routeActive && <RoutePath steps={routeSteps(routeActive)} />}
+        <Button
+          variant="secondary"
+          disabled={!hydrated}
+          label={
+            routeToday ? "See today's route" : routeActive ? 'Resume route' : 'Open daily route'
+          }
+          onPress={() => router.push('/daily-route')}
+        />
+      </Card>
+
       {nextSkill && (
         <>
-          <SectionTitle>Skills · Train a pattern</SectionTitle>
-          <Card>
-            <View style={styles.learnHeader}>
-              <IconBadge name="target" size={44} />
-              <View style={styles.learnTitle}>
-                <ThemedText type="overline" themeColor="accent">
-                  {nextSkill.weak ? 'Worth practicing' : 'Next skill'}
-                </ThemedText>
-                <ThemedText type="headline">{skillById[nextSkill.theme].name}</ThemedText>
-              </View>
+          <SectionTitle
+            action={<TextLink label="All skills" onPress={() => router.push('/skills')} />}>
+            Skills
+          </SectionTitle>
+          <ListRow
+            icon="target"
+            title={skillById[nextSkill.theme].name}
+            detail={`${nextSkill.weak ? 'Worth practicing' : 'Next skill'} · ${skillById[nextSkill.theme].summary}`}
+            accessibilityLabel={`Train ${skillById[nextSkill.theme].name.toLowerCase()}`}
+            onPress={() =>
+              router.push({ pathname: '/skill/[id]', params: { id: nextSkill.theme } })
+            }
+            trailing={
               <StepDots
                 steps={RUNGS.map((rung) => ({
                   done: skillProgress[nextSkill.theme]?.cleared.includes(rung) ?? false,
                   available: true,
                 }))}
               />
-            </View>
-            <ThemedText themeColor="textSecondary">{skillById[nextSkill.theme].summary}</ThemedText>
-            <Button
-              label={`Train ${skillById[nextSkill.theme].name.toLowerCase()}`}
-              onPress={() =>
-                router.push({ pathname: '/skill/[id]', params: { id: nextSkill.theme } })
-              }
-            />
-            <Button
-              variant="secondary"
-              icon="puzzle"
-              label="All skills"
-              onPress={() => router.push('/skills')}
-            />
-          </Card>
+            }
+          />
         </>
       )}
 
-      <SectionTitle>Learn · Your next step</SectionTitle>
+      <SectionTitle action={<TextLink label="All guides" onPress={() => router.push('/learn')} />}>
+        Learn
+      </SectionTitle>
       <Card>
         <View style={styles.learnHeader}>
           <IconBadge name="graduation-cap" size={44} />
@@ -250,17 +293,12 @@ export default function HomeScreen() {
         </View>
         {step && target && reason && (
           <Button
+            variant="secondary"
             disabled={!hydrated}
             label={!hydrated ? 'Restoring your lessons…' : reason.action}
             onPress={openLesson}
           />
         )}
-        <Button
-          variant="secondary"
-          icon="book-open"
-          label="Explore guides"
-          onPress={() => router.push('/learn')}
-        />
       </Card>
 
       <SectionTitle>This week</SectionTitle>
@@ -313,6 +351,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingTop: Spacing.two,
   },
+  topActions: { flexDirection: 'row', alignItems: 'center', gap: Spacing.three },
   brand: { flexDirection: 'row', alignItems: 'center', gap: Spacing.two + Spacing.one },
   greeting: { gap: Spacing.one, paddingTop: Spacing.three, paddingBottom: Spacing.two },
   heroText: { gap: Spacing.two, paddingRight: Spacing.five },

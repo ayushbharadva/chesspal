@@ -3,6 +3,7 @@ import { createJSONStorage, persist } from 'zustand/middleware';
 
 import { positionAfter, type ChessColor } from '@/chess';
 import { guideById, puzzleById } from '@/content';
+import { recordRun, routeScore } from '@/daily-route/route';
 import { type PuzzleLevel, type SkillTheme } from '@/content/types';
 import { branchForGuide } from '@/content/lessons';
 import {
@@ -18,13 +19,21 @@ import {
   type GuideProgress,
   type PracticeMode,
   type SavedProgress,
+  type Settings,
   type LessonKind,
 } from '@/progress/types';
 import { RUNG_SIZE, rungCleared, type Rung } from '@/skills/ladder';
 import { progressStorage, PROGRESS_KEY, reportStorageIssues } from '@/storage/storage';
 import { dateKey } from '@/utils/date-key';
 import { recordScore } from '@/vision/coordinates';
-import { applyAnswer, attemptFor, makeSession, nextPuzzle } from '@/workout/session';
+import {
+  applyAnswer,
+  attemptFor,
+  chooseFork,
+  makeRouteSession,
+  makeSession,
+  nextPuzzle,
+} from '@/workout/session';
 
 interface ProgressStore extends SavedProgress {
   hydrated: boolean;
@@ -34,6 +43,10 @@ interface ProgressStore extends SavedProgress {
   setLevel: (level: PuzzleLevel) => void;
   /** Starts a ladder run; false while another practice round is unfinished. */
   startSkill: (theme: SkillTheme, rung: Rung) => boolean;
+  /** Starts today's route; false while another round is unfinished or today's run is done. */
+  startRoute: () => boolean;
+  chooseRoute: (steep: boolean) => void;
+  updateSettings: (patch: Partial<Settings>) => void;
   recordVision: (side: ChessColor, score: number) => void;
   answer: (move: string) => void;
   hint: () => void;
@@ -98,6 +111,29 @@ export const useProgressStore = create<ProgressStore>()(
         set({ currentSession: session });
         return true;
       },
+      startRoute() {
+        if (!get().hydrated) return false;
+        const active = get().currentSession;
+        if (active && active.phase !== 'complete') return active.mode === 'route';
+        const today = dateKey();
+        if (get().routeRuns.some((run) => run.dateKey === today)) return false;
+        set({
+          currentSession: makeRouteSession(
+            `route-${today}`,
+            today,
+            get().attempts,
+            get().level ?? 1,
+          ),
+        });
+        return true;
+      },
+      chooseRoute(steep) {
+        const session = get().currentSession;
+        if (session) set({ currentSession: chooseFork(session, steep) });
+      },
+      updateSettings(patch) {
+        set({ settings: { ...get().settings, ...patch } });
+      },
       recordVision(side, score) {
         set({ visionScores: recordScore(get().visionScores, side, score) });
       },
@@ -117,7 +153,7 @@ export const useProgressStore = create<ProgressStore>()(
       },
       hint() {
         const session = get().currentSession;
-        if (session?.phase === 'solve')
+        if (session?.phase === 'solve' && !session.route?.choosing)
           set({
             currentSession: {
               ...session,
@@ -129,7 +165,7 @@ export const useProgressStore = create<ProgressStore>()(
       },
       reveal() {
         const session = get().currentSession;
-        if (session?.phase === 'solve')
+        if (session?.phase === 'solve' && !session.route?.choosing)
           set({
             currentSession: {
               ...session,
@@ -177,6 +213,16 @@ export const useProgressStore = create<ProgressStore>()(
             currentSession: next,
             completions: [...get().completions.filter((item) => item.id !== next.id), completion],
           });
+          if (next.route) {
+            set({
+              routeRuns: recordRun(get().routeRuns, {
+                dateKey: next.dateKey,
+                score: routeScore(next.route.taken, next.results),
+                steepTaken: next.route.taken.length,
+                level: get().level ?? 1,
+              }),
+            });
+          }
           if (next.skill) {
             const { theme, rung } = next.skill;
             const progress = get().skillProgress[theme] ?? { cleared: [], runs: 0 };
@@ -349,6 +395,8 @@ export const useProgressStore = create<ProgressStore>()(
         level,
         skillProgress,
         visionScores,
+        routeRuns,
+        settings,
       }) => ({
         attempts,
         completions,
@@ -358,6 +406,8 @@ export const useProgressStore = create<ProgressStore>()(
         level,
         skillProgress,
         visionScores,
+        routeRuns,
+        settings,
       }),
       onRehydrateStorage: () => () => {
         useProgressStore.setState({ hydrated: true });

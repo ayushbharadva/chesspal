@@ -6,9 +6,13 @@
 import { useColorScheme } from 'react-native';
 
 import { Colors, Elevation, type ColorSchemeName } from '@/constants/theme';
+import { useProgressStore } from '@/progress/store';
 
 export function useColorSchemeName(): ColorSchemeName {
-  return useColorScheme() === 'dark' ? 'dark' : 'light';
+  const system = useColorScheme();
+  const appearance = useProgressStore((state) => state.settings.appearance);
+  if (appearance !== 'system') return appearance;
+  return system === 'dark' ? 'dark' : 'light';
 }
 
 export function useTheme() {

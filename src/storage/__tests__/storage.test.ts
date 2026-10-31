@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { emptyProgress } from '@/progress/types';
 import { decodeProgress, validProgress } from '@/storage/schema';
 import { flushProgressWrites, progressStorage, PROGRESS_KEY } from '@/storage/storage';
-import { makeSession } from '@/workout/session';
+import { chooseFork, makeRouteSession, makeSession } from '@/workout/session';
 
 beforeEach(async () => {
   await flushProgressWrites();
@@ -37,6 +37,62 @@ it('backs up corruption and rejects impossible saved positions', async () => {
     }),
   ).toBe(false);
   expect(() => decodeProgress(JSON.stringify({ state: emptyProgress(), version: 99 }))).toThrow();
+});
+it('loads older saves with route and settings defaults', () => {
+  const { routeRuns: _runs, settings: _settings, ...older } = emptyProgress();
+  const decoded = decodeProgress(JSON.stringify({ state: older, version: 1 })).state;
+  expect(decoded.routeRuns).toEqual([]);
+  expect(decoded.settings).toEqual({ appearance: 'system', haptics: true });
+});
+it('round-trips a route session and rejects impossible route data', () => {
+  const route = makeRouteSession('route-a', '2026-10-13', [], 1);
+  const choosing = {
+    ...route,
+    route: { ...route.route!, choosing: true },
+    index: 1,
+    results: [
+      {
+        id: 'a',
+        puzzleId: route.puzzleIds[0],
+        independent: true,
+        dateKey: '2026-10-13',
+        completedAt: '2026-10-13T10:00:00.000Z',
+      },
+    ],
+  };
+  expect(validProgress({ ...emptyProgress(), currentSession: choosing })).toBe(true);
+  expect(validProgress({ ...emptyProgress(), currentSession: chooseFork(choosing, true) })).toBe(
+    true,
+  );
+  const { route: _route, ...noRoute } = route;
+  expect(validProgress({ ...emptyProgress(), currentSession: noRoute })).toBe(false);
+  expect(
+    validProgress({
+      ...emptyProgress(),
+      currentSession: { ...route, route: { ...route.route!, steepIds: ['nope', 'nope'] } },
+    }),
+  ).toBe(false);
+  expect(
+    validProgress({
+      ...emptyProgress(),
+      currentSession: { ...route, route: { ...route.route!, taken: [0] } },
+    }),
+  ).toBe(false);
+  expect(
+    validProgress({
+      ...emptyProgress(),
+      currentSession: { ...makeSession('x', 'daily', '2026-10-13', []), route: route.route },
+    }),
+  ).toBe(false);
+});
+it('rejects invalid route runs and settings', () => {
+  const run = { dateKey: '2026-10-13', score: 8, steepTaken: 1, level: 2 };
+  expect(validProgress({ ...emptyProgress(), routeRuns: [run] })).toBe(true);
+  expect(validProgress({ ...emptyProgress(), routeRuns: [{ ...run, score: -1 }] })).toBe(false);
+  expect(validProgress({ ...emptyProgress(), routeRuns: [{ ...run, steepTaken: 3 }] })).toBe(false);
+  expect(
+    validProgress({ ...emptyProgress(), settings: { appearance: 'neon', haptics: true } }),
+  ).toBe(false);
 });
 it('serializes writes to keep the most recent snapshot', async () => {
   const first = JSON.stringify({ state: emptyProgress(), version: 1 });

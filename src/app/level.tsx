@@ -18,11 +18,13 @@ export default function LevelScreen() {
   const current = useProgressStore((state) => state.level);
   const setLevel = useProgressStore((state) => state.setLevel);
   const startPractice = useProgressStore((state) => state.startPractice);
+  const startRoute = useProgressStore((state) => state.startRoute);
   const theme = useTheme();
   const elevation = useElevation();
   function choose(level: PuzzleLevel) {
     setLevel(level);
     if (then === 'practice' && startPractice()) router.replace('/workout');
+    else if (then === 'route' && startRoute()) router.replace('/workout');
     else router.back();
   }
   return (

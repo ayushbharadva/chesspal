@@ -9,11 +9,16 @@ import { Card } from '@/components/card';
 import { type IconName } from '@/components/icon';
 import { Screen } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
-import { IconBadge, ProgressBar } from '@/components/ui';
+import { RoutePath } from '@/components/route-path';
+import { IconBadge, ListRow, ProgressBar } from '@/components/ui';
 import { puzzleById } from '@/content';
 import { skillById } from '@/content/skills';
 import { Spacing } from '@/constants/theme';
+import { routeSteps, SAFE_HELPED_POINTS, SAFE_POINTS, STEEP_POINTS } from '@/daily-route/route';
+import { useHaptics } from '@/hooks/use-haptics';
+import { useReplyPause } from '@/hooks/use-reply-pause';
 import { useTheme } from '@/hooks/use-theme';
+import { type Session } from '@/progress/types';
 import { RUNG_NAMES } from '@/skills/ladder';
 import { useProgressStore } from '@/progress/store';
 
@@ -25,7 +30,14 @@ export default function WorkoutScreen() {
   const reveal = useProgressStore((state) => state.reveal);
   const replayStep = useProgressStore((state) => state.replayStep);
   const next = useProgressStore((state) => state.continuePractice);
+  const chooseRoute = useProgressStore((state) => state.chooseRoute);
+  const haptic = useHaptics();
   const [ruleMessage, setRuleMessage] = useState('');
+  const replying = useReplyPause(
+    `${session?.id}:${session?.index}`,
+    session?.ply ?? 0,
+    session?.phase === 'solve',
+  );
   if (!hydrated)
     return (
       <Screen>
@@ -42,12 +54,53 @@ export default function WorkoutScreen() {
         />
       </Screen>
     );
+  if (session.route?.choosing)
+    return (
+      <Screen>
+        <RouteProgress session={session} />
+        <View style={styles.heading}>
+          <ThemedText type="title" accessibilityRole="header">
+            A fork in the route.
+          </ThemedText>
+          <ThemedText themeColor="textSecondary">
+            Pick the safe path to keep your points coming, or take on a harder puzzle for double.
+          </ThemedText>
+        </View>
+        <ListRow
+          icon="shield"
+          title="Safe path"
+          detail={`${SAFE_POINTS} points, or ${SAFE_HELPED_POINTS} with help. A puzzle at your level.`}
+          accessibilityLabel="Take the safe path"
+          onPress={() => {
+            haptic('tick');
+            chooseRoute(false);
+          }}
+        />
+        <ListRow
+          icon="mountain"
+          title="Steep path"
+          detail={`${STEEP_POINTS} points without help, otherwise nothing. A harder puzzle.`}
+          accessibilityLabel="Take the steep path"
+          onPress={() => {
+            haptic('tick');
+            chooseRoute(true);
+          }}
+        />
+      </Screen>
+    );
   const puzzle = puzzleById[session.puzzleIds[session.index]];
-  const fen = session.acceptedFen ?? positionAfter(puzzle.fen, puzzle.moves, session.ply);
+  const settledFen = session.acceptedFen ?? positionAfter(puzzle.fen, puzzle.moves, session.ply);
+  // Rest on the player's move for a moment before showing the opponent's reply.
+  const fen = replying ? positionAfter(puzzle.fen, puzzle.moves, session.ply - 1) : settledFen;
   const orientation = readPosition(puzzle.fen).turn;
-  const expected = session.phase === 'solve' ? playMove(fen, puzzle.moves[session.ply]) : null;
-  const previous =
-    session.phase === 'feedback' && session.acceptedMove
+  const expected =
+    session.phase === 'solve' ? playMove(settledFen, puzzle.moves[session.ply]) : null;
+  const previous = replying
+    ? playMove(
+        positionAfter(puzzle.fen, puzzle.moves, session.ply - 2),
+        puzzle.moves[session.ply - 2],
+      )
+    : session.phase === 'feedback' && session.acceptedMove
       ? {
           from: session.acceptedMove.slice(0, 2) as Square,
           to: session.acceptedMove.slice(2, 4) as Square,
@@ -59,12 +112,77 @@ export default function WorkoutScreen() {
           )
         : undefined;
   const lastResult = session.results.at(-1);
+  const route = session.route;
+  function play(move: string) {
+    setRuleMessage('');
+    answer(move);
+    const after = useProgressStore.getState().currentSession;
+    haptic(after?.phase === 'feedback' ? 'success' : after?.lastWrong ? 'error' : 'tick');
+  }
+  const footer =
+    session.phase === 'solve' ? (
+      <View style={styles.actions}>
+        <View style={styles.action}>
+          <Button
+            size="compact"
+            variant="secondary"
+            icon="lightbulb"
+            label={session.hintsShown ? 'Another hint' : 'Get a hint'}
+            disabled={session.hintsShown >= 3}
+            onPress={() => {
+              setRuleMessage('');
+              hint();
+            }}
+          />
+        </View>
+        <View style={styles.action}>
+          <Button
+            size="compact"
+            variant="secondary"
+            icon="eye"
+            label="Show solution"
+            onPress={() => {
+              setRuleMessage('');
+              reveal();
+            }}
+          />
+        </View>
+      </View>
+    ) : session.phase === 'replay' ? (
+      <View style={styles.actions}>
+        <View style={styles.action}>
+          <Button
+            size="compact"
+            variant="secondary"
+            label="Previous move"
+            disabled={session.ply === 0}
+            onPress={() => replayStep(-1)}
+          />
+        </View>
+        <View style={styles.action}>
+          <Button size="compact" label="Show next move" onPress={() => replayStep(1)} />
+        </View>
+      </View>
+    ) : (
+      <Button
+        icon="arrow-right"
+        label={session.index === session.puzzleIds.length - 1 ? 'See results' : 'Next puzzle'}
+        onPress={() => {
+          setRuleMessage('');
+          if (next()) router.replace('/result');
+        }}
+      />
+    );
   return (
-    <Screen>
+    <Screen footer={footer}>
       <View style={styles.heading}>
         <View style={styles.progressRow}>
-          <ThemedText type="overline" themeColor="textSecondary">
-            Puzzle {session.index + 1} of {session.puzzleIds.length}
+          <ThemedText type="overline" themeColor="textSecondary" style={styles.progressLabel}>
+            {route
+              ? `Square ${session.index + 1} of ${session.puzzleIds.length} · ${
+                  route.taken.includes(session.index) ? 'Steep path' : 'Daily route'
+                }`
+              : `Puzzle ${session.index + 1} of ${session.puzzleIds.length}`}
             {session.mode === 'review' ? ' · Review' : ''}
             {session.skill
               ? ` · ${skillById[session.skill.theme].name} · ${RUNG_NAMES[session.skill.rung]}`
@@ -72,11 +190,15 @@ export default function WorkoutScreen() {
           </ThemedText>
           <TurnBadge color={orientation} />
         </View>
-        <ProgressBar
-          value={
-            (session.index + (session.phase === 'feedback' ? 1 : 0)) / session.puzzleIds.length
-          }
-        />
+        {route ? (
+          <RouteProgress session={session} />
+        ) : (
+          <ProgressBar
+            value={
+              (session.index + (session.phase === 'feedback' ? 1 : 0)) / session.puzzleIds.length
+            }
+          />
+        )}
         <ThemedText type="headline" accessibilityRole="header">
           {/* Only the warm-up names the theme; later rounds test recognition. */}
           {session.skill && session.skill.rung > 1 ? 'Find the best move' : puzzle.goal}
@@ -85,20 +207,26 @@ export default function WorkoutScreen() {
           {orientation === 'w' ? 'White' : 'Black'} to play ·{' '}
           {session.phase === 'replay'
             ? 'Solution replay'
-            : 'Tap a piece, then a highlighted square'}
+            : session.phase === 'feedback'
+              ? 'Solved'
+              : 'Tap or drag a piece to move'}
         </ThemedText>
       </View>
       <Board
         fen={fen}
         orientation={orientation}
-        interactive={session.phase === 'solve'}
-        onMove={(move) => {
-          setRuleMessage('');
-          answer(move);
+        interactive={session.phase === 'solve' && !replying}
+        onMove={play}
+        onIllegalMove={() => {
+          haptic('error');
+          setRuleMessage('Choose a highlighted square to make a legal move.');
         }}
-        onIllegalMove={() => setRuleMessage('Choose a highlighted square to make a legal move.')}
         lastMove={previous}
         hintSquare={session.hintsShown >= 2 ? expected?.from : undefined}
+        successSquare={
+          session.phase === 'feedback' && lastResult?.independent ? previous?.to : undefined
+        }
+        shakeKey={session.mistakes}
       />
       {ruleMessage ? (
         <ThemedText type="small" themeColor="textSecondary" accessibilityLiveRegion="polite">
@@ -115,103 +243,47 @@ export default function WorkoutScreen() {
           </Feedback>
         </Card>
       )}
-      {session.phase === 'solve' && (
-        <>
-          {session.hintsShown > 0 && (
-            <Card variant="accent">
-              <Feedback icon="lightbulb" tone="accent" title={`Hint ${session.hintsShown}`}>
-                {session.hintsShown === 1
-                  ? puzzle.hints[0]
-                  : session.hintsShown === 2
-                    ? `Look at the piece on ${expected?.from}.`
-                    : describeMove(fen, puzzle.moves[session.ply])}
-              </Feedback>
-            </Card>
-          )}
-          <View style={styles.actions}>
-            <View style={styles.action}>
-              <Button
-                size="compact"
-                variant="secondary"
-                icon="lightbulb"
-                label={session.hintsShown ? 'Another hint' : 'Get a hint'}
-                disabled={session.hintsShown >= 3}
-                onPress={() => {
-                  setRuleMessage('');
-                  hint();
-                }}
-              />
-            </View>
-            <View style={styles.action}>
-              <Button
-                size="compact"
-                variant="secondary"
-                icon="eye"
-                label="Show solution"
-                onPress={() => {
-                  setRuleMessage('');
-                  reveal();
-                }}
-              />
-            </View>
-          </View>
-          <ThemedText type="small" themeColor="textSecondary" style={styles.note}>
-            Hints support learning. Assisted solves are tracked separately.
-          </ThemedText>
-        </>
+      {session.phase === 'solve' && session.hintsShown > 0 && (
+        <Card variant="accent">
+          <Feedback icon="lightbulb" tone="accent" title={`Hint ${session.hintsShown}`}>
+            {session.hintsShown === 1
+              ? puzzle.hints[0]
+              : session.hintsShown === 2
+                ? `Look at the piece on ${expected?.from}.`
+                : describeMove(settledFen, puzzle.moves[session.ply])}
+          </Feedback>
+        </Card>
       )}
       {session.phase === 'replay' && (
-        <>
-          <Card variant="accent">
-            <Feedback
-              icon="play"
-              tone="accent"
-              title={`One solution · Move ${session.ply} of ${puzzle.moves.length}`}>
-              {describeMove(fen, puzzle.moves[session.ply])}
-            </Feedback>
-          </Card>
-          <View style={styles.actions}>
-            <View style={styles.action}>
-              <Button
-                size="compact"
-                variant="secondary"
-                label="Previous move"
-                disabled={session.ply === 0}
-                onPress={() => replayStep(-1)}
-              />
-            </View>
-            <View style={styles.action}>
-              <Button size="compact" label="Show next move" onPress={() => replayStep(1)} />
-            </View>
-          </View>
-        </>
+        <Card variant="accent">
+          <Feedback
+            icon="play"
+            tone="accent"
+            title={`One solution · Move ${session.ply} of ${puzzle.moves.length}`}>
+            {describeMove(fen, puzzle.moves[session.ply])}
+          </Feedback>
+        </Card>
       )}
       {session.phase === 'feedback' && (
-        <>
-          <Card variant={lastResult?.independent ? 'success' : 'accent'}>
-            <Feedback
-              icon={lastResult?.independent ? 'check' : 'sparkles'}
-              tone={lastResult?.independent ? 'success' : 'accent'}
-              title={lastResult?.independent ? 'Well spotted!' : 'A useful rep.'}
-              live>
-              {puzzle.explanation}
-            </Feedback>
-          </Card>
-          <Button
-            icon="arrow-right"
-            label={session.index === session.puzzleIds.length - 1 ? 'See results' : 'Next puzzle'}
-            onPress={() => {
-              setRuleMessage('');
-              if (next()) router.replace('/result');
-            }}
-          />
-        </>
+        <Card variant={lastResult?.independent ? 'success' : 'accent'}>
+          <Feedback
+            icon={lastResult?.independent ? 'check' : 'sparkles'}
+            tone={lastResult?.independent ? 'success' : 'accent'}
+            title={lastResult?.independent ? 'Well spotted!' : 'A useful rep.'}
+            live>
+            {puzzle.explanation}
+          </Feedback>
+        </Card>
       )}
       <ThemedText type="small" themeColor="textSecondary" style={styles.note}>
-        Your place is saved automatically. Leave and resume anytime.
+        Hints are there to help; assisted solves are tracked separately. Your place is saved.
       </ThemedText>
     </Screen>
   );
+}
+
+function RouteProgress({ session }: { session: Session }) {
+  return <RoutePath steps={routeSteps(session)} />;
 }
 
 function TurnBadge({ color }: { color: 'w' | 'b' }) {
@@ -266,7 +338,13 @@ function Feedback({
 
 const styles = StyleSheet.create({
   heading: { gap: Spacing.two },
-  progressRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  progressRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: Spacing.two,
+  },
+  progressLabel: { flex: 1 },
   turn: { flexDirection: 'row', alignItems: 'center', gap: Spacing.one + Spacing.half },
   turnDot: { width: 12, height: 12, borderRadius: 6, borderWidth: 1 },
   actions: { flexDirection: 'row', gap: Spacing.two },
