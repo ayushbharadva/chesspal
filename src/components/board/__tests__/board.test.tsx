@@ -1,6 +1,9 @@
 import { fireEvent, render, screen } from '@testing-library/react-native';
-import { INITIAL_POSITION } from '@/chess';
+import { INITIAL_POSITION, playMove, positionAfter } from '@/chess';
 import { Board, dropSquare } from '@/components/board/board';
+import { playSound } from '@/sounds/play-sound';
+
+jest.mock('@/sounds/play-sound', () => ({ playSound: jest.fn() }));
 
 it('offers legal targets, rejects illegal taps and reports legal moves', async () => {
   const onMove = jest.fn();
@@ -48,5 +51,38 @@ describe('dropSquare', () => {
   it('returns null for a drop off the board', () => {
     expect(dropSquare({ x: 0, y: 0 }, -30, 0, size, ...white)).toBeNull();
     expect(dropSquare({ x: 280, y: 280 }, 0, 30, size, ...white)).toBeNull();
+  });
+});
+
+describe('move sounds', () => {
+  const sound = jest.mocked(playSound);
+  const line = ['e2e4', 'd7d5', 'e4d5'];
+  const at = (ply: number) => {
+    const fen = positionAfter(INITIAL_POSITION, line, ply);
+    return ply === 0
+      ? { fen }
+      : { fen, lastMove: playMove(positionAfter(INITIAL_POSITION, line, ply - 1), line[ply - 1]) };
+  };
+  beforeEach(() => sound.mockClear());
+
+  it('stays quiet when a board opens on a position, as when resuming', async () => {
+    await render(<Board {...at(2)} />);
+    expect(sound).not.toHaveBeenCalled();
+  });
+
+  it('plays each new move once, for players and opponents alike', async () => {
+    const view = await render(<Board {...at(0)} />);
+    await view.rerender(<Board {...at(1)} />);
+    await view.rerender(<Board {...at(2)} />);
+    await view.rerender(<Board {...at(3)} />);
+    expect(sound.mock.calls.map(([name]) => name)).toEqual(['move', 'move', 'capture']);
+    await view.rerender(<Board {...at(3)} interactive />);
+    expect(sound).toHaveBeenCalledTimes(3);
+  });
+
+  it('stays quiet for a new puzzle with no last move', async () => {
+    const view = await render(<Board {...at(1)} />);
+    await view.rerender(<Board fen={INITIAL_POSITION} />);
+    expect(sound).not.toHaveBeenCalled();
   });
 });

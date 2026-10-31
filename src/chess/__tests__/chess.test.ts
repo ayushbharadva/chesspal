@@ -1,4 +1,5 @@
 import {
+  classifyMove,
   describeMove,
   INITIAL_POSITION,
   legalMoves,
@@ -47,5 +48,28 @@ describe('chess rules adapter', () => {
     );
     expect(playMove(fen, 'a7a8n').san).toContain('=N');
     expect(() => playMove(fen, 'a7a8')).toThrow();
+  });
+});
+
+describe('classifyMove', () => {
+  const classify = (fen: string, uci: string) => classifyMove(fen, playMove(fen, uci).fen);
+  const afterMoves = (...moves: string[]) => positionAfter(INITIAL_POSITION, moves);
+
+  it('names ordinary moves, including castling and promotion', () => {
+    expect(classify(INITIAL_POSITION, 'e2e4')).toBe('move');
+    expect(classify('r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1', 'e1g1')).toBe('move');
+    expect(classify('8/P7/8/8/8/8/8/1k1K4 w - - 0 1', 'a7a8q')).toBe('move');
+  });
+
+  it('names captures, including en passant and capturing promotion', () => {
+    expect(classify(afterMoves('e2e4', 'd7d5'), 'e4d5')).toBe('capture');
+    expect(classify(afterMoves('e2e4', 'a7a6', 'e4e5', 'd7d5'), 'e5d6')).toBe('capture');
+    expect(classify('1n6/P7/8/8/8/8/8/1k1K4 w - - 0 1', 'a7b8n')).toBe('capture');
+  });
+
+  it('puts check and checkmate above a capture', () => {
+    expect(classify('4k3/8/8/8/8/8/8/R3K3 w - - 0 1', 'a1a8')).toBe('check');
+    expect(classify('r3k3/8/8/8/8/8/8/R3K3 w - - 0 1', 'a1a8')).toBe('check');
+    expect(classify(afterMoves('f2f3', 'e7e5', 'g2g4'), 'd8h4')).toBe('checkmate');
   });
 });

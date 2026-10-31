@@ -16,6 +16,7 @@ import { lessonFen, lessonKey, nextLessonReview } from '@/learning/lesson';
 import { useHaptics } from '@/hooks/use-haptics';
 import { useReplyPause } from '@/hooks/use-reply-pause';
 import { useProgressStore } from '@/progress/store';
+import { CHIME_DELAY_MS, playSound } from '@/sounds/play-sound';
 
 export default function LessonScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -166,6 +167,8 @@ export default function LessonScreen() {
           const after = useProgressStore.getState().lessonProgress;
           const played = after.sessions[after.selected[id]];
           haptic(played?.phase === 'complete' ? 'success' : played?.lastWrong ? 'error' : 'tick');
+          if (played?.phase === 'complete') setTimeout(() => playSound('correct'), CHIME_DELAY_MS);
+          else if (played?.lastWrong) playSound('wrong');
         }}
         onIllegalMove={() => {
           haptic('error');

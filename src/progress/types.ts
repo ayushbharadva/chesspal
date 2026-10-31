@@ -86,9 +86,10 @@ export type Appearance = 'system' | 'light' | 'dark';
 export interface Settings {
   appearance: Appearance;
   haptics: boolean;
+  sounds: boolean;
 }
 export function defaultSettings(): Settings {
-  return { appearance: 'system', haptics: true };
+  return { appearance: 'system', haptics: true, sounds: true };
 }
 
 export interface SavedProgress {

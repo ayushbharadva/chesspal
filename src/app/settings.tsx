@@ -11,6 +11,7 @@ import { useHaptics } from '@/hooks/use-haptics';
 import { useTheme } from '@/hooks/use-theme';
 import { useProgressStore } from '@/progress/store';
 import { type Appearance } from '@/progress/types';
+import { playSound } from '@/sounds/play-sound';
 
 const APPEARANCES: readonly { value: Appearance; label: string }[] = [
   { value: 'system', label: 'System' },
@@ -49,6 +50,24 @@ export default function SettingsScreen() {
             onValueChange={(haptics) => {
               updateSettings({ haptics });
               if (haptics) haptic('tick');
+            }}
+          />
+        </View>
+        <View style={styles.row}>
+          <View style={styles.rowText}>
+            <ThemedText type="subtitle">Sound effects</ThemedText>
+            <ThemedText type="small" themeColor="textSecondary">
+              Moves, captures, checks and wins. Your phone&apos;s silent switch turns them off too.
+            </ThemedText>
+          </View>
+          <Switch
+            accessibilityLabel="Sound effects"
+            value={settings.sounds}
+            trackColor={{ true: theme.accentFill, false: theme.surfaceMuted }}
+            thumbColor={theme.pieceWhite}
+            onValueChange={(sounds) => {
+              updateSettings({ sounds });
+              playSound('move');
             }}
           />
         </View>

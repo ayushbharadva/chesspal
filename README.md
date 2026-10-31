@@ -15,7 +15,8 @@ Offline chess practice and opening guides for beginners who already know the rul
 - **Progress:** independent and assisted puzzle solves and lesson recalls, practiced guides, activity and streaks. Completed lessons count toward activity alongside workouts. Workouts, branch positions and exercises resume automatically.
 - **Recall:** scheduled reviews return after a delay, including puzzles previously solved independently. Workouts mix due reviews with fresh practice.
 - **Daily route:** five themed puzzles a day with two safe-or-steep forks, scored against your own earlier runs.
-- **Settings:** light, dark or system appearance and optional haptic feedback.
+- **Sound effects:** quiet wooden sounds for moves, captures, checks and checkmates, plus soft tones for solves and mistakes.
+- **Settings:** light, dark or system appearance, with optional haptic feedback and sound effects.
 - No account, server, subscription or internet connection needed for learning. Opening references open in your browser.
 
 Current scope: [docs/MVP.md](docs/MVP.md). Puzzle sources and engine checks: [docs/content-pipeline.md](docs/content-pipeline.md).

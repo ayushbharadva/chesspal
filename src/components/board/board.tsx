@@ -11,7 +11,14 @@ import {
   type PanResponderInstance,
 } from 'react-native';
 
-import { legalMoves, PIECE_NAMES, readPosition, type ChessColor, type Square } from '@/chess';
+import {
+  classifyMove,
+  legalMoves,
+  PIECE_NAMES,
+  readPosition,
+  type ChessColor,
+  type Square,
+} from '@/chess';
 import { Button } from '@/components/button';
 import { ScrollLockContext } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
@@ -20,6 +27,7 @@ import { Fonts, Radius, Spacing } from '@/constants/theme';
 import { useHaptics } from '@/hooks/use-haptics';
 import { useMotionEnabled } from '@/hooks/use-motion';
 import { useElevation, useTheme } from '@/hooks/use-theme';
+import { playSound } from '@/sounds/play-sound';
 
 const SLIDE_MS = 170;
 const DRAG_START_DISTANCE = 6;
@@ -129,6 +137,19 @@ export function Board({
     animation.start(() => setSettledMove(moveKey));
     return () => animation.stop();
   }, [sliding, slide, moveKey]);
+
+  // Every move that appears on the board gets its sound: the player's, replies and demonstrations.
+  const heardFen = useRef(fen);
+  const heardMove = useRef(moveKey);
+  useEffect(() => {
+    const before = heardFen.current;
+    const isNew = heardMove.current !== moveKey;
+    heardFen.current = fen;
+    heardMove.current = moveKey;
+    if (isNew && lastMove && before !== fen) playSound(classifyMove(before, fen));
+    // moveKey already changes whenever lastMove does.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fen, moveKey]);
 
   const previousShake = useRef(shakeKey);
   useEffect(() => {

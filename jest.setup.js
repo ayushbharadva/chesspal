@@ -12,3 +12,11 @@ jest.mock('expo-haptics', () => ({
   NotificationFeedbackType: { Success: 'success', Error: 'error' },
   AndroidHaptics: { Segment_Tick: 'segment-tick', Confirm: 'confirm', Reject: 'reject' },
 }));
+
+jest.mock('expo-audio', () => ({
+  createAudioPlayer: jest.fn(() => ({
+    seekTo: jest.fn(() => Promise.resolve()),
+    play: jest.fn(),
+  })),
+  setAudioModeAsync: jest.fn(() => Promise.resolve()),
+}));

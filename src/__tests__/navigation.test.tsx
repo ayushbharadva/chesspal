@@ -643,7 +643,15 @@ describe('settings', () => {
     expect(useProgressStore.getState().settings.haptics).toBe(false);
     await flushProgressWrites();
     const saved = JSON.parse((await AsyncStorage.getItem(PROGRESS_KEY))!);
-    expect(saved.state.settings).toEqual({ appearance: 'dark', haptics: false });
+    await fireEvent(screen.getByLabelText('Sound effects'), 'valueChange', false);
+    await flushProgressWrites();
+    const savedAgain = JSON.parse((await AsyncStorage.getItem(PROGRESS_KEY))!);
+    expect(saved.state.settings.haptics).toBe(false);
+    expect(savedAgain.state.settings).toEqual({
+      appearance: 'dark',
+      haptics: false,
+      sounds: false,
+    });
   });
 
   it('applies the chosen appearance to the theme', async () => {

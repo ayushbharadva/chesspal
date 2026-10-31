@@ -42,7 +42,18 @@ it('loads older saves with route and settings defaults', () => {
   const { routeRuns: _runs, settings: _settings, ...older } = emptyProgress();
   const decoded = decodeProgress(JSON.stringify({ state: older, version: 1 })).state;
   expect(decoded.routeRuns).toEqual([]);
-  expect(decoded.settings).toEqual({ appearance: 'system', haptics: true });
+  expect(decoded.settings).toEqual({ appearance: 'system', haptics: true, sounds: true });
+});
+it('keeps settings saved before sound effects existed and turns sounds on', () => {
+  const state = { ...emptyProgress(), settings: { appearance: 'dark', haptics: false } };
+  const decoded = decodeProgress(JSON.stringify({ state, version: 1 })).state;
+  expect(decoded.settings).toEqual({ appearance: 'dark', haptics: false, sounds: true });
+  expect(
+    validProgress({
+      ...emptyProgress(),
+      settings: { appearance: 'dark', haptics: false, sounds: 'loud' },
+    }),
+  ).toBe(false);
 });
 it('round-trips a route session and rejects impossible route data', () => {
   const route = makeRouteSession('route-a', '2026-10-13', [], 1);

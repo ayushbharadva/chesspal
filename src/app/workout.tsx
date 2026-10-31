@@ -18,6 +18,7 @@ import { routeSteps, SAFE_HELPED_POINTS, SAFE_POINTS, STEEP_POINTS } from '@/dai
 import { useHaptics } from '@/hooks/use-haptics';
 import { useReplyPause } from '@/hooks/use-reply-pause';
 import { useTheme } from '@/hooks/use-theme';
+import { CHIME_DELAY_MS, playSound } from '@/sounds/play-sound';
 import { type Session } from '@/progress/types';
 import { RUNG_NAMES } from '@/skills/ladder';
 import { useProgressStore } from '@/progress/store';
@@ -117,7 +118,16 @@ export default function WorkoutScreen() {
     setRuleMessage('');
     answer(move);
     const after = useProgressStore.getState().currentSession;
-    haptic(after?.phase === 'feedback' ? 'success' : after?.lastWrong ? 'error' : 'tick');
+    if (after?.phase === 'feedback') {
+      haptic('success');
+      // A mate already has its own fanfare, and help earns the move sound alone.
+      const earned = after.results.at(-1)?.independent;
+      if (earned && !readPosition(after.acceptedFen!).checkmate)
+        setTimeout(() => playSound('correct'), CHIME_DELAY_MS);
+    } else if (after?.lastWrong) {
+      haptic('error');
+      playSound('wrong');
+    } else haptic('tick');
   }
   const footer =
     session.phase === 'solve' ? (

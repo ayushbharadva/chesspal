@@ -15,6 +15,7 @@ Use the preview APK from `npx eas-cli@latest build --platform android --profile 
 - [ ] Board: legal/illegal taps, both orientations, castling, en passant and all promotion options behave correctly.
 - [ ] Dragging: drag from each orientation near the board's edges on a scrolled screen. The page stays still during a drag, a drop on an illegal square returns the piece, and taps still work. Moves slide, and the opponent's reply follows after a short pause.
 - [ ] Daily route: finish a route with a steep and a safe fork, force-close at a fork and resume it, and confirm one scored run a day. Haptics fire when on and stop when turned off in Settings; Android's reduce-animations setting plays moves instantly.
+- [ ] Sound: moves, captures, check and checkmate each sound right, with no delay or crackle and at a comfortable volume. Silent mode and the Settings switch both stop them, and music from another app keeps playing.
 - [ ] Android back: leave and resume each flow without losing position or creating duplicate attempts.
 - [ ] Airplane mode: puzzles, guides, exercises and saved progress work; the external reference reports a connection problem gracefully.
 - [ ] Layout/accessibility: small phone, large font scale, dark mode and TalkBack. Verify readable labels, reachable controls and no clipped board or buttons.

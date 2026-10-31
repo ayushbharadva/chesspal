@@ -25,8 +25,8 @@ function play(kind: HapticKind) {
 
 /** Plays a haptic when the player has them on. Devices without haptics simply ignore it. */
 export function useHaptics() {
-  const enabled = useProgressStore((state) => state.settings.haptics);
   return (kind: HapticKind) => {
-    if (enabled) void Promise.resolve(play(kind)).catch(() => undefined);
+    if (useProgressStore.getState().settings.haptics)
+      void Promise.resolve(play(kind)).catch(() => undefined);
   };
 }

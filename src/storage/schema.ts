@@ -184,7 +184,8 @@ function settings(value: unknown) {
   return (
     record(value) &&
     ['system', 'light', 'dark'].includes(String(value.appearance)) &&
-    typeof value.haptics === 'boolean'
+    typeof value.haptics === 'boolean' &&
+    (value.sounds === undefined || typeof value.sounds === 'boolean')
   );
 }
 function routeState(value: unknown) {
@@ -324,7 +325,7 @@ export function decodeProgress(raw: string) {
       skillProgress: envelope.state.skillProgress ?? {},
       visionScores: envelope.state.visionScores ?? emptyVisionScores(),
       routeRuns: envelope.state.routeRuns ?? [],
-      settings: envelope.state.settings ?? defaultSettings(),
+      settings: { ...defaultSettings(), ...envelope.state.settings },
     },
   };
 }
