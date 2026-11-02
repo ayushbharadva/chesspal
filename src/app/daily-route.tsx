@@ -54,13 +54,17 @@ export default function DailyRouteScreen() {
     <Screen
       footer={
         run ? (
-          <Button variant="secondary" label="Back to Home" onPress={() => router.dismissTo('/')} />
+          <Button
+            variant="secondary"
+            label="Done"
+            onPress={() => (router.canGoBack() ? router.back() : router.replace('/'))}
+          />
         ) : blocked ? (
-          <Button label="Resume practice" onPress={() => router.push('/workout')} />
+          <Button label="Resume puzzles" onPress={() => router.push('/workout')} />
         ) : (
           <Button
             icon="play"
-            label={routeInProgress ? 'Resume route' : 'Start route'}
+            label={routeInProgress ? 'Resume challenge' : 'Start challenge'}
             onPress={open}
           />
         )
@@ -68,29 +72,25 @@ export default function DailyRouteScreen() {
       <View style={styles.intro}>
         <Pill icon="target" tone="accent" label={`${skill.name} · ${levelName(level)}`} />
         <ThemedText type="title" accessibilityRole="header">
-          {run ? `${run.score} points today.` : "Today's route."}
+          {run ? `${run.score} points today.` : "Today's challenge."}
         </ThemedText>
         <ThemedText themeColor="textSecondary">
           {run
-            ? `Out of ${ROUTE_MAX_SCORE}. A new route opens tomorrow.`
-            : `Five ${skill.name.toLowerCase()} puzzles. At squares 2 and 4 you choose your path.`}
+            ? `Out of ${ROUTE_MAX_SCORE}. A new challenge opens tomorrow.`
+            : `5 puzzles. Twice, you pick normal or hard.`}
         </ThemedText>
       </View>
       <Card>
         <RoutePath steps={routeSteps(shownSession)} />
         <View style={styles.rules}>
-          <Bullet>{`Safe squares: ${SAFE_POINTS} points, or ${SAFE_HELPED_POINTS} with help.`}</Bullet>
-          <Bullet>{`Steep squares are harder: ${STEEP_POINTS} points without help, otherwise nothing.`}</Bullet>
-          <Bullet>
-            One route a day. Every puzzle still counts toward your reviews and streak.
-          </Bullet>
+          <Bullet>{`Normal: ${SAFE_POINTS} points, or ${SAFE_HELPED_POINTS} with help.`}</Bullet>
+          <Bullet>{`Hard: ${STEEP_POINTS} points, or 0 with help.`}</Bullet>
+          <Bullet>One try a day.</Bullet>
         </View>
       </Card>
       {blocked && (
         <Card variant="accent">
-          <ThemedText>
-            You have a practice round in progress. Finish it first, then start this route.
-          </ThemedText>
+          <ThemedText>Finish your current puzzles first.</ThemedText>
         </Card>
       )}
       <Card>
@@ -98,15 +98,15 @@ export default function DailyRouteScreen() {
           Your record
         </ThemedText>
         <View style={styles.stats}>
-          <Stat label="Your par" value={par === null ? '–' : String(par)} />
+          <Stat label="Usual" value={par === null ? '–' : String(par)} />
           <Stat label="Best" value={best === null ? '–' : String(best)} />
-          <Stat label="Routes" value={String(runs.length)} />
+          <Stat label="Played" value={String(runs.length)} />
         </View>
-        <ThemedText type="small" themeColor="textSecondary">
-          {recent.length
-            ? `Recent: ${recent.join(', ')}. Par is the middle score of your earlier runs.`
-            : 'Finish three routes to set your par: the middle score of your earlier runs.'}
-        </ThemedText>
+        {recent.length > 0 && (
+          <ThemedText type="small" themeColor="textSecondary">
+            Recent: {recent.join(', ')}
+          </ThemedText>
+        )}
       </Card>
     </Screen>
   );

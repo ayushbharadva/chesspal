@@ -7,6 +7,13 @@ export function dayNumber(key: string) {
   return Date.UTC(year, month - 1, day) / 86_400_000;
 }
 
+/** A due date in plain words relative to today, such as "tomorrow" or "in 3 days". */
+export function relativeDay(key: string, today: string) {
+  const days = dayNumber(key) - dayNumber(today);
+  if (days <= 0) return 'today';
+  return days === 1 ? 'tomorrow' : `in ${days} days`;
+}
+
 export function activityStreak(keys: string[], today: string) {
   const days = new Set(keys.map(dayNumber));
   let cursor = dayNumber(today);

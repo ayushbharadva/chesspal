@@ -141,7 +141,7 @@ it('resumes an unfinished destination without replacing it or advancing the inte
   expect(state().lessonProgress.sessions[alternateKey]).toEqual(saved);
   expect(state().lessonProgress.sessions[mainKey]).toEqual(main);
   expect(state().lessonProgress.attempts).toEqual([first]);
-  expect(state().lessonNotice?.text).toMatch(/Resuming your saved/);
+  expect(state().lessonNotice?.text).toMatch(/Picking up where you left off/);
   const snapshot = { ...emptyProgress(), lessonProgress: state().lessonProgress };
   expect(decodeProgress(JSON.stringify({ state: snapshot, version: 1 })).state).toEqual(snapshot);
   state().startLesson('italian-game', 'branch', 'main');

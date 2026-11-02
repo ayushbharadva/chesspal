@@ -7,7 +7,7 @@ import { Spacing } from '@/constants/theme';
 import { type RouteStep } from '@/daily-route/route';
 import { useTheme } from '@/hooks/use-theme';
 
-/** The five squares of a daily route, with forks marked and points on finished squares. */
+/** The five puzzles of a daily challenge, with choices marked and points on finished ones. */
 export function RoutePath({ steps, onHero = false }: { steps: RouteStep[]; onHero?: boolean }) {
   const theme = useTheme();
   const line = onHero ? theme.heroOverlay : theme.border;
@@ -17,7 +17,7 @@ export function RoutePath({ steps, onHero = false }: { steps: RouteStep[]; onHer
     <View
       style={styles.path}
       accessible
-      accessibilityLabel={`Route: ${finished} of ${steps.length} squares finished, ${total} points`}>
+      accessibilityLabel={`Challenge: ${finished} of ${steps.length} puzzles done, ${total} points`}>
       {steps.map((step, index) => (
         <Fragment key={index}>
           {index > 0 && <View style={[styles.line, { backgroundColor: line }]} />}

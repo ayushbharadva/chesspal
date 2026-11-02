@@ -7,18 +7,17 @@ import { Card } from '@/components/card';
 import { type IconName } from '@/components/icon';
 import { Screen } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
-import { Button } from '@/components/button';
-import { IconBadge, Pill, ProgressBar, SectionTitle } from '@/components/ui';
-import { guides, puzzleById, puzzles } from '@/content';
+import { IconBadge, ListRow, Pill, ProgressBar, SectionTitle } from '@/components/ui';
+import { guides, puzzleById } from '@/content';
 import { levelName } from '@/content/levels';
 import { skillById, skillUnits } from '@/content/skills';
-import { bestRun, routePar } from '@/daily-route/route';
+import { bestRun } from '@/daily-route/route';
 import { Radius, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { practiceDates } from '@/progress/activity';
 import { useProgressStore } from '@/progress/store';
 import { availableRungs, skillMastered } from '@/skills/ladder';
-import { MIN_THEME_ATTEMPTS, strengthsAndWeaknesses, themeStats } from '@/skills/themes';
+import { strengthsAndWeaknesses, themeStats } from '@/skills/themes';
 import { activityStreak, bestActivityStreak } from '@/utils/date-key';
 import { bestScore } from '@/vision/coordinates';
 import { useLocalDate } from '@/hooks/use-local-date';
@@ -34,7 +33,6 @@ export default function ProgressScreen() {
   const days = practiceDates(completions, learning);
   const currentStreak = activityStreak(days, today);
   const bestStreak = bestActivityStreak(days);
-  const uniquePuzzles = new Set(attempts.map((attempt) => attempt.puzzleId)).size;
   const dayCount = (count: number) => `${count} ${count === 1 ? 'day' : 'days'}`;
   const level = useProgressStore((state) => state.level);
   const skillProgress = useProgressStore((state) => state.skillProgress);
@@ -60,29 +58,41 @@ export default function ProgressScreen() {
   const bestVision = bestScore(visionScores);
   const routeRuns = useProgressStore((state) => state.routeRuns);
   const routeBest = bestRun(routeRuns);
-  const routeParScore = routePar(routeRuns, today);
+  const fromMemory = learning.filter(
+    (attempt) => attempt.kind === 'branch' && attempt.independent,
+  ).length;
+  const newPositions = learning.filter(
+    (attempt) => attempt.kind === 'transfer' && attempt.independent,
+  ).length;
   return (
-    <Screen>
-      <View style={styles.intro}>
-        <ThemedText type="title" accessibilityRole="header">
-          Your practice adds up.
-        </ThemedText>
-        <ThemedText themeColor="textSecondary">
-          Independent solves and assisted practice are counted separately.
-        </ThemedText>
-      </View>
+    <Screen edges={['top', 'left', 'right']}>
+      <ThemedText type="title" accessibilityRole="header" style={styles.intro}>
+        Progress
+      </ThemedText>
 
       <View style={styles.tiles}>
-        <StatTile
-          icon="flame"
-          label="Current practice streak"
-          value={dayCount(currentStreak)}
-          highlight
-        />
-        <StatTile icon="trophy" label="Best practice streak" value={dayCount(bestStreak)} />
+        <StatTile icon="flame" label="Current streak" value={dayCount(currentStreak)} highlight />
+        <StatTile icon="trophy" label="Best streak" value={dayCount(bestStreak)} />
       </View>
       <Card>
         <ActivityBar />
+      </Card>
+
+      <SectionTitle>Puzzles</SectionTitle>
+      <Card>
+        <View style={styles.headlineStat}>
+          <ThemedText type="stat">
+            {attempts.length ? `${Math.round((independent / attempts.length) * 100)}%` : '–'}
+          </ThemedText>
+          <ThemedText type="small" themeColor="textSecondary">
+            {attempts.length ? 'solved without help' : 'No puzzles yet'}
+          </ThemedText>
+        </View>
+        <View style={styles.list}>
+          <Stat label="Puzzles played" value={String(attempts.length)} />
+          <Stat label="Solved without help" value={String(independent)} />
+          <Stat label="Solved with help" value={String(attempts.length - independent)} last />
+        </View>
       </Card>
 
       <SectionTitle>Themes</SectionTitle>
@@ -99,101 +109,36 @@ export default function ProgressScreen() {
           ))
         ) : (
           <ThemedText themeColor="textSecondary">
-            Solve a few puzzles to see how you do with each theme.
+            Play a few puzzles to see your strong and weak themes.
           </ThemedText>
         )}
-        <ThemedText type="small" themeColor="textSecondary">
-          A theme is marked strong or worth practicing after {MIN_THEME_ATTEMPTS} puzzles, compared
-          with your overall results.
-        </ThemedText>
-      </Card>
-
-      <SectionTitle>Puzzles</SectionTitle>
-      <Card>
-        <View style={styles.headlineStat}>
-          <ThemedText type="stat">
-            {attempts.length ? `${Math.round((independent / attempts.length) * 100)}%` : '–'}
-          </ThemedText>
-          <ThemedText type="small" themeColor="textSecondary">
-            {attempts.length ? 'independent solve rate' : 'No attempts yet'}
-          </ThemedText>
-        </View>
-        <ProgressBar value={uniquePuzzles / puzzles.length} />
-        <View style={styles.list}>
-          <Stat label="Puzzles completed" value={String(attempts.length)} />
-          <Stat label="Solved independently" value={String(independent)} />
-          <Stat
-            label="Completed with help or retries"
-            value={String(attempts.length - independent)}
-          />
-          <Stat label="Unique puzzles practiced" value={`${uniquePuzzles} / ${puzzles.length}`} />
-          <Stat label="Workouts completed" value={String(completions.length)} last />
-        </View>
-      </Card>
-
-      <SectionTitle>Daily route</SectionTitle>
-      <Card>
-        <View style={styles.list}>
-          <Stat label="Routes finished" value={String(routeRuns.length)} />
-          <Stat
-            label="Best route"
-            value={routeBest === null ? 'Not played yet' : `${routeBest} points`}
-          />
-          <Stat
-            label="Your par"
-            value={routeParScore === null ? 'After three routes' : `${routeParScore} points`}
-            last
-          />
-        </View>
-      </Card>
-
-      <SectionTitle>Skills and board vision</SectionTitle>
-      <Card>
-        <View style={styles.list}>
-          <Stat label="Skills mastered" value={`${mastered} / ${allSkills.length}`} />
-          <Stat
-            label="Best board vision round"
-            value={bestVision === null ? 'Not played yet' : `${bestVision} squares`}
-          />
-          <Stat label="Puzzle level" value={levelName(level)} last />
-        </View>
-        <Button
-          variant="secondary"
-          size="compact"
-          label="Change level"
-          onPress={() => router.push('/level')}
-        />
       </Card>
 
       <SectionTitle>Openings</SectionTitle>
       <Card>
         <View style={styles.list}>
           <Stat label="Guides practiced" value={`${learned} / ${guides.length}`} />
-          <Stat
-            label="Opening lines recalled independently"
-            value={String(
-              learning.filter((attempt) => attempt.kind === 'branch' && attempt.independent).length,
-            )}
-          />
-          <Stat
-            label="New positions solved independently"
-            value={String(
-              learning.filter((attempt) => attempt.kind === 'transfer' && attempt.independent)
-                .length,
-            )}
-          />
-          <Stat
-            label="Learning completed with help or retries"
-            value={String(learning.filter((attempt) => !attempt.independent).length)}
-            last
-          />
+          <Stat label="Lines played from memory" value={String(fromMemory)} />
+          <Stat label="New positions solved" value={String(newPositions)} last />
         </View>
       </Card>
-      <ThemedText type="small" themeColor="textSecondary">
-        Completed workouts, opening lines and new-position exercises count toward your practice
-        streak. Progress is saved on this device. Practiced guides are a starting point, not a
-        mastery score.
-      </ThemedText>
+
+      <SectionTitle>More</SectionTitle>
+      <Card>
+        <View style={styles.list}>
+          <Stat
+            label="Daily challenge best"
+            value={routeBest === null ? '–' : `${routeBest} points`}
+          />
+          <Stat label="Skills mastered" value={`${mastered} / ${allSkills.length}`} />
+          <Stat
+            label="Square trainer best"
+            value={bestVision === null ? '–' : `${bestVision} squares`}
+          />
+          <Stat label="Puzzle level" value={levelName(level)} last />
+        </View>
+      </Card>
+      <ListRow icon="settings" title="Settings" onPress={() => router.push('/settings')} />
     </Screen>
   );
 }
@@ -214,14 +159,14 @@ function ThemeRow({
     <View
       style={styles.theme}
       accessible
-      accessibilityLabel={`${name}: ${percent}% solved without help in ${attempts} ${attempts === 1 ? 'puzzle' : 'puzzles'}${verdict === 'strong' ? ', a strength' : verdict === 'weak' ? ', worth practicing' : ''}`}>
+      accessibilityLabel={`${name}: ${percent}% solved without help in ${attempts} ${attempts === 1 ? 'puzzle' : 'puzzles'}${verdict === 'strong' ? ', a strength' : verdict === 'weak' ? ', needs practice' : ''}`}>
       <View style={styles.themeHeader}>
         <ThemedText type="smallBold" style={styles.label}>
           {name}
         </ThemedText>
         {verdict && (
           <Pill
-            label={verdict === 'strong' ? 'Strong' : 'Practice'}
+            label={verdict === 'strong' ? 'Strong' : 'Needs practice'}
             tone={verdict === 'strong' ? 'success' : 'accent'}
           />
         )}

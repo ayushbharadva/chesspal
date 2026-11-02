@@ -8,15 +8,26 @@ import { Card } from '@/components/card';
 import { type IconName } from '@/components/icon';
 import { Screen } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
-import { Bullet, Chip, IconBadge, ListRow, Pill, SectionTitle, Segmented } from '@/components/ui';
+import {
+  Bullet,
+  Chip,
+  Disclosure,
+  IconBadge,
+  ListRow,
+  Pill,
+  SectionTitle,
+  Segmented,
+} from '@/components/ui';
 import { guideById } from '@/content';
 import { branchForGuide, branchesForGuide, transfersForGuide } from '@/content/lessons';
 import { Spacing } from '@/constants/theme';
 import { lessonFen, lessonKey, nextLessonReview } from '@/learning/lesson';
 import { useHaptics } from '@/hooks/use-haptics';
+import { useLocalDate } from '@/hooks/use-local-date';
 import { useReplyPause } from '@/hooks/use-reply-pause';
 import { useProgressStore } from '@/progress/store';
 import { CHIME_DELAY_MS, playSound } from '@/sounds/play-sound';
+import { relativeDay } from '@/utils/date-key';
 
 export default function LessonScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -25,6 +36,7 @@ export default function LessonScreen() {
   const [chosenMode, setMode] = useState<'learn' | 'practice' | null>(null);
   const [message, setMessage] = useState('');
   const haptic = useHaptics();
+  const today = useLocalDate();
   const activeKey = state.lessonProgress.selected[id] ?? lessonKey('branch', id, 'main');
   const activeSession = state.lessonProgress.sessions[activeKey];
   const pausing = useReplyPause(
@@ -36,13 +48,13 @@ export default function LessonScreen() {
     return (
       <Screen>
         <ThemedText>This guide is unavailable.</ThemedText>
-        <Button label="Back to Learn" onPress={() => router.replace('/learn')} />
+        <Button label="Back to openings" onPress={() => router.replace('/learn')} />
       </Screen>
     );
   if (!state.hydrated)
     return (
       <Screen>
-        <ThemedText>Restoring your guide…</ThemedText>
+        <ThemedText>Loading your lesson…</ThemedText>
       </Screen>
     );
   const progress = state.lessonProgress;
@@ -87,26 +99,21 @@ export default function LessonScreen() {
     setMessage('');
   }
   const modeLabel = transfer
-    ? 'TRANSFER · NEW POSITION'
+    ? 'New position'
     : session?.scaffold === 'guided'
-      ? 'GUIDED PRACTICE · WITH HELP'
-      : 'RECALL · TRY WITHOUT HELP';
+      ? 'With hints'
+      : 'From memory';
   return (
     <Screen>
       <View style={styles.intro}>
         <ThemedText type="overline" themeColor="accent">
-          {guide.category} · {guide.side === 'w' ? 'White' : 'Black'}
+          Play as {guide.side === 'w' ? 'White' : 'Black'}
         </ThemedText>
         <ThemedText type="title" accessibilityRole="header">
           {guide.title}
         </ThemedText>
-        {!practicing && (
-          <ThemedText themeColor="textSecondary">
-            Choose an example reply, learn its plan, then recall it.
-          </ThemedText>
-        )}
       </View>
-      <SectionTitle>Example branches</SectionTitle>
+      <SectionTitle>Variations</SectionTitle>
       {/* One scrolling row, so the board stays on screen while playing. */}
       <ScrollView
         horizontal
@@ -138,8 +145,8 @@ export default function LessonScreen() {
         <Segmented
           value={mode}
           options={[
-            { value: 'learn', label: 'Learn line', icon: 'book-open' },
-            { value: 'practice', label: 'Play line', icon: 'play' },
+            { value: 'learn', label: 'Watch', icon: 'eye' },
+            { value: 'practice', label: 'Play', icon: 'play' },
           ]}
           onChange={(next) => {
             if (next === 'practice') return start();
@@ -198,7 +205,7 @@ export default function LessonScreen() {
             <Button
               size="compact"
               icon={ply === branch.moves.length ? 'play' : 'arrow-right'}
-              label={ply === branch.moves.length ? 'Practice this line' : 'Next move'}
+              label={ply === branch.moves.length ? 'Now you play it' : 'Next move'}
               onPress={() =>
                 ply === branch.moves.length ? start() : state.viewLesson(id, branch.id, ply + 1)
               }
@@ -218,8 +225,8 @@ export default function LessonScreen() {
             <ThemedText type="smallBold">
               {done
                 ? transfer
-                  ? 'Idea practiced'
-                  : 'Line practiced'
+                  ? 'Position solved'
+                  : 'Line complete'
                 : mode === 'learn'
                   ? `Move ${ply} of ${branch.moves.length}`
                   : 'Your move'}
@@ -228,18 +235,18 @@ export default function LessonScreen() {
               {done
                 ? outcome?.independent
                   ? transfer
-                    ? 'Solved independently, without hints or retries.'
-                    : 'Recalled independently, without hints or retries.'
-                  : 'Completed with guidance, hints or retries. Try again without help to check your recall.'
+                    ? 'Solved on your own!'
+                    : 'Played from memory!'
+                  : 'Done with help. Try again without hints.'
                 : mode === 'learn'
                   ? ply === 0
-                    ? 'Step through the example and notice each move’s purpose.'
+                    ? 'Tap Next move to see each move explained.'
                     : branch.notes[ply - 1]
                   : transfer
-                    ? 'Find a move that fits the goal. Several legal moves may be reasonable.'
+                    ? 'Find a move that fits the goal.'
                     : session?.scaffold === 'guided'
                       ? branch.notes[ply]
-                      : 'Recall the next move in a supported example. The answer is hidden until you play it or ask for help.'}
+                      : 'Play the next move from memory.'}
             </ThemedText>
             {hint && (
               <ThemedText type="smallBold" themeColor="accent">
@@ -254,7 +261,7 @@ export default function LessonScreen() {
             {done && transfer && <ThemedText>{transfer.explanation}</ThemedText>}
             {done && dueDate && (
               <ThemedText type="small" themeColor="textSecondary">
-                Next recall review: {dueDate}. Practicing early will not postpone it.
+                Review it again {relativeDay(dueDate, today)}.
               </ThemedText>
             )}
           </View>
@@ -266,8 +273,8 @@ export default function LessonScreen() {
             <IconBadge name="x" tone="danger" size={36} solid />
             <ThemedText style={styles.statusText} accessibilityLiveRegion="polite">
               {transfer
-                ? 'This move is not one of the checked examples for this goal. It may still be playable; try another move or ask for a hint.'
-                : 'Try another supported example move. A legal move outside these examples is not necessarily a bad chess move.'}
+                ? 'Not one of the checked answers. Try another move or take a hint.'
+                : "That's not the move in this line. Try again."}
             </ThemedText>
           </View>
         </Card>
@@ -281,22 +288,22 @@ export default function LessonScreen() {
         <Button
           variant="secondary"
           icon="lightbulb"
-          label={transfer ? 'Show idea hint' : 'Show move hint'}
+          label="Hint"
           onPress={() => state.helpLesson(key)}
         />
       )}
       {practicing && done && (
         <Button
           icon="rotate-ccw"
-          label={transfer ? 'Try idea without help' : 'Recall line without help'}
+          label={transfer ? 'Try again without hints' : 'Play it from memory'}
           onPress={() => start(true)}
         />
       )}
       {practicing && done && (
         <Button
           variant="secondary"
-          label="Back to Learn"
-          onPress={() => router.replace('/learn')}
+          label="Done"
+          onPress={() => (router.canGoBack() ? router.back() : router.replace('/learn'))}
         />
       )}
       {(!practicing || done) && !transfer && (
@@ -305,24 +312,19 @@ export default function LessonScreen() {
             <CardHeading icon="sparkles" title="The idea" />
             <ThemedText>{guide.idea}</ThemedText>
           </Card>
-          <Card>
-            <CardHeading icon="target" title="In your next game" />
+          <Disclosure title="In your next game" icon="target">
             {guide.plans.map((plan) => (
               <Bullet key={plan}>{plan}</Bullet>
             ))}
-          </Card>
-          <Card>
-            <CardHeading icon="alert" title="Common mistakes" />
+          </Disclosure>
+          <Disclosure title="Common mistakes" icon="alert">
             {guide.mistakes.map((mistake) => (
               <Bullet key={mistake}>{mistake}</Bullet>
             ))}
-          </Card>
+          </Disclosure>
         </>
       )}
-      <SectionTitle>Use the idea in a new position</SectionTitle>
-      <ThemedText type="small" themeColor="textSecondary">
-        Try a separate position, then return for a later recall check.
-      </ThemedText>
+      <SectionTitle>Test yourself</SectionTitle>
       {transfersForGuide(id).map((exercise) => (
         <ListRow
           key={exercise.id}
@@ -336,18 +338,13 @@ export default function LessonScreen() {
           }}
         />
       ))}
-      <ThemedText type="small" themeColor="textSecondary">
-        These are checked examples, not a forced script or an evaluation of every legal move.
-      </ThemedText>
       <Button
         variant="ghost"
         icon="external-link"
-        label="Opening reference"
+        label="Read more online"
         onPress={() => {
           void Linking.openURL(transfer?.sourceUrl ?? branch.sourceUrl).catch(() =>
-            setMessage(
-              'The reference needs an internet connection. The lesson itself works offline.',
-            ),
+            setMessage('This needs an internet connection. The lesson works offline.'),
           );
         }}
       />

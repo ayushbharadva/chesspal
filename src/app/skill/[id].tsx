@@ -6,9 +6,8 @@ import { Button } from '@/components/button';
 import { Card } from '@/components/card';
 import { Screen } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
-import { IconBadge, Pill, SectionTitle } from '@/components/ui';
+import { Disclosure, IconBadge, Pill, SectionTitle } from '@/components/ui';
 import { puzzleById } from '@/content';
-import { levelName } from '@/content/levels';
 import { skillById } from '@/content/skills';
 import { SKILL_THEMES, type SkillTheme } from '@/content/types';
 import { Radius, Spacing } from '@/constants/theme';
@@ -20,16 +19,15 @@ import {
   RUNG_PASS,
   RUNG_SIZE,
   RUNGS,
-  rungLevel,
   skillMastered,
   type Rung,
 } from '@/skills/ladder';
 import { themeStats } from '@/skills/themes';
 
 const RUNG_DESCRIPTIONS: Record<Rung, string> = {
-  1: 'The theme is named, so you know what to look for.',
-  2: 'The theme is not named.',
-  3: 'Mixed with two puzzles from other themes. Spot the idea yourself.',
+  1: 'Theme shown. A gentle start.',
+  2: 'Theme hidden. Spot it yourself.',
+  3: 'Mixed with other themes. Pass to master it.',
 };
 
 export default function SkillScreen() {
@@ -53,7 +51,7 @@ export default function SkillScreen() {
     return (
       <Screen>
         <ThemedText>This skill is unavailable.</ThemedText>
-        <Button label="Back to skills" onPress={() => router.replace('/skills')} />
+        <Button label="Back to puzzles" onPress={() => router.replace('/puzzles')} />
       </Screen>
     );
   const skill = skillById[theme];
@@ -66,42 +64,35 @@ export default function SkillScreen() {
   return (
     <Screen>
       <View style={styles.intro}>
-        <ThemedText type="overline" themeColor="accent">
-          Skill · {levelName(level)}
-        </ThemedText>
         <ThemedText type="title" accessibilityRole="header">
           {skill.name}
         </ThemedText>
+        <ThemedText themeColor="textSecondary">{skill.summary}</ThemedText>
         {mastered && <Pill icon="check" tone="success" label="Mastered" />}
       </View>
       <Card variant="hero">
-        <ThemedText type="overline" themeColor="heroAccent">
-          The idea
-        </ThemedText>
-        <ThemedText themeColor="onHero" style={styles.idea}>
-          {skill.card}
-        </ThemedText>
         <View style={styles.lookFor}>
-          <IconBadge name="eye" tone="hero" size={36} />
+          <IconBadge name="eye" tone="hero" size={40} />
           <View style={styles.lookForText}>
             <ThemedText type="overline" themeColor="heroAccent">
               Look for
             </ThemedText>
-            <ThemedText type="smallBold" themeColor="onHero">
+            <ThemedText type="subtitle" themeColor="onHero">
               {skill.lookFor}
             </ThemedText>
           </View>
         </View>
       </Card>
-      <SectionTitle>Three rounds</SectionTitle>
+      <Disclosure title="How it works" icon="lightbulb">
+        <ThemedText>{skill.card}</ThemedText>
+      </Disclosure>
+      <SectionTitle>Rounds</SectionTitle>
       {blocked && session && session.phase !== 'complete' && (
         <Card variant="accent">
-          <ThemedText>
-            You have a practice round in progress. Finish it first, then start this skill.
-          </ThemedText>
+          <ThemedText>Finish your current puzzles first.</ThemedText>
           <Button
             variant="secondary"
-            label="Resume practice"
+            label="Resume puzzles"
             onPress={() => router.push('/workout')}
           />
         </Card>
@@ -113,13 +104,12 @@ export default function SkillScreen() {
           cleared={progress?.cleared.includes(rung) ?? false}
           available={available.includes(rung)}
           recommended={rung === nextRung}
-          detail={`${RUNG_DESCRIPTIONS[rung]} ${levelName(rungLevel(level, rung))} puzzles.`}
+          detail={RUNG_DESCRIPTIONS[rung]}
           onStart={() => start(rung)}
         />
       ))}
       <ThemedText type="small" themeColor="textSecondary">
-        Solve {RUNG_PASS} of {RUNG_SIZE} without hints or retries to clear a round. Each try uses
-        fresh puzzles, so you cannot memorize your way up. Mastery needs the test round.
+        Solve {RUNG_PASS} of {RUNG_SIZE} with no hints or mistakes to pass a round.
       </ThemedText>
       {stats && (
         <Card>
@@ -130,8 +120,7 @@ export default function SkillScreen() {
             {Math.round((stats.independent / stats.attempts) * 100)}% solved without help
           </ThemedText>
           <ThemedText type="small" themeColor="textSecondary">
-            {stats.attempts} {stats.attempts === 1 ? 'puzzle' : 'puzzles'} with this theme across
-            all practice.
+            {stats.attempts} {stats.attempts === 1 ? 'puzzle' : 'puzzles'} so far
           </ThemedText>
         </Card>
       )}
@@ -195,7 +184,6 @@ function RungRow({
 
 const styles = StyleSheet.create({
   intro: { gap: Spacing.two, paddingTop: Spacing.two },
-  idea: { paddingRight: Spacing.five },
   lookFor: { flexDirection: 'row', gap: Spacing.three, alignItems: 'center' },
   lookForText: { flex: 1, gap: Spacing.half },
   rung: {

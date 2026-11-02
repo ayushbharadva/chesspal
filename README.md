@@ -8,15 +8,16 @@ Offline chess practice and opening guides for beginners who already know the rul
 - **1,059 puzzles:** eight themes (mate in one, back-rank mate, mate in two, hanging pieces, forks, pins, skewers, discovered attacks) at Beginner, Easy and Medium levels; legal moves, progressive hints, solution replay and explanations.
 - **Skills:** a concept card and three rounds per theme (warm-up, at your level, an unlabeled test). Clear a round with four of five solved without help.
 - **Strengths and weaknesses:** your strongest theme and the one worth practicing, on Results and Progress; your daily round includes the weaker one.
-- **Board vision:** 30-second rounds of finding squares by name, from either side.
+- **Square trainer:** 30-second rounds of finding squares by name, from either side.
 - **Learn:** Italian Game, Caro-Kann Defence and Queen’s Gambit, with three example branches per guide. Follow a demonstration, practice with guidance, then recall without move notes or hints.
 - **Apply the idea:** six original exercises use unfamiliar positions. Try the stated goal, see its explanation after answering, and return for delayed recall.
 - **Next step:** Home helps you resume a lesson, return for a due recall, or apply an opening idea in a new position.
 - **Progress:** independent and assisted puzzle solves and lesson recalls, practiced guides, activity and streaks. Completed lessons count toward activity alongside workouts. Workouts, branch positions and exercises resume automatically.
 - **Recall:** scheduled reviews return after a delay, including puzzles previously solved independently. Workouts mix due reviews with fresh practice.
-- **Daily route:** five themed puzzles a day with two safe-or-steep forks, scored against your own earlier runs.
+- **Daily challenge:** five themed puzzles a day; twice you pick a normal or a hard puzzle, scored against your own usual score.
 - **Sound effects:** quiet wooden sounds for moves, captures, checks and checkmates, plus soft tones for solves and mistakes.
 - **Settings:** light, dark or system appearance, with optional haptic feedback and sound effects.
+- **Simple navigation:** a short welcome and level question on first launch, then four bottom tabs (Home, Puzzles, Openings, Progress) with plain wording throughout ([decision 0007](docs/decisions/0007-first-run-tabs-plain-words.md)).
 - No account, server, subscription or internet connection needed for learning. Opening references open in your browser.
 
 Current scope: [docs/MVP.md](docs/MVP.md). Puzzle sources and engine checks: [docs/content-pipeline.md](docs/content-pipeline.md).
@@ -67,7 +68,7 @@ src/
   content/       # typed content access and validation
   learning/      # pure branch, transfer and lesson recall logic
   skills/        # pure skill ladder rules and theme strengths
-  vision/        # pure board vision round rules
+  vision/        # pure square trainer round rules
   workout/       # pure practice session logic
   progress/      # persisted app state
   storage/       # schema validation and serialized local writes

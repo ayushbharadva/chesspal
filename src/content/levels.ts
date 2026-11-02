@@ -8,17 +8,17 @@ export const LEVELS: readonly {
   {
     value: 1,
     name: 'Beginner',
-    description: 'I know how the pieces move and I am starting to play games.',
+    description: 'I know how the pieces move.',
   },
   {
     value: 2,
     name: 'Easy',
-    description: 'I play regularly and can spot a simple checkmate or free piece.',
+    description: 'I play sometimes and spot simple tricks.',
   },
   {
     value: 3,
     name: 'Medium',
-    description: 'Forks and pins are familiar and I want harder puzzles.',
+    description: 'Forks and pins feel familiar.',
   },
 ];
 

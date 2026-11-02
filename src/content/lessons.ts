@@ -13,7 +13,7 @@ export function branchesForGuide(guideId: string): OpeningBranch[] {
   return [
     {
       id: 'main',
-      title: 'Main example',
+      title: 'Main line',
       description: guide.description,
       moves: guide.moves,
       notes: guide.notes,

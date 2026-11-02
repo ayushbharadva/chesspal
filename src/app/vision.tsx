@@ -73,11 +73,10 @@ export default function VisionScreen() {
     <Screen>
       <View style={styles.intro}>
         <ThemedText type="title" accessibilityRole="header">
-          Board vision.
+          Find the square.
         </ThemedText>
         <ThemedText themeColor="textSecondary">
-          Knowing every square by name helps you read moves, follow lessons and spot ideas faster.
-          Tap as many named squares as you can in {ROUND_SECONDS} seconds.
+          Tap the square shown. You have {ROUND_SECONDS} seconds.
         </ThemedText>
       </View>
       {round ? (
@@ -101,8 +100,8 @@ export default function VisionScreen() {
         <Segmented
           value={side}
           options={[
-            { value: 'w', label: 'White side' },
-            { value: 'b', label: 'Black side' },
+            { value: 'w', label: 'As White' },
+            { value: 'b', label: 'As Black' },
           ]}
           onChange={setSide}
         />
@@ -118,8 +117,8 @@ export default function VisionScreen() {
               </ThemedText>
               <ThemedText themeColor="textSecondary">
                 {best !== null && finished >= best && finished > 0
-                  ? 'That is your best from this side.'
-                  : 'Keep going. A few rounds a day makes the board feel familiar.'}
+                  ? 'Your best yet!'
+                  : 'A few rounds a day makes the board feel familiar.'}
               </ThemedText>
             </Card>
           )}
@@ -130,7 +129,7 @@ export default function VisionScreen() {
           />
           <Card>
             <ThemedText type="overline" themeColor="textSecondary">
-              {side === 'w' ? 'White side' : 'Black side'}
+              {side === 'w' ? 'As White' : 'As Black'}
             </ThemedText>
             <ThemedText type="headline">
               {best === null ? 'No rounds yet' : `Best: ${best} squares`}

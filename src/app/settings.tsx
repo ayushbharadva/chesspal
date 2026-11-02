@@ -39,7 +39,7 @@ export default function SettingsScreen() {
           <View style={styles.rowText}>
             <ThemedText type="subtitle">Haptic feedback</ThemedText>
             <ThemedText type="small" themeColor="textSecondary">
-              A light buzz when you move, solve or miss.
+              A light buzz on each move.
             </ThemedText>
           </View>
           <Switch
@@ -57,7 +57,7 @@ export default function SettingsScreen() {
           <View style={styles.rowText}>
             <ThemedText type="subtitle">Sound effects</ThemedText>
             <ThemedText type="small" themeColor="textSecondary">
-              Moves, captures, checks and wins. Your phone&apos;s silent switch turns them off too.
+              Quiet sounds that follow your silent switch.
             </ThemedText>
           </View>
           <Switch
@@ -72,7 +72,7 @@ export default function SettingsScreen() {
           />
         </View>
       </Card>
-      <SectionTitle>Practice</SectionTitle>
+      <SectionTitle>Puzzles</SectionTitle>
       <ListRow
         icon="puzzle"
         title="Puzzle level"
@@ -80,8 +80,7 @@ export default function SettingsScreen() {
         onPress={() => router.push('/level')}
       />
       <ThemedText type="small" themeColor="textSecondary">
-        Everything you do in ChessPal stays on this device. There is no account and nothing is sent
-        anywhere.
+        Your progress stays on this phone. No account needed.
       </ThemedText>
     </Screen>
   );

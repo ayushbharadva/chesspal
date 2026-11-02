@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
 
@@ -26,8 +26,15 @@ export function Card({
   const theme = useTheme();
   const elevation = useElevation();
   const hero = variant === 'hero';
+  // Percentage-sized SVG keeps its first size on iOS, so the backdrop follows the measured card.
+  const [size, setSize] = useState({ width: 0, height: 0 });
   return (
     <View
+      onLayout={
+        hero
+          ? ({ nativeEvent: { layout } }) => setSize({ width: layout.width, height: layout.height })
+          : undefined
+      }
       style={[
         styles.card,
         { backgroundColor: theme[backgrounds[variant]] },
@@ -38,27 +45,47 @@ export function Card({
         },
         hero && { boxShadow: elevation.raised },
       ]}>
-      {hero && <HeroBackdrop from={theme.hero} to={theme.heroEnd} line={theme.heroAccent} />}
+      {hero && (
+        <HeroBackdrop
+          width={size.width}
+          height={size.height}
+          from={theme.hero}
+          to={theme.heroEnd}
+          line={theme.heroAccent}
+        />
+      )}
       {children}
     </View>
   );
 }
 
 /** A diagonal ink wash with a faint checkerboard corner, drawn behind hero content. */
-function HeroBackdrop({ from, to, line }: { from: string; to: string; line: string }) {
+function HeroBackdrop({
+  width,
+  height,
+  from,
+  to,
+  line,
+}: {
+  width: number;
+  height: number;
+  from: string;
+  to: string;
+  line: string;
+}) {
   const squares = [0, 1, 2, 3].flatMap((row) =>
     [0, 1, 2, 3].filter((column) => (row + column) % 2 === 0).map((column) => [row, column]),
   );
   return (
     <View pointerEvents="none" style={StyleSheet.absoluteFill}>
-      <Svg width="100%" height="100%">
+      <Svg width={width} height={height}>
         <Defs>
           <LinearGradient id="hero-wash" x1="0" y1="0" x2="1" y2="1">
             <Stop offset="0" stopColor={from} />
             <Stop offset="1" stopColor={to} />
           </LinearGradient>
         </Defs>
-        <Rect width="100%" height="100%" rx={Radius.large} fill="url(#hero-wash)" />
+        <Rect width={width} height={height} rx={Radius.large} fill="url(#hero-wash)" />
       </Svg>
       <Svg width={80} height={80} style={styles.pattern}>
         {squares.map(([row, column]) => (

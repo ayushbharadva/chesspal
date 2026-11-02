@@ -346,7 +346,7 @@ export const useProgressStore = create<ProgressStore>()(
           set({
             lessonNotice: {
               key: nextKey,
-              text: `Resuming your saved ${target.title} practice, including earlier hints and retries.`,
+              text: `Picking up where you left off in ${target.title}.`,
             },
             lessonProgress: {
               ...progress,

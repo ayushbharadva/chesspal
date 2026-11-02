@@ -60,24 +60,22 @@ export default function RootLayout() {
           headerBackButtonDisplayMode: 'minimal',
           contentStyle: { backgroundColor: colors.background },
         }}>
-        <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="workout" options={{ title: 'Practice' }} />
+        <Stack.Screen name="(tabs)" options={{ headerShown: false, title: 'Home' }} />
+        <Stack.Screen name="welcome" options={{ headerShown: false, gestureEnabled: false }} />
+        <Stack.Screen name="workout" options={{ title: 'Puzzles' }} />
         <Stack.Screen name="result" options={{ title: 'Results' }} />
-        <Stack.Screen name="progress" options={{ title: 'Your Progress' }} />
-        <Stack.Screen name="learn" options={{ title: 'Learn' }} />
-        <Stack.Screen name="lesson/[id]" options={{ title: 'Opening Guide' }} />
-        <Stack.Screen name="level" options={{ title: 'Your Level' }} />
-        <Stack.Screen name="skills" options={{ title: 'Skills' }} />
-        <Stack.Screen name="skill/[id]" options={{ title: 'Skill' }} />
-        <Stack.Screen name="vision" options={{ title: 'Board Vision' }} />
-        <Stack.Screen name="daily-route" options={{ title: 'Daily Route' }} />
+        <Stack.Screen name="lesson/[id]" options={{ title: '' }} />
+        <Stack.Screen name="level" options={{ title: 'Level' }} />
+        <Stack.Screen name="skill/[id]" options={{ title: '' }} />
+        <Stack.Screen name="vision" options={{ title: 'Square trainer' }} />
+        <Stack.Screen name="daily-route" options={{ title: 'Daily challenge' }} />
         <Stack.Screen name="settings" options={{ title: 'Settings' }} />
       </Stack>
       {storageIssue && (
         <View style={[styles.banner, { backgroundColor: colors.dangerSurface }]}>
           <Icon name="alert" size={18} color="danger" />
           <ThemedText type="small" themeColor="danger" style={styles.bannerText}>
-            Saved progress could not be restored or updated. You can still practice.
+            Your progress couldn&apos;t be loaded or saved. You can keep playing.
           </ThemedText>
         </View>
       )}

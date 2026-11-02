@@ -32,6 +32,8 @@ export default function WorkoutScreen() {
   const replayStep = useProgressStore((state) => state.replayStep);
   const next = useProgressStore((state) => state.continuePractice);
   const chooseRoute = useProgressStore((state) => state.chooseRoute);
+  // The move tip is only for the first few puzzles a player ever sees.
+  const newPlayer = useProgressStore((state) => state.attempts.length < 3);
   const haptic = useHaptics();
   const [ruleMessage, setRuleMessage] = useState('');
   const replying = useReplyPause(
@@ -42,13 +44,13 @@ export default function WorkoutScreen() {
   if (!hydrated)
     return (
       <Screen>
-        <ThemedText>Restoring your practice…</ThemedText>
+        <ThemedText>Loading your puzzles…</ThemedText>
       </Screen>
     );
   if (!session || session.phase === 'complete')
     return (
       <Screen>
-        <ThemedText>No unfinished workout.</ThemedText>
+        <ThemedText>No puzzles in progress.</ThemedText>
         <Button
           label={session ? 'See results' : 'Go home'}
           onPress={() => router.replace(session ? '/result' : '/')}
@@ -61,17 +63,15 @@ export default function WorkoutScreen() {
         <RouteProgress session={session} />
         <View style={styles.heading}>
           <ThemedText type="title" accessibilityRole="header">
-            A fork in the route.
+            Pick your next puzzle.
           </ThemedText>
-          <ThemedText themeColor="textSecondary">
-            Pick the safe path to keep your points coming, or take on a harder puzzle for double.
-          </ThemedText>
+          <ThemedText themeColor="textSecondary">Hard puzzles score double.</ThemedText>
         </View>
         <ListRow
           icon="shield"
-          title="Safe path"
-          detail={`${SAFE_POINTS} points, or ${SAFE_HELPED_POINTS} with help. A puzzle at your level.`}
-          accessibilityLabel="Take the safe path"
+          title="Normal"
+          detail={`${SAFE_POINTS} points, or ${SAFE_HELPED_POINTS} with help`}
+          accessibilityLabel="Choose a normal puzzle"
           onPress={() => {
             haptic('tick');
             chooseRoute(false);
@@ -79,9 +79,9 @@ export default function WorkoutScreen() {
         />
         <ListRow
           icon="mountain"
-          title="Steep path"
-          detail={`${STEEP_POINTS} points without help, otherwise nothing. A harder puzzle.`}
-          accessibilityLabel="Take the steep path"
+          title="Hard"
+          detail={`${STEEP_POINTS} points, or 0 with help`}
+          accessibilityLabel="Choose a hard puzzle"
           onPress={() => {
             haptic('tick');
             chooseRoute(true);
@@ -137,7 +137,7 @@ export default function WorkoutScreen() {
             size="compact"
             variant="secondary"
             icon="lightbulb"
-            label={session.hintsShown ? 'Another hint' : 'Get a hint'}
+            label={session.hintsShown ? 'Another hint' : 'Hint'}
             disabled={session.hintsShown >= 3}
             onPress={() => {
               setRuleMessage('');
@@ -150,7 +150,7 @@ export default function WorkoutScreen() {
             size="compact"
             variant="secondary"
             icon="eye"
-            label="Show solution"
+            label="Show answer"
             onPress={() => {
               setRuleMessage('');
               reveal();
@@ -170,7 +170,7 @@ export default function WorkoutScreen() {
           />
         </View>
         <View style={styles.action}>
-          <Button size="compact" label="Show next move" onPress={() => replayStep(1)} />
+          <Button size="compact" label="Next move" onPress={() => replayStep(1)} />
         </View>
       </View>
     ) : (
@@ -188,11 +188,8 @@ export default function WorkoutScreen() {
       <View style={styles.heading}>
         <View style={styles.progressRow}>
           <ThemedText type="overline" themeColor="textSecondary" style={styles.progressLabel}>
-            {route
-              ? `Square ${session.index + 1} of ${session.puzzleIds.length} · ${
-                  route.taken.includes(session.index) ? 'Steep path' : 'Daily route'
-                }`
-              : `Puzzle ${session.index + 1} of ${session.puzzleIds.length}`}
+            {`Puzzle ${session.index + 1} of ${session.puzzleIds.length}`}
+            {route?.taken.includes(session.index) ? ' · Hard' : ''}
             {session.mode === 'review' ? ' · Review' : ''}
             {session.skill
               ? ` · ${skillById[session.skill.theme].name} · ${RUNG_NAMES[session.skill.rung]}`
@@ -213,14 +210,11 @@ export default function WorkoutScreen() {
           {/* Only the warm-up names the theme; later rounds test recognition. */}
           {session.skill && session.skill.rung > 1 ? 'Find the best move' : puzzle.goal}
         </ThemedText>
-        <ThemedText type="small" themeColor="textSecondary">
-          {orientation === 'w' ? 'White' : 'Black'} to play ·{' '}
-          {session.phase === 'replay'
-            ? 'Solution replay'
-            : session.phase === 'feedback'
-              ? 'Solved'
-              : 'Tap or drag a piece to move'}
-        </ThemedText>
+        {newPlayer && session.phase === 'solve' && (
+          <ThemedText type="small" themeColor="textSecondary">
+            Tap or drag a piece to move.
+          </ThemedText>
+        )}
       </View>
       <Board
         fen={fen}
@@ -229,7 +223,7 @@ export default function WorkoutScreen() {
         onMove={play}
         onIllegalMove={() => {
           haptic('error');
-          setRuleMessage('Choose a highlighted square to make a legal move.');
+          setRuleMessage("That piece can't move there.");
         }}
         lastMove={previous}
         hintSquare={session.hintsShown >= 2 ? expected?.from : undefined}
@@ -245,11 +239,8 @@ export default function WorkoutScreen() {
       ) : null}
       {session.lastWrong && (
         <Card variant="danger">
-          <Feedback
-            icon="x"
-            tone="danger"
-            title="Try again. That move does not finish this tactic.">
-            Look at checks, captures and threats. A hint is available whenever you need one.
+          <Feedback icon="x" tone="danger" title="Not quite. Try again.">
+            Look for checks, captures and threats.
           </Feedback>
         </Card>
       )}
@@ -269,7 +260,7 @@ export default function WorkoutScreen() {
           <Feedback
             icon="play"
             tone="accent"
-            title={`One solution · Move ${session.ply} of ${puzzle.moves.length}`}>
+            title={`Answer · move ${session.ply} of ${puzzle.moves.length}`}>
             {describeMove(fen, puzzle.moves[session.ply])}
           </Feedback>
         </Card>
@@ -279,15 +270,12 @@ export default function WorkoutScreen() {
           <Feedback
             icon={lastResult?.independent ? 'check' : 'sparkles'}
             tone={lastResult?.independent ? 'success' : 'accent'}
-            title={lastResult?.independent ? 'Well spotted!' : 'A useful rep.'}
+            title={lastResult?.independent ? 'Correct!' : 'Solved with help'}
             live>
             {puzzle.explanation}
           </Feedback>
         </Card>
       )}
-      <ThemedText type="small" themeColor="textSecondary" style={styles.note}>
-        Hints are there to help; assisted solves are tracked separately. Your place is saved.
-      </ThemedText>
     </Screen>
   );
 }
@@ -310,7 +298,7 @@ function TurnBadge({ color }: { color: 'w' | 'b' }) {
         ]}
       />
       <ThemedText type="overline" themeColor="textSecondary">
-        {color === 'w' ? 'White' : 'Black'}
+        {color === 'w' ? 'White' : 'Black'} to move
       </ThemedText>
     </View>
   );
@@ -361,5 +349,4 @@ const styles = StyleSheet.create({
   action: { flex: 1 },
   feedback: { flexDirection: 'row', gap: Spacing.three, alignItems: 'flex-start' },
   feedbackText: { flex: 1, gap: Spacing.one },
-  note: { textAlign: 'center' },
 });
