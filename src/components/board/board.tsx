@@ -49,7 +49,7 @@ interface BoardProps {
   hintSquare?: Square;
   /** Square to mark as a correct answer. */
   successSquare?: Square;
-  /** Change this number to shake the board, such as after a wrong move. */
+  /** Raise this number to shake the board, such as a mistake count after a wrong move. */
   shakeKey?: number;
 }
 
@@ -153,9 +153,10 @@ export function Board({
 
   const previousShake = useRef(shakeKey);
   useEffect(() => {
-    if (previousShake.current === shakeKey) return;
+    // Only a rise shakes: a count reset for the next puzzle is not a mistake.
+    const rose = shakeKey > previousShake.current;
     previousShake.current = shakeKey;
-    if (!motion) return;
+    if (!rose || !motion) return;
     const nudge = (toValue: number) =>
       Animated.timing(shake, { toValue, duration: 50, useNativeDriver: USE_NATIVE_DRIVER });
     Animated.sequence([nudge(-7), nudge(7), nudge(-4), nudge(4), nudge(0)]).start();
