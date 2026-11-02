@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { Icon, type IconName } from '@/components/icon';
@@ -226,6 +226,23 @@ export function SectionTitle({ children, action }: { children: string; action?: 
   );
 }
 
+/** Quiet text action, such as "All skills" beside a section title. */
+export function TextLink({ label, onPress }: { label: string; onPress: () => void }) {
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      hitSlop={Spacing.two}
+      onPress={onPress}
+      style={({ pressed }) => [styles.textLink, pressed && styles.pressed]}>
+      <ThemedText type="smallBold" themeColor="accent">
+        {label}
+      </ThemedText>
+      <Icon name="chevron-right" size={16} color="accent" />
+    </Pressable>
+  );
+}
+
 /** Small dots for multi-step progress, such as cleared skill rounds. */
 export function StepDots({ steps }: { steps: readonly { done: boolean; available: boolean }[] }) {
   const theme = useTheme();
@@ -257,6 +274,40 @@ export function Bullet({ children }: { children: string }) {
     <View style={styles.bullet}>
       <View style={[styles.marker, { backgroundColor: theme.accentFill }]} />
       <ThemedText style={styles.bulletText}>{children}</ThemedText>
+    </View>
+  );
+}
+
+/** A titled section that opens on tap, for detail most players can skip. */
+export function Disclosure({
+  title,
+  icon,
+  children,
+}: {
+  title: string;
+  icon?: IconName;
+  children: ReactNode;
+}) {
+  const theme = useTheme();
+  const [open, setOpen] = useState(false);
+  return (
+    <View
+      style={[styles.disclosure, { backgroundColor: theme.surface, borderColor: theme.border }]}>
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={title}
+        accessibilityState={{ expanded: open }}
+        onPress={() => setOpen(!open)}
+        style={({ pressed }) => [styles.disclosureHeader, pressed && styles.pressed]}>
+        {icon && <IconBadge name={icon} size={32} />}
+        <ThemedText type="subtitle" style={styles.rowText}>
+          {title}
+        </ThemedText>
+        <View style={open && styles.flipped}>
+          <Icon name="chevron-down" size={20} color="textSecondary" />
+        </View>
+      </Pressable>
+      {open && <View style={styles.disclosureBody}>{children}</View>}
     </View>
   );
 }
@@ -302,6 +353,7 @@ const styles = StyleSheet.create({
     borderRadius: Radius.pill,
     borderWidth: 1,
   },
+  textLink: { flexDirection: 'row', alignItems: 'center', gap: Spacing.half },
   section: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -314,4 +366,18 @@ const styles = StyleSheet.create({
   bullet: { flexDirection: 'row', gap: Spacing.three, alignItems: 'flex-start' },
   marker: { width: 6, height: 6, borderRadius: 3, marginTop: 9 },
   bulletText: { flex: 1 },
+  disclosure: { borderRadius: Radius.large, borderWidth: StyleSheet.hairlineWidth },
+  disclosureHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.three,
+    padding: Spacing.three,
+    minHeight: 56,
+  },
+  disclosureBody: {
+    paddingHorizontal: Spacing.three,
+    paddingBottom: Spacing.three,
+    gap: Spacing.two,
+  },
+  flipped: { transform: [{ rotate: '180deg' }] },
 });

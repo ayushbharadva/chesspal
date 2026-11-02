@@ -1,5 +1,6 @@
+import { type RouteRun } from '@/daily-route/route';
 import { type PuzzleLevel, type SkillTheme } from '@/content/types';
-import { type Rung, type SkillProgress } from '@/skills/ladder';
+import { type Rung, type SkillProgressByLevel } from '@/skills/ladder';
 import { emptyVisionScores, type VisionScores } from '@/vision/coordinates';
 
 export interface Attempt {
@@ -10,7 +11,7 @@ export interface Attempt {
   completedAt: string;
 }
 
-export type PracticeMode = 'daily' | 'extra' | 'review' | 'skill';
+export type PracticeMode = 'daily' | 'extra' | 'review' | 'skill' | 'route';
 
 export interface Session {
   id: string;
@@ -27,8 +28,10 @@ export interface Session {
   acceptedFen: string | null;
   acceptedMove: string | null;
   results: Attempt[];
-  /** Present on skill ladder runs: the theme, rung and run number that seeded the puzzles. */
-  skill?: { theme: SkillTheme; rung: Rung; run: number };
+  /** Present on skill ladder runs: the theme, rung, run number and level that seeded the puzzles. */
+  skill?: { theme: SkillTheme; rung: Rung; run: number; level: PuzzleLevel };
+  /** Present on daily routes: the harder puzzles on offer and the forks already taken. */
+  route?: { theme: SkillTheme; steepIds: string[]; taken: number[]; choosing: boolean };
 }
 
 export interface GuideProgress {
@@ -79,6 +82,20 @@ export function emptyLessonProgress(): LessonProgress {
   return { attempts: [], sessions: {}, selected: {}, viewed: {} };
 }
 
+export type Appearance = 'system' | 'light' | 'dark';
+/** Piece designs the player can choose in Settings; the artwork is in src/components/board. */
+export const PIECE_SETS = ['classic', 'modern', 'wood'] as const;
+export type PieceSetId = (typeof PIECE_SETS)[number];
+export interface Settings {
+  appearance: Appearance;
+  haptics: boolean;
+  sounds: boolean;
+  pieceSet: PieceSetId;
+}
+export function defaultSettings(): Settings {
+  return { appearance: 'system', haptics: true, sounds: true, pieceSet: 'classic' };
+}
+
 export interface SavedProgress {
   attempts: Attempt[];
   completions: Completion[];
@@ -87,8 +104,10 @@ export interface SavedProgress {
   lessonProgress: LessonProgress;
   /** Chosen once by the player; null until then. */
   level: PuzzleLevel | null;
-  skillProgress: Partial<Record<SkillTheme, SkillProgress>>;
+  skillProgress: SkillProgressByLevel;
   visionScores: VisionScores;
+  routeRuns: RouteRun[];
+  settings: Settings;
 }
 
 export function emptyProgress(): SavedProgress {
@@ -101,5 +120,7 @@ export function emptyProgress(): SavedProgress {
     level: null,
     skillProgress: {},
     visionScores: emptyVisionScores(),
+    routeRuns: [],
+    settings: defaultSettings(),
   };
 }

@@ -1,5 +1,5 @@
 import { puzzles as allPuzzles, type Puzzle } from '@/content';
-import { SKILL_THEMES, type PuzzleLevel, type SkillTheme } from '@/content/types';
+import { clampLevel, SKILL_THEMES, type PuzzleLevel, type SkillTheme } from '@/content/types';
 
 export type Rung = 1 | 2 | 3;
 export const RUNGS: readonly Rung[] = [1, 2, 3];
@@ -16,10 +16,14 @@ export interface SkillProgress {
   cleared: Rung[];
   runs: number;
 }
+/** Progress is kept for each level, so rounds passed at one level never count at another. */
+export type SkillProgressByLevel = Partial<
+  Record<PuzzleLevel, Partial<Record<SkillTheme, SkillProgress>>>
+>;
 
-/** Warm-up is one level below the player, the test one level above, clamped to 1–3. */
+/** Warm-up is one level below the player, the test one level above, within the levels that exist. */
 export function rungLevel(level: PuzzleLevel, rung: Rung): PuzzleLevel {
-  return Math.min(3, Math.max(1, level + rung - 2)) as PuzzleLevel;
+  return clampLevel(level + rung - 2);
 }
 
 /** Puzzles tagged with a theme at a level, borrowing neighbouring levels when the pool is thin. */

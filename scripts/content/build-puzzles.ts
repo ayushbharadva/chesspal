@@ -57,7 +57,7 @@ engine.on('error', (error) => {
 });
 
 function levelFor(rating: number): PuzzleLevel {
-  return rating < 700 ? 1 : rating < 1000 ? 2 : 3;
+  return rating < 700 ? 1 : rating < 1000 ? 2 : rating < 1300 ? 3 : rating < 1600 ? 4 : 5;
 }
 // Original explanations, built only from verified facts: the final capture or mate.
 function explain(theme: SkillTheme, captured: string | null) {

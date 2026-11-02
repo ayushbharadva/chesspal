@@ -10,6 +10,8 @@ import { ThemedText } from '@/components/themed-text';
 import { IconBadge, Pill, ProgressBar } from '@/components/ui';
 import { puzzleById } from '@/content';
 import { skillById } from '@/content/skills';
+import { RoutePath } from '@/components/route-path';
+import { bestRun, ROUTE_MAX_SCORE, routePar, routeScore, routeSteps } from '@/daily-route/route';
 import { Spacing } from '@/constants/theme';
 import { useProgressStore } from '@/progress/store';
 import {
@@ -27,23 +29,29 @@ export default function ResultScreen() {
   const start = useProgressStore((state) => state.startPractice);
   const startSkill = useProgressStore((state) => state.startSkill);
   const attempts = useProgressStore((state) => state.attempts);
-  const level = useProgressStore((state) => state.level) ?? 1;
   const skillProgress = useProgressStore((state) => state.skillProgress);
+  const routeRuns = useProgressStore((state) => state.routeRuns);
   const insight = useMemo(() => strengthsAndWeaknesses(attempts, puzzleById), [attempts]);
   if (session?.phase !== 'complete')
     return (
       <Screen>
-        <ThemedText>Your results will appear after a workout.</ThemedText>
+        <ThemedText>Finish a round to see your results.</ThemedText>
         <Button label="Go home" onPress={() => router.dismissTo('/')} />
       </Screen>
     );
   const independent = session.results.filter((result) => result.independent).length;
-  const assisted = session.results.length - independent;
   const skill = session.skill;
   const cleared = skill ? rungCleared(independent) : false;
-  const available = skill ? availableRungs(skill.theme, level) : [];
-  const mastered = skill ? skillMastered(skillProgress[skill.theme], available) : false;
+  const available = skill ? availableRungs(skill.theme, skill.level) : [];
+  const mastered = skill
+    ? skillMastered(skillProgress[skill.level]?.[skill.theme], available)
+    : false;
   const nextRung = skill && cleared ? available.find((rung) => rung > skill.rung) : undefined;
+  const route = session.route;
+  const points = route ? routeScore(route.taken, session.results) : 0;
+  const par = routePar(routeRuns, session.dateKey);
+  const earlierBest = bestRun(routeRuns, session.dateKey);
+  const newBest = route !== undefined && earlierBest !== null && points > earlierBest;
   function playSkill(rung: Rung) {
     if (skill && startSkill(skill.theme, rung)) router.replace('/workout');
   }
@@ -57,48 +65,66 @@ export default function ResultScreen() {
             label={
               skill
                 ? `${skillById[skill.theme].name} · ${RUNG_NAMES[skill.rung]}`
-                : 'Practice complete'
+                : route
+                  ? `Daily challenge · ${skillById[route.theme].name}`
+                  : 'Round complete'
             }
           />
           <ThemedText type="title" themeColor="onHero" accessibilityRole="header">
             {skill
               ? mastered && cleared && skill.rung === 3
-                ? `${skillById[skill.theme].name} mastered.`
+                ? `${skillById[skill.theme].name} mastered!`
                 : cleared
-                  ? 'Round cleared.'
-                  : 'Not cleared yet.'
-              : 'Another good rep.'}
+                  ? 'Round passed!'
+                  : 'Not passed yet'
+              : route
+                ? newBest
+                  ? 'New best score!'
+                  : par !== null && points > par
+                    ? 'Better than usual!'
+                    : 'Challenge done!'
+                : independent === session.results.length
+                  ? 'Perfect round!'
+                  : 'Nice work!'}
           </ThemedText>
         </View>
         <View style={styles.score}>
           <ThemedText type="stat" themeColor="heroAccent">
-            {independent} / {session.results.length}
+            {route ? `${points} points` : `${independent} / ${session.results.length}`}
           </ThemedText>
-          <ThemedText themeColor="onHeroSecondary">solved independently</ThemedText>
+          <ThemedText themeColor="onHeroSecondary">
+            {route ? `out of ${ROUTE_MAX_SCORE}` : 'solved without help'}
+          </ThemedText>
         </View>
-        <ProgressBar
-          value={independent / session.results.length}
-          track="heroOverlay"
-          fill="heroAccent"
-        />
-        <ThemedText type="small" themeColor="onHeroSecondary">
-          {skill && !cleared
-            ? `Solve ${RUNG_PASS} of ${session.results.length} without hints or retries to clear this round. Your next try uses fresh puzzles.`
-            : `${assisted} completed with help or a retry. Every explanation is a chance to learn.`}
-        </ThemedText>
+        {route ? (
+          <RoutePath steps={routeSteps(session)} onHero />
+        ) : (
+          <ProgressBar
+            value={independent / session.results.length}
+            track="heroOverlay"
+            fill="heroAccent"
+          />
+        )}
+        {(route ? par !== null : skill && !cleared) && (
+          <ThemedText type="small" themeColor="onHeroSecondary">
+            {route
+              ? `Your usual score is ${par}.`
+              : `Get ${RUNG_PASS} of ${session.results.length} with no hints or mistakes to pass. Next try has new puzzles.`}
+          </ThemedText>
+        )}
       </Card>
       {!skill && (insight.strong[0] || insight.weak[0]) && (
         <Card>
           {insight.strong[0] && (
             <Insight
-              label="Your strongest area"
+              label="Your best theme"
               value={skillById[insight.strong[0].theme].name}
               tone="success"
             />
           )}
           {insight.weak[0] && (
             <Insight
-              label="Keep practicing"
+              label="Needs practice"
               value={skillById[insight.weak[0].theme].name}
               tone="accent"
             />
@@ -146,20 +172,18 @@ export default function ResultScreen() {
         <>
           <Button
             icon="play"
-            label="Keep practicing"
+            label="More puzzles"
             onPress={() => {
               if (start('extra')) router.replace('/workout');
             }}
           />
-          <Button
-            variant="secondary"
-            icon="book-open"
-            label="Explore guides"
-            onPress={() => router.replace('/learn')}
-          />
         </>
       )}
-      <Button variant="ghost" label="Done" onPress={() => router.dismissTo('/')} />
+      <Button
+        variant="ghost"
+        label="Done"
+        onPress={() => (router.canDismiss() ? router.dismissAll() : router.replace('/'))}
+      />
     </Screen>
   );
 }

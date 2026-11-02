@@ -84,3 +84,14 @@ export function describeMove(fen: string, move: string) {
   const promotion = move[4] as Promotion | undefined;
   return `${piece[0].toUpperCase()}${piece.slice(1)} ${result.captured ? 'captures on' : 'to'} ${result.to}${promotion ? `, promote to ${PIECE_NAMES[promotion]}` : ''}`;
 }
+
+export type MoveKind = 'move' | 'capture' | 'check' | 'checkmate';
+
+/** What a played move did, most significant first, read from the positions either side of it. */
+export function classifyMove(before: string, after: string): MoveKind {
+  const previous = readPosition(before);
+  const current = readPosition(after);
+  if (current.checkmate) return 'checkmate';
+  if (current.inCheck) return 'check';
+  return current.pieces.length < previous.pieces.length ? 'capture' : 'move';
+}

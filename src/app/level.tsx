@@ -1,89 +1,57 @@
 import { router, useLocalSearchParams } from 'expo-router';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
-import { Icon, type IconName } from '@/components/icon';
+import { Card } from '@/components/card';
+import { LevelPicker } from '@/components/level-picker';
 import { Screen } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
-import { IconBadge } from '@/components/ui';
 import { type PuzzleLevel } from '@/content/types';
-import { LEVELS } from '@/content/levels';
-import { Radius, Spacing } from '@/constants/theme';
-import { useElevation, useTheme } from '@/hooks/use-theme';
+import { Spacing } from '@/constants/theme';
 import { useProgressStore } from '@/progress/store';
+import { type PracticeMode } from '@/progress/types';
 
-const LEVEL_ICONS: Record<PuzzleLevel, IconName> = { 1: 'play', 2: 'target', 3: 'trophy' };
+/** What a level change does to a round already in progress. */
+const IN_PROGRESS: Partial<Record<PracticeMode, string>> = {
+  daily: "Puzzles you haven't started in your current round will switch too.",
+  extra: "Puzzles you haven't started in your current round will switch too.",
+  skill: 'Your skill round in progress stays at its level.',
+  route: "Today's challenge in progress stays at its level.",
+};
 
 export default function LevelScreen() {
   const { then } = useLocalSearchParams<{ then?: string }>();
   const current = useProgressStore((state) => state.level);
   const setLevel = useProgressStore((state) => state.setLevel);
   const startPractice = useProgressStore((state) => state.startPractice);
-  const theme = useTheme();
-  const elevation = useElevation();
+  const startRoute = useProgressStore((state) => state.startRoute);
+  const session = useProgressStore((state) => state.currentSession);
+  const note = session && session.phase !== 'complete' ? IN_PROGRESS[session.mode] : undefined;
   function choose(level: PuzzleLevel) {
     setLevel(level);
     if (then === 'practice' && startPractice()) router.replace('/workout');
+    else if (then === 'route' && startRoute()) router.replace('/workout');
     else router.back();
   }
   return (
     <Screen>
       <View style={styles.intro}>
         <ThemedText type="title" accessibilityRole="header">
-          Choose your level.
+          How well do you play?
         </ThemedText>
         <ThemedText themeColor="textSecondary">
-          Each round mixes a couple of easier puzzles, mostly puzzles at your level and a couple of
-          harder ones. You can change this any time.
+          Rounds mix in a few easier and harder puzzles. You can change this any time.
         </ThemedText>
       </View>
-      {LEVELS.map((level) => {
-        const selected = current === level.value;
-        return (
-          <Pressable
-            key={level.value}
-            accessibilityRole="button"
-            accessibilityLabel={`${level.name}: ${level.description}`}
-            accessibilityState={{ selected }}
-            onPress={() => choose(level.value)}
-            style={({ pressed }) => [
-              styles.option,
-              {
-                backgroundColor: theme.surface,
-                borderColor: selected ? theme.accentFill : theme.border,
-                borderWidth: selected ? 2 : StyleSheet.hairlineWidth,
-                boxShadow: elevation.card,
-              },
-              pressed && styles.pressed,
-            ]}>
-            <IconBadge name={LEVEL_ICONS[level.value]} size={44} />
-            <View style={styles.text}>
-              <ThemedText type="headline">{level.name}</ThemedText>
-              <ThemedText type="small" themeColor="textSecondary">
-                {level.description}
-              </ThemedText>
-            </View>
-            {selected ? (
-              <Icon name="check" color="accent" />
-            ) : (
-              <Icon name="chevron-right" color="textSecondary" />
-            )}
-          </Pressable>
-        );
-      })}
+      {note && (
+        <Card variant="accent">
+          <ThemedText type="small">{note}</ThemedText>
+        </Card>
+      )}
+      <LevelPicker current={current} onChoose={choose} />
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
   intro: { gap: Spacing.two, paddingTop: Spacing.two, paddingBottom: Spacing.two },
-  option: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.three,
-    padding: Spacing.three,
-    borderRadius: Radius.large,
-    minHeight: 88,
-  },
-  text: { flex: 1, gap: Spacing.half },
-  pressed: { opacity: 0.85, transform: [{ scale: 0.99 }] },
 });

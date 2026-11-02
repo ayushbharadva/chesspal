@@ -2,9 +2,16 @@ export function dateKey(date = new Date()) {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 }
 
-function dayNumber(key: string) {
+export function dayNumber(key: string) {
   const [year, month, day] = key.split('-').map(Number);
   return Date.UTC(year, month - 1, day) / 86_400_000;
+}
+
+/** A due date in plain words relative to today, such as "tomorrow" or "in 3 days". */
+export function relativeDay(key: string, today: string) {
+  const days = dayNumber(key) - dayNumber(today);
+  if (days <= 0) return 'today';
+  return days === 1 ? 'tomorrow' : `in ${days} days`;
 }
 
 export function activityStreak(keys: string[], today: string) {

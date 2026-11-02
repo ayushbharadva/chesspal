@@ -1,4 +1,4 @@
-import { activityStreak, bestActivityStreak, dateKey } from '@/utils/date-key';
+import { activityStreak, bestActivityStreak, dateKey, relativeDay } from '@/utils/date-key';
 
 it('handles local days, month and year boundaries', () => {
   expect(dateKey(new Date(2026, 0, 1, 0, 1))).toBe('2026-01-01');
@@ -10,4 +10,9 @@ it('counts a day once, tolerates future dates and preserves the best streak', ()
   expect(activityStreak(days, '2026-10-13')).toBe(1);
   expect(activityStreak(days, '2026-10-15')).toBe(0);
   expect(bestActivityStreak(days)).toBe(2);
+});
+it('describes a due date relative to today', () => {
+  expect(relativeDay('2026-11-03', '2026-11-03')).toBe('today');
+  expect(relativeDay('2026-11-04', '2026-11-03')).toBe('tomorrow');
+  expect(relativeDay('2026-12-01', '2026-11-28')).toBe('in 3 days');
 });

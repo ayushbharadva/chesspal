@@ -8,6 +8,7 @@ import { Screen } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
 import { Pill, ProgressBar, Segmented } from '@/components/ui';
 import { Radius, Spacing } from '@/constants/theme';
+import { useHaptics } from '@/hooks/use-haptics';
 import { useElevation, useTheme } from '@/hooks/use-theme';
 import { useProgressStore } from '@/progress/store';
 import { bestScore, nextTarget, ROUND_SECONDS, secondsLeft } from '@/vision/coordinates';
@@ -17,6 +18,7 @@ type Round = { startedAt: number; target: Square; score: number; misses: number 
 export default function VisionScreen() {
   const scores = useProgressStore((state) => state.visionScores);
   const recordVision = useProgressStore((state) => state.recordVision);
+  const haptic = useHaptics();
   const [side, setSide] = useState<ChessColor>('w');
   const [round, setRound] = useState<Round | null>(null);
   const [now, setNow] = useState(0);
@@ -54,9 +56,11 @@ export default function VisionScreen() {
   function tap(square: Square) {
     if (!round) return;
     if (square === round.target) {
+      haptic('tick');
       setWrong(null);
       setRound({ ...round, target: nextTarget(round.target), score: round.score + 1 });
     } else {
+      haptic('error');
       setWrong(square);
       setRound({ ...round, misses: round.misses + 1 });
     }
@@ -69,11 +73,10 @@ export default function VisionScreen() {
     <Screen>
       <View style={styles.intro}>
         <ThemedText type="title" accessibilityRole="header">
-          Board vision.
+          Find the square.
         </ThemedText>
         <ThemedText themeColor="textSecondary">
-          Knowing every square by name helps you read moves, follow lessons and spot ideas faster.
-          Tap as many named squares as you can in {ROUND_SECONDS} seconds.
+          Tap the square shown. You have {ROUND_SECONDS} seconds.
         </ThemedText>
       </View>
       {round ? (
@@ -97,8 +100,8 @@ export default function VisionScreen() {
         <Segmented
           value={side}
           options={[
-            { value: 'w', label: 'White side' },
-            { value: 'b', label: 'Black side' },
+            { value: 'w', label: 'As White' },
+            { value: 'b', label: 'As Black' },
           ]}
           onChange={setSide}
         />
@@ -114,8 +117,8 @@ export default function VisionScreen() {
               </ThemedText>
               <ThemedText themeColor="textSecondary">
                 {best !== null && finished >= best && finished > 0
-                  ? 'That is your best from this side.'
-                  : 'Keep going. A few rounds a day makes the board feel familiar.'}
+                  ? 'Your best yet!'
+                  : 'A few rounds a day makes the board feel familiar.'}
               </ThemedText>
             </Card>
           )}
@@ -126,7 +129,7 @@ export default function VisionScreen() {
           />
           <Card>
             <ThemedText type="overline" themeColor="textSecondary">
-              {side === 'w' ? 'White side' : 'Black side'}
+              {side === 'w' ? 'As White' : 'As Black'}
             </ThemedText>
             <ThemedText type="headline">
               {best === null ? 'No rounds yet' : `Best: ${best} squares`}

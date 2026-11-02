@@ -23,7 +23,9 @@ it('covers every theme at every level with enough puzzles for skill ladders', ()
         puzzles.filter((puzzle) => puzzle.level === level && puzzle.themes.includes(theme)).length,
       ).toBeGreaterThanOrEqual(MIN_RUNG_POOL);
   for (const puzzle of puzzles)
-    expect(puzzle.level).toBe(puzzle.rating < 700 ? 1 : puzzle.rating < 1000 ? 2 : 3);
+    expect(puzzle.level).toBe(
+      [700, 1000, 1300, 1600].filter((boundary) => puzzle.rating >= boundary).length + 1,
+    );
 });
 it('describes every theme once with original teaching copy', () => {
   expect(skills.map((skill) => skill.id).sort()).toEqual([...SKILL_THEMES].sort());

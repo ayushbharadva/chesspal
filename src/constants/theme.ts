@@ -41,6 +41,8 @@ export const Colors = {
     pieceWhite: '#FFFFFF',
     pieceBlack: '#000000',
     boardTarget: '#1B1D2440',
+    boardCheck: '#C8402F8C',
+    boardSuccess: '#2E9E6680',
     modalBackdrop: '#0E0F1399',
   },
   dark: {
@@ -79,6 +81,8 @@ export const Colors = {
     pieceWhite: '#FFFFFF',
     pieceBlack: '#000000',
     boardTarget: '#14151A4D',
+    boardCheck: '#D9483A99',
+    boardSuccess: '#2E9E668C',
     modalBackdrop: '#000000B3',
   },
 } as const;

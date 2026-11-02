@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { emptyProgress } from '@/progress/types';
 import { decodeProgress, validProgress } from '@/storage/schema';
 import { flushProgressWrites, progressStorage, PROGRESS_KEY } from '@/storage/storage';
-import { makeSession } from '@/workout/session';
+import { chooseFork, makeRouteSession, makeSession } from '@/workout/session';
 
 beforeEach(async () => {
   await flushProgressWrites();
@@ -37,6 +37,87 @@ it('backs up corruption and rejects impossible saved positions', async () => {
     }),
   ).toBe(false);
   expect(() => decodeProgress(JSON.stringify({ state: emptyProgress(), version: 99 }))).toThrow();
+});
+it('loads older saves with route and settings defaults', () => {
+  const { routeRuns: _runs, settings: _settings, ...older } = emptyProgress();
+  const decoded = decodeProgress(JSON.stringify({ state: older, version: 1 })).state;
+  expect(decoded.routeRuns).toEqual([]);
+  expect(decoded.settings).toEqual({
+    appearance: 'system',
+    haptics: true,
+    sounds: true,
+    pieceSet: 'classic',
+  });
+});
+it('keeps settings saved before sounds and piece sets existed, with both defaults', () => {
+  const state = { ...emptyProgress(), settings: { appearance: 'dark', haptics: false } };
+  const decoded = decodeProgress(JSON.stringify({ state, version: 1 })).state;
+  expect(decoded.settings).toEqual({
+    appearance: 'dark',
+    haptics: false,
+    sounds: true,
+    pieceSet: 'classic',
+  });
+  expect(validProgress({ ...state, settings: { ...state.settings, pieceSet: 'wood' } })).toBe(true);
+  expect(validProgress({ ...state, settings: { ...state.settings, pieceSet: 'neon' } })).toBe(
+    false,
+  );
+  expect(
+    validProgress({
+      ...emptyProgress(),
+      settings: { appearance: 'dark', haptics: false, sounds: 'loud' },
+    }),
+  ).toBe(false);
+});
+it('round-trips a route session and rejects impossible route data', () => {
+  const route = makeRouteSession('route-a', '2026-10-13', [], 1);
+  const choosing = {
+    ...route,
+    route: { ...route.route!, choosing: true },
+    index: 1,
+    results: [
+      {
+        id: 'a',
+        puzzleId: route.puzzleIds[0],
+        independent: true,
+        dateKey: '2026-10-13',
+        completedAt: '2026-10-13T10:00:00.000Z',
+      },
+    ],
+  };
+  expect(validProgress({ ...emptyProgress(), currentSession: choosing })).toBe(true);
+  expect(validProgress({ ...emptyProgress(), currentSession: chooseFork(choosing, true) })).toBe(
+    true,
+  );
+  const { route: _route, ...noRoute } = route;
+  expect(validProgress({ ...emptyProgress(), currentSession: noRoute })).toBe(false);
+  expect(
+    validProgress({
+      ...emptyProgress(),
+      currentSession: { ...route, route: { ...route.route!, steepIds: ['nope', 'nope'] } },
+    }),
+  ).toBe(false);
+  expect(
+    validProgress({
+      ...emptyProgress(),
+      currentSession: { ...route, route: { ...route.route!, taken: [0] } },
+    }),
+  ).toBe(false);
+  expect(
+    validProgress({
+      ...emptyProgress(),
+      currentSession: { ...makeSession('x', 'daily', '2026-10-13', []), route: route.route },
+    }),
+  ).toBe(false);
+});
+it('rejects invalid route runs and settings', () => {
+  const run = { dateKey: '2026-10-13', score: 8, steepTaken: 1, level: 2 };
+  expect(validProgress({ ...emptyProgress(), routeRuns: [run] })).toBe(true);
+  expect(validProgress({ ...emptyProgress(), routeRuns: [{ ...run, score: -1 }] })).toBe(false);
+  expect(validProgress({ ...emptyProgress(), routeRuns: [{ ...run, steepTaken: 3 }] })).toBe(false);
+  expect(
+    validProgress({ ...emptyProgress(), settings: { appearance: 'neon', haptics: true } }),
+  ).toBe(false);
 });
 it('serializes writes to keep the most recent snapshot', async () => {
   const first = JSON.stringify({ state: emptyProgress(), version: 1 });
@@ -84,6 +165,30 @@ it('fills level, skill and vision defaults into saves from earlier versions', as
     visionScores: { w: [], b: [] },
   });
 });
+it('moves skill progress from before per-level progress under the saved level', async () => {
+  const session = makeSession('old-skill', 'skill', '2026-10-13', [], 3, {
+    theme: 'pin',
+    rung: 2,
+    run: 1,
+    level: 3,
+  });
+  const { level: omitted, ...oldSkill } = session.skill!;
+  void omitted;
+  const earlier = {
+    ...emptyProgress(),
+    level: 3,
+    skillProgress: { fork: { cleared: [1, 2], runs: 3 } },
+    currentSession: { ...session, skill: oldSkill },
+  };
+  await AsyncStorage.setItem(PROGRESS_KEY, JSON.stringify({ state: earlier, version: 1 }));
+  const restored = decodeProgress((await progressStorage.getItem(PROGRESS_KEY))!).state;
+  expect(restored.skillProgress).toEqual({ 3: { fork: { cleared: [1, 2], runs: 3 } } });
+  expect(restored.currentSession?.skill).toEqual({ theme: 'pin', rung: 2, run: 1, level: 3 });
+  // An upgraded save loads unchanged the next time.
+  const upgraded = JSON.stringify({ state: restored, version: 1 });
+  await AsyncStorage.setItem(PROGRESS_KEY, upgraded);
+  expect(await progressStorage.getItem(PROGRESS_KEY)).toBe(upgraded);
+});
 it('rejects malformed levels, skill progress, vision scores and skill sessions', () => {
   const valid = {
     ...emptyProgress(),
@@ -92,10 +197,18 @@ it('rejects malformed levels, skill progress, vision scores and skill sessions',
     visionScores: { w: [12, 15], b: [] },
   };
   expect(validProgress(valid)).toBe(true);
-  expect(validProgress({ ...valid, level: 4 })).toBe(false);
+  expect(validProgress({ ...valid, level: 5 })).toBe(true);
+  expect(validProgress({ ...valid, level: 6 })).toBe(false);
+  expect(validProgress({ ...valid, level: 0 })).toBe(false);
   expect(validProgress({ ...valid, skillProgress: { castling: { cleared: [], runs: 0 } } })).toBe(
     false,
   );
+  expect(
+    validProgress({ ...valid, skillProgress: { 5: { fork: { cleared: [3], runs: 1 } } } }),
+  ).toBe(true);
+  expect(
+    validProgress({ ...valid, skillProgress: { 6: { fork: { cleared: [3], runs: 1 } } } }),
+  ).toBe(false);
   expect(validProgress({ ...valid, skillProgress: { fork: { cleared: [1, 1], runs: 2 } } })).toBe(
     false,
   );
@@ -104,6 +217,7 @@ it('rejects malformed levels, skill progress, vision scores and skill sessions',
     theme: 'fork',
     rung: 1,
     run: 0,
+    level: 1,
   });
   expect(session.puzzleIds).toHaveLength(5);
   expect(validProgress({ ...valid, currentSession: session })).toBe(true);
