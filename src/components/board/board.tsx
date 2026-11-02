@@ -449,9 +449,7 @@ export function Board({
                     if (promotions.fen === fen && interactive) onMove?.(move.uci);
                   }}>
                   <View style={styles.promotionPiece}>
-                    <Piece
-                      piece={{ color: position.turn, type: move.promotion!, square: move.to }}
-                    />
+                    <Piece piece={{ color: position.turn, type: move.promotion! }} />
                   </View>
                   <ThemedText type="overline" themeColor="textSecondary">
                     {PIECE_NAMES[move.promotion!]}

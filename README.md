@@ -16,7 +16,7 @@ Offline chess practice and opening guides for beginners who already know the rul
 - **Recall:** scheduled reviews return after a delay, including puzzles previously solved independently. Workouts mix due reviews with fresh practice.
 - **Daily challenge:** five themed puzzles a day; twice you pick a normal or a hard puzzle, scored against your own usual score.
 - **Sound effects:** quiet wooden sounds for moves, captures, checks and checkmates, plus soft tones for solves and mistakes.
-- **Settings:** light, dark or system appearance, with optional haptic feedback and sound effects.
+- **Settings:** light, dark or system appearance, three piece sets (Classic, Modern, Wood), and optional haptic feedback and sound effects.
 - **Simple navigation:** a short welcome and level question on first launch, then four bottom tabs (Home, Puzzles, Openings, Progress) with plain wording throughout ([decision 0007](docs/decisions/0007-first-run-tabs-plain-words.md)).
 - No account, server, subscription or internet connection needed for learning. Opening references open in your browser.
 
@@ -63,7 +63,7 @@ scripts/content/ # import and engine verification
 src/
   app/           # Expo Router screens
   chess/         # chess.js boundary and legal move adapter
-  components/    # board, Chessnut pieces, icons and shared UI (cards, buttons, rows)
+  components/    # board, piece sets, icons and shared UI (cards, buttons, rows)
   constants/     # design tokens: colors, fonts, spacing, elevation
   content/       # typed content access and validation
   learning/      # pure branch, transfer and lesson recall logic

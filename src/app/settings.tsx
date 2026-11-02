@@ -2,6 +2,7 @@ import { router } from 'expo-router';
 import { StyleSheet, Switch, View } from 'react-native';
 
 import { Card } from '@/components/card';
+import { PieceSetPicker } from '@/components/piece-set-picker';
 import { Screen } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
 import { ListRow, SectionTitle, Segmented } from '@/components/ui';
@@ -32,6 +33,14 @@ export default function SettingsScreen() {
         options={APPEARANCES}
         value={settings.appearance}
         onChange={(appearance) => updateSettings({ appearance })}
+      />
+      <SectionTitle>Pieces</SectionTitle>
+      <PieceSetPicker
+        value={settings.pieceSet}
+        onChange={(pieceSet) => {
+          haptic('tick');
+          updateSettings({ pieceSet });
+        }}
       />
       <SectionTitle>Feel</SectionTitle>
       <Card>

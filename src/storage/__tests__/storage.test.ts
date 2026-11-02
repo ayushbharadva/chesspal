@@ -42,12 +42,26 @@ it('loads older saves with route and settings defaults', () => {
   const { routeRuns: _runs, settings: _settings, ...older } = emptyProgress();
   const decoded = decodeProgress(JSON.stringify({ state: older, version: 1 })).state;
   expect(decoded.routeRuns).toEqual([]);
-  expect(decoded.settings).toEqual({ appearance: 'system', haptics: true, sounds: true });
+  expect(decoded.settings).toEqual({
+    appearance: 'system',
+    haptics: true,
+    sounds: true,
+    pieceSet: 'classic',
+  });
 });
-it('keeps settings saved before sound effects existed and turns sounds on', () => {
+it('keeps settings saved before sounds and piece sets existed, with both defaults', () => {
   const state = { ...emptyProgress(), settings: { appearance: 'dark', haptics: false } };
   const decoded = decodeProgress(JSON.stringify({ state, version: 1 })).state;
-  expect(decoded.settings).toEqual({ appearance: 'dark', haptics: false, sounds: true });
+  expect(decoded.settings).toEqual({
+    appearance: 'dark',
+    haptics: false,
+    sounds: true,
+    pieceSet: 'classic',
+  });
+  expect(validProgress({ ...state, settings: { ...state.settings, pieceSet: 'wood' } })).toBe(true);
+  expect(validProgress({ ...state, settings: { ...state.settings, pieceSet: 'neon' } })).toBe(
+    false,
+  );
   expect(
     validProgress({
       ...emptyProgress(),

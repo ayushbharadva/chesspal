@@ -695,12 +695,14 @@ describe('daily challenge', () => {
 });
 
 describe('settings', () => {
-  it('opens from Home and saves appearance and haptics', async () => {
+  it('opens from Home and saves appearance, pieces and haptics', async () => {
     const app = await renderApp();
     await fireEvent.press(screen.getByRole('button', { name: 'Settings' }));
     expect(app.getPathname()).toBe('/settings');
     await fireEvent.press(screen.getByRole('button', { name: 'Dark' }));
     expect(useProgressStore.getState().settings.appearance).toBe('dark');
+    await fireEvent.press(screen.getByRole('button', { name: 'Modern pieces by philatype' }));
+    expect(useProgressStore.getState().settings.pieceSet).toBe('modern');
     await fireEvent(screen.getByLabelText('Haptic feedback'), 'valueChange', false);
     expect(useProgressStore.getState().settings.haptics).toBe(false);
     await flushProgressWrites();
@@ -713,6 +715,7 @@ describe('settings', () => {
       appearance: 'dark',
       haptics: false,
       sounds: false,
+      pieceSet: 'modern',
     });
   });
 

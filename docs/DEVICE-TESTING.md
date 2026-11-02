@@ -19,6 +19,7 @@ Use the preview APK from `npx eas-cli@latest build --platform android --profile 
 - [ ] Sound: moves, captures, check and checkmate each sound right, with no delay or crackle and at a comfortable volume. Silent mode and the Settings switch both stop them, and music from another app keeps playing.
 - [ ] Android back: leave and resume each flow without losing position or creating duplicate attempts.
 - [ ] Airplane mode: puzzles, guides, exercises and saved progress work; the external reference reports a connection problem gracefully.
+- [ ] Piece sets: each set in Settings changes the board, promotion choices and previews at once, keeps its shading on Android, and stays readable on light and dark squares in both themes.
 - [ ] Layout/accessibility: small phone, large font scale, dark mode and TalkBack. Verify readable labels, reachable controls and no clipped board or buttons.
 - [ ] Performance: record cold-start time with the 3,200-puzzle bundle and check repeated moves on a mid-range or slower Android device.
 

@@ -30,8 +30,11 @@ Each move is validated through the chess domain adapter. A different legal move 
 
 ## Artwork
 
-- **Pieces:** the Chessnut set by [Alexis Luengas](https://github.com/LexLuengas/chessnut-pieces), Apache License 2.0 ([licence](../licenses/chessnut-apache-2.0.txt)), stored as SVG strings in `src/components/board/piece-set.ts`. The only change is removing a CSS `style` attribute that React Native does not use.
-- **Brand mark and launcher icons:** the Chessnut knight in brass on an ink tile. `assets/images/chesspal-icon.svg` is the source; `icon.png`, the Android adaptive foreground and monochrome layers, `splash-icon.png` and `favicon.png` are exports of it.
+- **Pieces:** three sets the player chooses between in Settings, fetched from pinned commits by `npm run pieces:build` into `src/components/board/piece-svgs.ts`. The script inlines CSS rules, copies gradient stops that were shared through `href`, prefixes ids per piece and minifies with SVGO; the artwork is unchanged.
+  - **Classic** (default): Celtic by [Maurizio Monge](https://github.com/maurimo/chess-art), MIT ([licence](../licenses/celtic-mit.txt)), from the Lichess repository.
+  - **Modern:** Kosal by [philatype](https://github.com/philatype/kosal), CC BY 4.0 ([licence](../licenses/kosal-cc-by-4.0.txt)). The designer is credited under each set in Settings.
+  - **Wood:** [RhosGFX](https://rhosgfx.itch.io/vector-chess-pieces) vector chess pieces, CC0 1.0 ([deed](../licenses/rhosgfx-cc0.txt)), from the Lichess repository.
+- **Brand mark and launcher icons:** the Chessnut knight by [Alexis Luengas](https://github.com/LexLuengas/chessnut-pieces), Apache License 2.0 ([licence](../licenses/chessnut-apache-2.0.txt)), in brass on an ink tile. The board no longer uses Chessnut pieces. `assets/images/chesspal-icon.svg` is the source; `icon.png`, the Android adaptive foreground and monochrome layers, `splash-icon.png` and `favicon.png` are exports of it.
 - **Interface icons:** paths from [Lucide](https://lucide.dev), ISC License ([licence](../licenses/lucide-isc.txt)), in `src/components/icon.tsx`.
 - **Fonts:** Fraunces and Inter from Google Fonts via `@expo-google-fonts`, SIL Open Font License.
 

@@ -83,13 +83,17 @@ export function emptyLessonProgress(): LessonProgress {
 }
 
 export type Appearance = 'system' | 'light' | 'dark';
+/** Piece designs the player can choose in Settings; the artwork is in src/components/board. */
+export const PIECE_SETS = ['classic', 'modern', 'wood'] as const;
+export type PieceSetId = (typeof PIECE_SETS)[number];
 export interface Settings {
   appearance: Appearance;
   haptics: boolean;
   sounds: boolean;
+  pieceSet: PieceSetId;
 }
 export function defaultSettings(): Settings {
-  return { appearance: 'system', haptics: true, sounds: true };
+  return { appearance: 'system', haptics: true, sounds: true, pieceSet: 'classic' };
 }
 
 export interface SavedProgress {

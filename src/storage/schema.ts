@@ -4,7 +4,12 @@ import { branchForGuide } from '@/content/lessons';
 import { lessonTarget } from '@/learning/lesson';
 import { PUZZLE_LEVELS, SKILL_THEMES } from '@/content/types';
 import { ROUTE_FORKS } from '@/daily-route/route';
-import { defaultSettings, emptyLessonProgress, type SavedProgress } from '@/progress/types';
+import {
+  defaultSettings,
+  emptyLessonProgress,
+  PIECE_SETS,
+  type SavedProgress,
+} from '@/progress/types';
 import { emptyVisionScores, KEPT_SCORES } from '@/vision/coordinates';
 
 function record(value: unknown): value is Record<string, unknown> {
@@ -205,7 +210,8 @@ function settings(value: unknown) {
     record(value) &&
     ['system', 'light', 'dark'].includes(String(value.appearance)) &&
     typeof value.haptics === 'boolean' &&
-    (value.sounds === undefined || typeof value.sounds === 'boolean')
+    (value.sounds === undefined || typeof value.sounds === 'boolean') &&
+    (value.pieceSet === undefined || PIECE_SETS.some((set) => set === value.pieceSet))
   );
 }
 function routeState(value: unknown) {
