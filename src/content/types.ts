@@ -14,9 +14,15 @@ export const SKILL_THEMES = [
 export type SkillTheme = (typeof SKILL_THEMES)[number];
 export const MATE_THEMES: readonly SkillTheme[] = ['mateIn1', 'backRankMate', 'mateIn2'];
 
-/** 1 = Beginner (rated under 700), 2 = Easy (700–999), 3 = Medium (1000–1300). */
-export type PuzzleLevel = 1 | 2 | 3;
-export const PUZZLE_LEVELS: readonly PuzzleLevel[] = [1, 2, 3];
+/** Beginner (rated under 700), Easy (700–999), Medium (1000–1299), Hard (1300–1599), Expert (1600–1899). */
+export const PUZZLE_LEVELS = [1, 2, 3, 4, 5] as const;
+export type PuzzleLevel = (typeof PUZZLE_LEVELS)[number];
+export const TOP_LEVEL: PuzzleLevel = 5;
+
+/** Keeps a shifted level, such as one level harder, within the levels that exist. */
+export function clampLevel(level: number): PuzzleLevel {
+  return Math.min(TOP_LEVEL, Math.max(1, level)) as PuzzleLevel;
+}
 
 export interface Puzzle {
   id: string;

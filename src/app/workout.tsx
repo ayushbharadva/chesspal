@@ -12,6 +12,7 @@ import { ThemedText } from '@/components/themed-text';
 import { RoutePath } from '@/components/route-path';
 import { IconBadge, ListRow, ProgressBar } from '@/components/ui';
 import { puzzleById } from '@/content';
+import { levelName } from '@/content/levels';
 import { skillById } from '@/content/skills';
 import { Spacing } from '@/constants/theme';
 import { routeSteps, SAFE_HELPED_POINTS, SAFE_POINTS, STEEP_POINTS } from '@/daily-route/route';
@@ -191,6 +192,8 @@ export default function WorkoutScreen() {
             {`Puzzle ${session.index + 1} of ${session.puzzleIds.length}`}
             {route?.taken.includes(session.index) ? ' · Hard' : ''}
             {session.mode === 'review' ? ' · Review' : ''}
+            {/* Practice rounds mix levels, so each puzzle names its own. */}
+            {route || session.skill ? '' : ` · ${levelName(puzzle.level)}`}
             {session.skill
               ? ` · ${skillById[session.skill.theme].name} · ${RUNG_NAMES[session.skill.rung]}`
               : ''}

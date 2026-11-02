@@ -1,4 +1,4 @@
-"""Import a bounded beginner subset from the CC0 Lichess database.
+"""Import a bounded subset of short puzzles from the CC0 Lichess database.
 
 Install zstandard, then run this script. Rows are streamed and filtered on the fly;
 the full database is never saved. The stream closes once every theme and level quota
@@ -26,15 +26,19 @@ THEMES = [
     "hangingPiece",
 ]
 MATE_THEMES = {"backRankMate", "mateIn2", "mateIn1"}
-# ChessPal levels: Beginner, Easy and Medium puzzle ratings.
-LEVELS = {1: (400, 699), 2: (700, 999), 3: (1000, 1300)}
-QUOTA = 40
+# ChessPal levels: Beginner, Easy, Medium, Hard and Expert puzzle ratings.
+LEVELS = {1: (400, 699), 2: (700, 999), 3: (1000, 1299), 4: (1300, 1599), 5: (1600, 1899)}
+# Puzzles per theme and level, counting the ones already bundled.
+QUOTA = 80
 
-existing_ids = {
-    puzzle["id"] for puzzle in json.loads((ROOT / "content" / "puzzles.json").read_text())
-}
+bundled = json.loads((ROOT / "content" / "puzzles.json").read_text())
+existing_ids = {puzzle["id"] for puzzle in bundled}
 existing_rows = {}
 selected = {(theme, level): [] for theme in THEMES for level in LEVELS}
+wanted = {bucket: QUOTA for bucket in selected}
+for puzzle in bundled:
+    bucket = (puzzle["theme"], puzzle["level"])
+    wanted[bucket] = max(0, wanted[bucket] - 1)
 
 
 def level_for(rating):
@@ -56,7 +60,7 @@ def primary_theme(themes):
 
 def done():
     return len(existing_rows) == len(existing_ids) and all(
-        len(rows) >= QUOTA for rows in selected.values()
+        len(rows) >= wanted[bucket] for bucket, rows in selected.items()
     )
 
 
@@ -80,7 +84,7 @@ with urlopen(request, timeout=60) as response:
                 theme = primary_theme(themes) if level else None
                 if theme and len(row["Moves"].split()) in (2, 4):
                     bucket = selected[(theme, level)]
-                    if len(bucket) < QUOTA:
+                    if len(bucket) < wanted[(theme, level)]:
                         row["PrimaryTheme"] = theme
                         bucket.append(row)
             if done():

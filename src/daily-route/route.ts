@@ -1,5 +1,5 @@
 import { puzzles as allPuzzles, type Puzzle } from '@/content';
-import { SKILL_THEMES, type PuzzleLevel, type SkillTheme } from '@/content/types';
+import { SKILL_THEMES, TOP_LEVEL, type PuzzleLevel, type SkillTheme } from '@/content/types';
 import { seededRandom, shuffle } from '@/skills/ladder';
 import { dayNumber } from '@/utils/date-key';
 
@@ -42,7 +42,7 @@ function preferFresh(
 
 /**
  * Today's five puzzles and the two harder ones on offer at the forks, easiest first.
- * Medium players have no level above, so their steep path uses the hardest third of Medium.
+ * Expert players have no level above, so their steep path uses the hardest third of Expert.
  */
 export function planRoute(
   localDate: string,
@@ -66,11 +66,11 @@ export function planRoute(
     .sort(byRating);
   const chosen = new Set(safe.map((puzzle) => puzzle.id));
   const harder =
-    level < 3
+    level < TOP_LEVEL
       ? tagged.filter((puzzle) => puzzle.level === level + 1)
-      : [...tagged.filter((puzzle) => puzzle.level === 3)]
+      : [...tagged.filter((puzzle) => puzzle.level === TOP_LEVEL)]
           .sort(byRating)
-          .slice(-Math.ceil(tagged.filter((puzzle) => puzzle.level === 3).length / 3));
+          .slice(-Math.ceil(tagged.filter((puzzle) => puzzle.level === TOP_LEVEL).length / 3));
   const steep = shuffle(
     preferFresh(
       harder.filter((puzzle) => !chosen.has(puzzle.id)),

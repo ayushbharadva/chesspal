@@ -7,6 +7,7 @@ import {
   levelMix,
   makeSession,
   nextPuzzle,
+  relevelSession,
   selectPuzzles,
 } from '@/workout/session';
 
@@ -41,7 +42,11 @@ it('mixes two easier, six level and two harder puzzles, easiest first', () => {
   const ids = selectPuzzles([], 'daily', 10, today, 2);
   expect(ids.map((id) => puzzleById[id].level)).toEqual([1, 1, 2, 2, 2, 2, 2, 2, 3, 3]);
   expect(selectPuzzles([], 'daily', 10, today, 3).map((id) => puzzleById[id].level)).toEqual([
-    2, 2, 3, 3, 3, 3, 3, 3, 3, 3,
+    2, 2, 3, 3, 3, 3, 3, 3, 4, 4,
+  ]);
+  // Expert is the top level, so its harder slots stay at Expert.
+  expect(selectPuzzles([], 'daily', 10, today, 5).map((id) => puzzleById[id].level)).toEqual([
+    4, 4, 5, 5, 5, 5, 5, 5, 5, 5,
   ]);
 });
 it('includes one fresh puzzle from the weakest theme', () => {
@@ -183,4 +188,51 @@ it('tracks wrong legal attempts separately from independent solves', () => {
   const tried = applyAnswer(session, puzzle, other.uci);
   expect(tried.mistakes).toBe(1);
   expect(attemptFor(tried, puzzle.id, new Date()).independent).toBe(false);
+});
+
+describe('relevelSession', () => {
+  const levels = (ids: string[]) => ids.map((id) => puzzleById[id].level);
+
+  it('swaps unstarted puzzles for the new level and keeps finished ones', () => {
+    const session = makeSession('daily', 'daily', today, [], 1);
+    const first = puzzleById[session.puzzleIds[0]];
+    let played = session;
+    for (let ply = 0; ply < first.moves.length; ply += 2)
+      played = applyAnswer(played, first, first.moves[ply]);
+    const result = attemptFor(played, first.id, new Date(`${today}T10:00:00Z`));
+    const finished = nextPuzzle({ ...played, results: [result] });
+    const releveled = relevelSession(finished, [result], 5);
+    expect(releveled.puzzleIds[0]).toBe(first.id);
+    expect(levels(releveled.puzzleIds.slice(1))).toEqual([4, 4, 5, 5, 5, 5, 5, 5, 5]);
+    expect(new Set(releveled.puzzleIds).size).toBe(10);
+    expect(releveled.index).toBe(1);
+  });
+
+  it('keeps the puzzle in progress once a move, hint or mistake has been made', () => {
+    const session = makeSession('daily', 'daily', today, [], 1);
+    const touched = { ...session, hintsShown: 1, usedHelp: true };
+    expect(relevelSession(touched, [], 5).puzzleIds[0]).toBe(session.puzzleIds[0]);
+    expect(relevelSession(session, [], 5).puzzleIds[0]).not.toBe(session.puzzleIds[0]);
+  });
+
+  it('keeps review puzzles, which belong to the player rather than a level', () => {
+    const seen = selectPuzzles([], 'daily', 3, '2026-10-01', 1);
+    const history = seen.map((id) => attempt(id, true, '2026-10-01'));
+    const session = makeSession('daily', 'daily', today, history, 1);
+    const reviews = session.puzzleIds.slice(0, 3);
+    expect([...reviews].sort()).toEqual([...seen].sort());
+    expect(relevelSession(session, history, 5).puzzleIds.slice(0, 3)).toEqual(reviews);
+  });
+
+  it('leaves skill rounds, challenges, reviews and finished rounds alone', () => {
+    const skill = makeSession('skill', 'skill', today, [], 1, {
+      theme: 'fork',
+      rung: 1,
+      run: 0,
+      level: 1,
+    });
+    expect(relevelSession(skill, [], 5)).toBe(skill);
+    const done = { ...makeSession('daily', 'daily', today, [], 1), phase: 'complete' as const };
+    expect(relevelSession(done, [], 5)).toBe(done);
+  });
 });

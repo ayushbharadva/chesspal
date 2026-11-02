@@ -11,10 +11,11 @@ import {
   skillMastered,
 } from '@/skills/ladder';
 
-it('places the warm-up below the player and the test above, within levels 1–3', () => {
+it('places the warm-up below the player and the test above, within levels 1–5', () => {
   expect([1, 2, 3].map((rung) => rungLevel(2, rung as 1 | 2 | 3))).toEqual([1, 2, 3]);
+  expect([1, 2, 3].map((rung) => rungLevel(4, rung as 1 | 2 | 3))).toEqual([3, 4, 5]);
   expect(rungLevel(1, 1)).toBe(1);
-  expect(rungLevel(3, 3)).toBe(3);
+  expect(rungLevel(5, 3)).toBe(5);
 });
 
 it('picks five fresh themed puzzles per run, deterministically', () => {

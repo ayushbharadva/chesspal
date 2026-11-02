@@ -20,6 +20,16 @@ export const LEVELS: readonly {
     name: 'Medium',
     description: 'Forks and pins feel familiar.',
   },
+  {
+    value: 4,
+    name: 'Hard',
+    description: 'I spot tactics in my own games.',
+  },
+  {
+    value: 5,
+    name: 'Expert',
+    description: 'I want a real challenge.',
+  },
 ];
 
 export function levelName(level: PuzzleLevel | null) {

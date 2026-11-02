@@ -8,6 +8,7 @@ import { Screen } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
 import { Disclosure, IconBadge, Pill, SectionTitle } from '@/components/ui';
 import { puzzleById } from '@/content';
+import { levelName } from '@/content/levels';
 import { skillById } from '@/content/skills';
 import { SKILL_THEMES, type SkillTheme } from '@/content/types';
 import { Radius, Spacing } from '@/constants/theme';
@@ -34,7 +35,9 @@ export default function SkillScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const theme = SKILL_THEMES.find((item) => item === id);
   const level = useProgressStore((state) => state.level) ?? 1;
-  const progress = useProgressStore((state) => (theme ? state.skillProgress[theme] : undefined));
+  const progress = useProgressStore((state) =>
+    theme ? state.skillProgress[level]?.[theme] : undefined,
+  );
   const attempts = useProgressStore((state) => state.attempts);
   const session = useProgressStore((state) => state.currentSession);
   const startSkill = useProgressStore((state) => state.startSkill);
@@ -86,7 +89,7 @@ export default function SkillScreen() {
       <Disclosure title="How it works" icon="lightbulb">
         <ThemedText>{skill.card}</ThemedText>
       </Disclosure>
-      <SectionTitle>Rounds</SectionTitle>
+      <SectionTitle>{`Rounds · ${levelName(level)}`}</SectionTitle>
       {blocked && session && session.phase !== 'complete' && (
         <Card variant="accent">
           <ThemedText>Finish your current puzzles first.</ThemedText>

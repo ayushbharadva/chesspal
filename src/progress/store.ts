@@ -33,6 +33,7 @@ import {
   makeRouteSession,
   makeSession,
   nextPuzzle,
+  relevelSession,
 } from '@/workout/session';
 
 interface ProgressStore extends SavedProgress {
@@ -40,6 +41,7 @@ interface ProgressStore extends SavedProgress {
   storageIssue: boolean;
   lessonNotice: { key: string; text: string } | null;
   startPractice: (mode?: PracticeMode) => boolean;
+  /** Saves the level and moves a practice round's unstarted puzzles to it. */
   setLevel: (level: PuzzleLevel) => void;
   /** Starts a ladder run; false while another practice round is unfinished. */
   startSkill: (theme: SkillTheme, rung: Rung) => boolean;
@@ -89,7 +91,11 @@ export const useProgressStore = create<ProgressStore>()(
         return true;
       },
       setLevel(level) {
-        set({ level });
+        const session = get().currentSession;
+        set({
+          level,
+          currentSession: session && relevelSession(session, get().attempts, level),
+        });
       },
       startSkill(theme, rung) {
         if (!get().hydrated) return false;
@@ -98,14 +104,15 @@ export const useProgressStore = create<ProgressStore>()(
           return active.skill?.theme === theme && active.skill.rung === rung;
         }
         const now = new Date();
-        const run = get().skillProgress[theme]?.runs ?? 0;
+        const level = get().level ?? 1;
+        const run = get().skillProgress[level]?.[theme]?.runs ?? 0;
         const session = makeSession(
           `skill-${theme}-${rung}-${now.getTime()}`,
           'skill',
           dateKey(now),
           get().attempts,
-          get().level ?? 1,
-          { theme, rung, run },
+          level,
+          { theme, rung, run, level },
         );
         if (session.puzzleIds.length !== RUNG_SIZE) return false;
         set({ currentSession: session });
@@ -224,8 +231,9 @@ export const useProgressStore = create<ProgressStore>()(
             });
           }
           if (next.skill) {
-            const { theme, rung } = next.skill;
-            const progress = get().skillProgress[theme] ?? { cleared: [], runs: 0 };
+            const { theme, rung, level } = next.skill;
+            const atLevel = get().skillProgress[level] ?? {};
+            const progress = atLevel[theme] ?? { cleared: [], runs: 0 };
             const cleared =
               rungCleared(completion.independent) && !progress.cleared.includes(rung)
                 ? [...progress.cleared, rung].sort()
@@ -233,7 +241,7 @@ export const useProgressStore = create<ProgressStore>()(
             set({
               skillProgress: {
                 ...get().skillProgress,
-                [theme]: { cleared, runs: progress.runs + 1 },
+                [level]: { ...atLevel, [theme]: { cleared, runs: progress.runs + 1 } },
               },
             });
           }

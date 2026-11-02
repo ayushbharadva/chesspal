@@ -12,7 +12,7 @@ import {
   routeTheme,
   type RouteRun,
 } from '@/daily-route/route';
-import { type PuzzleLevel } from '@/content/types';
+import { PUZZLE_LEVELS, TOP_LEVEL } from '@/content/types';
 import { applyAnswer, chooseFork, makeRouteSession, nextPuzzle } from '@/workout/session';
 
 const DATE = '2026-10-31';
@@ -24,7 +24,7 @@ const run = (dateKey: string, score: number): RouteRun => ({
 });
 
 describe('planRoute', () => {
-  it.each([1, 2, 3] as PuzzleLevel[])('builds five themed puzzles at level %i', (level) => {
+  it.each(PUZZLE_LEVELS)('builds five themed puzzles at level %i', (level) => {
     const plan = planRoute(DATE, level, []);
     expect(plan.puzzleIds).toHaveLength(5);
     expect(plan.steepIds).toHaveLength(2);
@@ -40,10 +40,15 @@ describe('planRoute', () => {
   it('makes steep puzzles harder than safe ones on average', () => {
     const average = (ids: string[]) =>
       ids.reduce((sum, id) => sum + puzzleById[id].rating, 0) / ids.length;
-    for (const level of [1, 2, 3] as PuzzleLevel[]) {
+    for (const level of PUZZLE_LEVELS) {
       const plan = planRoute(DATE, level, []);
       expect(average(plan.steepIds)).toBeGreaterThan(average(plan.puzzleIds));
     }
+  });
+
+  it('draws hard picks for the top level from that level', () => {
+    const plan = planRoute(DATE, TOP_LEVEL, []);
+    for (const id of plan.steepIds) expect(puzzleById[id].level).toBe(TOP_LEVEL);
   });
 
   it('is the same all day, changes by date and rotates through themes', () => {

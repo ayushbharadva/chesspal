@@ -27,7 +27,7 @@ import { reviewQueue } from '@/workout/review';
 export default function PuzzlesScreen() {
   const today = useLocalDate();
   const level = useProgressStore((state) => state.level) ?? 1;
-  const progress = useProgressStore((state) => state.skillProgress);
+  const progress = useProgressStore((state) => state.skillProgress[level]);
   const attempts = useProgressStore((state) => state.attempts);
   const session = useProgressStore((state) => state.currentSession);
   const visionScores = useProgressStore((state) => state.visionScores);
@@ -93,7 +93,8 @@ export default function PuzzlesScreen() {
         onPress={() => router.push('/daily-route')}
       />
       <ThemedText type="small" themeColor="textSecondary" style={styles.themesNote}>
-        Learn one theme at a time. Each has 3 short rounds; the dots show the ones you passed.
+        Learn one theme at a time. Each has 3 short rounds; the dots show the ones you passed at
+        this level.
       </ThemedText>
       {skillUnits.map((unit) => (
         <View key={unit.id} style={styles.unit}>
@@ -101,18 +102,18 @@ export default function PuzzlesScreen() {
           {unit.skills.map((theme) => (
             <ListRow
               key={theme}
-              icon={skillMastered(progress[theme], available[theme]) ? 'check' : 'puzzle'}
+              icon={skillMastered(progress?.[theme], available[theme]) ? 'check' : 'puzzle'}
               title={skillById[theme].name}
               detail={
                 weak.has(theme)
                   ? `Needs practice · ${skillById[theme].summary}`
                   : skillById[theme].summary
               }
-              accessibilityLabel={`${skillById[theme].name}: ${describeProgress(progress[theme], available[theme])}`}
+              accessibilityLabel={`${skillById[theme].name}: ${describeProgress(progress?.[theme], available[theme])}`}
               trailing={
                 <StepDots
                   steps={RUNGS.map((rung) => ({
-                    done: progress[theme]?.cleared.includes(rung) ?? false,
+                    done: progress?.[theme]?.cleared.includes(rung) ?? false,
                     available: available[theme].includes(rung),
                   }))}
                 />

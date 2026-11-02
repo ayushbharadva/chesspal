@@ -1,16 +1,13 @@
 import { Pressable, StyleSheet, View } from 'react-native';
 
-import { Icon, type IconName } from '@/components/icon';
+import { Icon } from '@/components/icon';
 import { ThemedText } from '@/components/themed-text';
-import { IconBadge } from '@/components/ui';
 import { LEVELS } from '@/content/levels';
-import { type PuzzleLevel } from '@/content/types';
+import { PUZZLE_LEVELS, type PuzzleLevel } from '@/content/types';
 import { Radius, Spacing } from '@/constants/theme';
 import { useElevation, useTheme } from '@/hooks/use-theme';
 
-const LEVEL_ICONS: Record<PuzzleLevel, IconName> = { 1: 'play', 2: 'target', 3: 'trophy' };
-
-/** The three puzzle levels as large tappable cards, with the current one checked. */
+/** The puzzle levels as large tappable cards, with the current one checked. */
 export function LevelPicker({
   current,
   onChoose,
@@ -41,7 +38,7 @@ export function LevelPicker({
               },
               pressed && styles.pressed,
             ]}>
-            <IconBadge name={LEVEL_ICONS[level.value]} size={44} />
+            <LevelBars level={level.value} />
             <View style={styles.text}>
               <ThemedText type="headline">{level.name}</ThemedText>
               <ThemedText type="small" themeColor="textSecondary">
@@ -60,6 +57,30 @@ export function LevelPicker({
   );
 }
 
+/** Rising bars filled up to a level, so the levels read as one ladder. */
+export function LevelBars({ level }: { level: PuzzleLevel }) {
+  const theme = useTheme();
+  return (
+    <View
+      style={[styles.bars, { backgroundColor: theme.accentSurface }]}
+      accessibilityElementsHidden
+      importantForAccessibility="no-hide-descendants">
+      {PUZZLE_LEVELS.map((step) => (
+        <View
+          key={step}
+          style={[
+            styles.bar,
+            { height: 8 + step * 4 },
+            step <= level
+              ? { backgroundColor: theme.accent }
+              : { backgroundColor: theme.textSecondary, opacity: 0.25 },
+          ]}
+        />
+      ))}
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
   list: { gap: Spacing.three },
   option: {
@@ -71,5 +92,16 @@ const styles = StyleSheet.create({
     minHeight: 88,
   },
   text: { flex: 1, gap: Spacing.half },
+  bars: {
+    width: 44,
+    height: 44,
+    borderRadius: 14,
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    justifyContent: 'center',
+    gap: 3,
+    paddingBottom: 10,
+  },
+  bar: { width: 4, borderRadius: 2 },
   pressed: { opacity: 0.85, transform: [{ scale: 0.99 }] },
 });

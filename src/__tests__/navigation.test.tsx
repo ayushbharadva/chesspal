@@ -44,7 +44,7 @@ it('completes ten real puzzles, shows results and allows more practice', async (
   const app = await renderApp();
   await fireEvent.press(screen.getByRole('button', { name: 'Start puzzles' }));
   expect(app.getPathname()).toBe('/workout');
-  expect(screen.getByText('Puzzle 1 of 10')).toBeOnTheScreen();
+  expect(screen.getByText('Puzzle 1 of 10 · Beginner')).toBeOnTheScreen();
   for (let index = 0; index < 10; index += 1) {
     const session = useProgressStore.getState().currentSession!;
     const puzzle = puzzleById[session.puzzleIds[index]];
@@ -489,7 +489,7 @@ it('clears a skill round with four independent solves and records it', async () 
   expect(app.getPathname()).toBe('/result');
   expect(screen.getByText('Round passed!')).toBeOnTheScreen();
   expect(screen.getByText('4 / 5')).toBeOnTheScreen();
-  expect(useProgressStore.getState().skillProgress.fork).toEqual({ cleared: [1], runs: 1 });
+  expect(useProgressStore.getState().skillProgress[1]?.fork).toEqual({ cleared: [1], runs: 1 });
   await fireEvent.press(screen.getByRole('button', { name: 'Next: at your level' }));
   expect(app.getPathname()).toBe('/workout');
   expect(screen.getByText('Find the best move')).toBeOnTheScreen();
@@ -515,6 +515,38 @@ it('moves between tabs and returns to the starting tab after a round', async () 
   expect(screen.getByText('Round passed!')).toBeOnTheScreen();
   await fireEvent.press(screen.getByRole('button', { name: 'Done' }));
   expect(app.getPathname()).toBe('/puzzles');
+  // Skill progress belongs to the level it was earned at.
+  expect(screen.getByRole('button', { name: 'Forks: 1 of 3 rounds passed' })).toBeOnTheScreen();
+  await fireEvent.press(screen.getByRole('button', { name: 'Change' }));
+  await fireEvent.press(screen.getByRole('button', { name: /^Expert:/ }));
+  expect(app.getPathname()).toBe('/puzzles');
+  expect(screen.getByRole('button', { name: 'Forks: 0 of 3 rounds passed' })).toBeOnTheScreen();
+  await fireEvent.press(screen.getByRole('button', { name: 'Change' }));
+  await fireEvent.press(screen.getByRole('button', { name: /^Beginner:/ }));
+  expect(screen.getByRole('button', { name: 'Forks: 1 of 3 rounds passed' })).toBeOnTheScreen();
+});
+
+it('switches the unstarted puzzles of a round in progress when the level changes', async () => {
+  const app = await renderApp();
+  await fireEvent.press(screen.getByRole('button', { name: 'Start puzzles' }));
+  expect(screen.getByText('Puzzle 1 of 10 · Beginner')).toBeOnTheScreen();
+  const first = useProgressStore.getState().currentSession!;
+  const puzzle = puzzleById[first.puzzleIds[0]];
+  for (let ply = 0; ply < puzzle.moves.length; ply += 2) await move(puzzle.moves[ply]);
+  await fireEvent.press(screen.getByRole('button', { name: 'Next puzzle' }));
+  await act(() => router.back());
+  await fireEvent.press(screen.getByRole('button', { name: /^Puzzles, tab/ }));
+  await fireEvent.press(screen.getByRole('button', { name: 'Change' }));
+  expect(screen.getByText(/haven't started in your current round will switch/)).toBeOnTheScreen();
+  await fireEvent.press(screen.getByRole('button', { name: /^Expert:/ }));
+  const session = useProgressStore.getState().currentSession!;
+  expect(session.puzzleIds[0]).toBe(puzzle.id);
+  expect(session.puzzleIds.slice(1).map((id) => puzzleById[id].level)).toEqual([
+    4, 4, 5, 5, 5, 5, 5, 5, 5,
+  ]);
+  await fireEvent.press(screen.getByRole('button', { name: 'Resume puzzles' }));
+  expect(app.getPathname()).toBe('/workout');
+  expect(screen.getByText('Puzzle 2 of 10 · Hard')).toBeOnTheScreen();
 });
 
 it('plays a timed square trainer round and saves the score', async () => {

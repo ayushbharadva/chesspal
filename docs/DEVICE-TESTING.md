@@ -20,6 +20,6 @@ Use the preview APK from `npx eas-cli@latest build --platform android --profile 
 - [ ] Android back: leave and resume each flow without losing position or creating duplicate attempts.
 - [ ] Airplane mode: puzzles, guides, exercises and saved progress work; the external reference reports a connection problem gracefully.
 - [ ] Layout/accessibility: small phone, large font scale, dark mode and TalkBack. Verify readable labels, reachable controls and no clipped board or buttons.
-- [ ] Performance: record cold-start time and check repeated moves on a mid-range or slower Android device.
+- [ ] Performance: record cold-start time with the 3,200-puzzle bundle and check repeated moves on a mid-range or slower Android device.
 
 Account setup, signed APK/AAB creation and these device checks remain release gates. A JavaScript bundle export is not an installable APK.

@@ -29,7 +29,6 @@ export default function ResultScreen() {
   const start = useProgressStore((state) => state.startPractice);
   const startSkill = useProgressStore((state) => state.startSkill);
   const attempts = useProgressStore((state) => state.attempts);
-  const level = useProgressStore((state) => state.level) ?? 1;
   const skillProgress = useProgressStore((state) => state.skillProgress);
   const routeRuns = useProgressStore((state) => state.routeRuns);
   const insight = useMemo(() => strengthsAndWeaknesses(attempts, puzzleById), [attempts]);
@@ -43,8 +42,10 @@ export default function ResultScreen() {
   const independent = session.results.filter((result) => result.independent).length;
   const skill = session.skill;
   const cleared = skill ? rungCleared(independent) : false;
-  const available = skill ? availableRungs(skill.theme, level) : [];
-  const mastered = skill ? skillMastered(skillProgress[skill.theme], available) : false;
+  const available = skill ? availableRungs(skill.theme, skill.level) : [];
+  const mastered = skill
+    ? skillMastered(skillProgress[skill.level]?.[skill.theme], available)
+    : false;
   const nextRung = skill && cleared ? available.find((rung) => rung > skill.rung) : undefined;
   const route = session.route;
   const points = route ? routeScore(route.taken, session.results) : 0;

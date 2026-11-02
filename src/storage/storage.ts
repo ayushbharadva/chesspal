@@ -20,13 +20,9 @@ export const progressStorage: StateStorage = {
       const raw = await AsyncStorage.getItem(key);
       if (!raw) return null;
       try {
-        const decoded = decodeProgress(raw);
-        // Older saves lack later fields; return the decoded copy with defaults filled in.
-        const saved = JSON.parse(raw).state;
-        const complete = ['lessonProgress', 'level', 'skillProgress', 'visionScores'].every(
-          (field) => saved[field] !== undefined,
-        );
-        return complete ? raw : JSON.stringify(decoded);
+        // Older saves lack later fields or use older shapes; return the upgraded copy if it differs.
+        const decoded = JSON.stringify(decodeProgress(raw));
+        return decoded === JSON.stringify(JSON.parse(raw)) ? raw : decoded;
       } catch {
         await AsyncStorage.setItem(`${key}-backup`, raw);
         onStorageIssue();

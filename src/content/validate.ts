@@ -1,5 +1,11 @@
 import { INITIAL_POSITION, playMove, positionAfter, readPosition } from '@/chess';
-import { MATE_THEMES, SKILL_THEMES, type OpeningGuide, type Puzzle } from '@/content/types';
+import {
+  MATE_THEMES,
+  PUZZLE_LEVELS,
+  SKILL_THEMES,
+  type OpeningGuide,
+  type Puzzle,
+} from '@/content/types';
 
 export function validatePuzzle(puzzle: Puzzle) {
   if (!puzzle.id || !puzzle.moves.length || puzzle.moves.length % 2 !== 1)
@@ -12,7 +18,7 @@ export function validatePuzzle(puzzle: Puzzle) {
     !SKILL_THEMES.includes(puzzle.theme) ||
     !puzzle.themes.includes(puzzle.theme) ||
     !puzzle.themes.every((theme) => SKILL_THEMES.includes(theme)) ||
-    ![1, 2, 3].includes(puzzle.level)
+    !PUZZLE_LEVELS.includes(puzzle.level)
   )
     throw new Error('Puzzle theme or level missing');
   if (MATE_THEMES.includes(puzzle.theme) && !readPosition(final).checkmate)

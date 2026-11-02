@@ -53,7 +53,7 @@ export default function ProgressScreen() {
   }, [attempts]);
   const allSkills = skillUnits.flatMap((unit) => unit.skills);
   const mastered = allSkills.filter((theme) =>
-    skillMastered(skillProgress[theme], availableRungs(theme, level ?? 1)),
+    skillMastered(skillProgress[level ?? 1]?.[theme], availableRungs(theme, level ?? 1)),
   ).length;
   const bestVision = bestScore(visionScores);
   const routeRuns = useProgressStore((state) => state.routeRuns);
@@ -130,7 +130,10 @@ export default function ProgressScreen() {
             label="Daily challenge best"
             value={routeBest === null ? '–' : `${routeBest} points`}
           />
-          <Stat label="Skills mastered" value={`${mastered} / ${allSkills.length}`} />
+          <Stat
+            label={`Skills mastered at ${levelName(level)}`}
+            value={`${mastered} / ${allSkills.length}`}
+          />
           <Stat
             label="Square trainer best"
             value={bestVision === null ? '–' : `${bestVision} squares`}

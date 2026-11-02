@@ -5,7 +5,7 @@ Offline chess practice and opening guides for beginners who already know the rul
 ## MVP
 
 - **Practice:** 10 puzzles per workout at your level (two easier, six at level, two harder), then keep practicing without a daily limit.
-- **1,059 puzzles:** eight themes (mate in one, back-rank mate, mate in two, hanging pieces, forks, pins, skewers, discovered attacks) at Beginner, Easy and Medium levels; legal moves, progressive hints, solution replay and explanations.
+- **3,200 puzzles:** eight themes (mate in one, back-rank mate, mate in two, hanging pieces, forks, pins, skewers, discovered attacks) at five levels, from Beginner to Expert, with about 80 per theme and level; legal moves, progressive hints, solution replay and explanations.
 - **Skills:** a concept card and three rounds per theme (warm-up, at your level, an unlabeled test). Clear a round with four of five solved without help.
 - **Strengths and weaknesses:** your strongest theme and the one worth practicing, on Results and Progress; your daily round includes the weaker one.
 - **Square trainer:** 30-second rounds of finding squares by name, from either side.
