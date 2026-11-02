@@ -12,7 +12,7 @@ Android first, offline, no account, no backend. Current scope: [docs/MVP.md](doc
   - Never implement chess rules by hand. Only `src/chess` may import chess.js.
   - Never claim a move is correct without validation. Answers come from the engine-verified content pipeline, never from UI code or guesses.
 - Challenge content lives in data files, never inside components.
-- Keep layers separate: screens (`src/app`) → workout/progress logic (pure TypeScript) → chess domain → content → storage.
+- Keep layers separate: screens (`src/app`) → pure TypeScript logic (`workout`, `skills`, `learning`, `vision`, `daily-route`) and the progress store → chess domain → content → storage.
 - MVP non-goals: backend, accounts, analytics SDKs, multiplayer, social features, payments.
 - Write tests for logic (chess, streak, workout selection, persistence). Tests live in `__tests__/` folders named `*.test.ts(x)`, never inside `src/app`.
 - React Native Testing Library v14 is async: `await render(...)`, `await fireEvent.press(...)`. For navigation tests see `src/__tests__/navigation.test.tsx`.
