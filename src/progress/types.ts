@@ -1,3 +1,4 @@
+import { type CourseResult } from '@/course/path';
 import { type RouteRun } from '@/daily-route/route';
 import { type PuzzleLevel, type SkillTheme } from '@/content/types';
 import { type Rung, type SkillProgressByLevel } from '@/skills/ladder';
@@ -82,6 +83,21 @@ export function emptyLessonProgress(): LessonProgress {
   return { attempts: [], sessions: {}, selected: {}, viewed: {} };
 }
 
+/** The Learn lesson being played: the step reached and slips so far. */
+export interface CourseRun {
+  lessonId: string;
+  /** Equal to the lesson's step count once every step is done. */
+  step: number;
+  slips: number;
+}
+export interface CourseProgress {
+  results: CourseResult[];
+  current: CourseRun | null;
+}
+export function emptyCourseProgress(): CourseProgress {
+  return { results: [], current: null };
+}
+
 export type Appearance = 'system' | 'light' | 'dark';
 /** Piece designs the player can choose in Settings; the artwork is in src/components/board. */
 export const PIECE_SETS = ['classic', 'modern', 'wood'] as const;
@@ -107,6 +123,7 @@ export interface SavedProgress {
   skillProgress: SkillProgressByLevel;
   visionScores: VisionScores;
   routeRuns: RouteRun[];
+  courseProgress: CourseProgress;
   settings: Settings;
 }
 
@@ -121,6 +138,7 @@ export function emptyProgress(): SavedProgress {
     skillProgress: {},
     visionScores: emptyVisionScores(),
     routeRuns: [],
+    courseProgress: emptyCourseProgress(),
     settings: defaultSettings(),
   };
 }

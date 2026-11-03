@@ -1,0 +1,161 @@
+{
+  "id": "rules",
+  "title": "Learn the game",
+  "summary": "How the pieces move and how to win.",
+  "units": [
+    {
+      "id": "board",
+      "title": "The board",
+      "lessons": [
+        {
+          "id": "goal-of-chess",
+          "title": "The goal of chess",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "Chess is a game for two players, White and Black. White moves first, then you take turns.",
+              "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+            },
+            {
+              "kind": "choice",
+              "prompt": "Who makes the first move?",
+              "options": ["White", "Black"],
+              "answer": 0,
+              "explanation": "White always moves first."
+            },
+            {
+              "kind": "read",
+              "text": "You win by trapping the other king so it has no way out. That is called checkmate.",
+              "fen": "R5k1/5ppp/8/8/8/8/5PPP/6K1 b - - 1 1",
+              "marks": ["g8"],
+              "arrows": [["a8", "g8"]]
+            },
+            {
+              "kind": "choice",
+              "prompt": "How do you win a game of chess?",
+              "options": ["Take every piece", "Checkmate the king", "Reach the far side"],
+              "answer": 1,
+              "explanation": "You win by checkmate. You never actually take the king."
+            },
+            {
+              "kind": "read",
+              "text": "Each side has 16 pieces: a king, a queen, two rooks, two bishops, two knights and eight pawns.",
+              "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+            },
+            {
+              "kind": "choice",
+              "prompt": "How many pawns does each side start with?",
+              "options": ["Six", "Eight", "Ten"],
+              "answer": 1,
+              "explanation": "Eight pawns stand in a row in front of the other pieces."
+            }
+          ]
+        },
+        {
+          "id": "square-names",
+          "title": "Squares and their names",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "The board has 64 squares. Columns are called files, a to h. Rows are called ranks, 1 to 8.",
+              "fen": "8/8/8/8/8/8/8/8 w - - 0 1",
+              "marks": ["a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1"]
+            },
+            {
+              "kind": "read",
+              "text": "A square is named by its file, then its rank. This square is e4.",
+              "fen": "8/8/8/8/8/8/8/8 w - - 0 1",
+              "marks": ["e4"]
+            },
+            {
+              "kind": "tap",
+              "prompt": "Tap e4.",
+              "fen": "8/8/8/8/8/8/8/8 w - - 0 1",
+              "answers": ["e4"],
+              "explanation": "File e, rank 4."
+            },
+            {
+              "kind": "tap",
+              "prompt": "Tap d5.",
+              "fen": "8/8/8/8/8/8/8/8 w - - 0 1",
+              "answers": ["d5"],
+              "explanation": "File d, rank 5."
+            },
+            {
+              "kind": "tap",
+              "prompt": "Tap the two corners on rank 1: a1 and h1.",
+              "fen": "8/8/8/8/8/8/8/8 w - - 0 1",
+              "answers": ["a1", "h1"],
+              "explanation": "Rank 1 is the row nearest White."
+            },
+            {
+              "kind": "read",
+              "text": "Set the board so each player has a light square in the bottom-right corner.",
+              "fen": "8/8/8/8/8/8/8/8 w - - 0 1",
+              "marks": ["h1"]
+            },
+            {
+              "kind": "choice",
+              "prompt": "What colour is the square in White's bottom-right corner?",
+              "fen": "8/8/8/8/8/8/8/8 w - - 0 1",
+              "options": ["Light", "Dark"],
+              "answer": 0,
+              "explanation": "h1 is always a light square."
+            }
+          ]
+        },
+        {
+          "id": "setting-up",
+          "title": "Setting up the pieces",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "Every game starts like this. White fills ranks 1 and 2; Black fills ranks 7 and 8.",
+              "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+            },
+            {
+              "kind": "read",
+              "text": "Rooks go in the corners, knights next to them, then bishops.",
+              "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+              "marks": ["a1", "h1", "b1", "g1", "c1", "f1"]
+            },
+            {
+              "kind": "tap",
+              "prompt": "Tap both white rooks.",
+              "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+              "answers": ["a1", "h1"],
+              "explanation": "The rooks start in the corners."
+            },
+            {
+              "kind": "tap",
+              "prompt": "Tap both white knights.",
+              "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+              "answers": ["b1", "g1"],
+              "explanation": "The knights start next to the rooks."
+            },
+            {
+              "kind": "read",
+              "text": "The queen starts on her own colour: White's on light d1, Black's on dark d8. The king takes the last square.",
+              "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+              "marks": ["d1", "d8"]
+            },
+            {
+              "kind": "tap",
+              "prompt": "Tap the white king.",
+              "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+              "answers": ["e1"],
+              "explanation": "The king starts next to the queen, on e1."
+            },
+            {
+              "kind": "choice",
+              "prompt": "Where does the white queen start?",
+              "options": ["d1", "e1", "c1"],
+              "answer": 0,
+              "explanation": "The queen goes on her own colour: d1 is light."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

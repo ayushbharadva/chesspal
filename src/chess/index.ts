@@ -21,8 +21,21 @@ export interface BoardPiece {
   color: ChessColor;
 }
 
+/** Drill boards, such as a lone rook collecting stars, may have no kings; full games must. */
+function openGame(fen: string) {
+  const board = fen.split(' ')[0];
+  return board.includes('K') && board.includes('k')
+    ? new Chess(fen)
+    : new Chess(fen, { skipValidation: true });
+}
+
+export function isDrillPosition(fen: string) {
+  const board = fen.split(' ')[0];
+  return !board.includes('K') || !board.includes('k');
+}
+
 export function readPosition(fen: string) {
-  const game = new Chess(fen);
+  const game = openGame(fen);
   return {
     pieces: game
       .board()
@@ -36,7 +49,7 @@ export function readPosition(fen: string) {
 }
 
 export function legalMoves(fen: string, square?: Square) {
-  const game = new Chess(fen);
+  const game = openGame(fen);
   return game.moves({ verbose: true, ...(square ? { square } : {}) }).map((move) => ({
     from: move.from as Square,
     to: move.to as Square,
@@ -48,7 +61,7 @@ export function legalMoves(fen: string, square?: Square) {
 
 export function playMove(fen: string, uci: string) {
   if (!/^[a-h][1-8][a-h][1-8][qrbn]?$/.test(uci)) throw new Error('Invalid move format');
-  const game = new Chess(fen);
+  const game = openGame(fen);
   const move = game.move({ from: uci.slice(0, 2), to: uci.slice(2, 4), promotion: uci[4] });
   return {
     fen: game.fen(),
@@ -59,7 +72,45 @@ export function playMove(fen: string, uci: string) {
     captured: move.captured as PieceType | undefined,
     checkmate: game.isCheckmate(),
     inCheck: game.isCheck(),
+    stalemate: game.isStalemate(),
   };
+}
+
+/** Plays a move on a drill board and gives the turn back to the mover, whose pieces move alone. */
+export function playDrillMove(fen: string, uci: string) {
+  const result = playMove(fen, uci);
+  return { ...result, fen: withTurn(result.fen, readPosition(fen).turn) };
+}
+
+/** The same position with `color` to move, as when asking what that side could do next. */
+export function withTurn(fen: string, color: ChessColor) {
+  const [board, , castling] = fen.split(' ');
+  return `${board} ${color} ${castling} - 0 1`;
+}
+
+/** Whether any piece of `color` attacks the square. */
+export function isSquareAttacked(fen: string, square: Square, color: ChessColor) {
+  return openGame(fen).isAttacked(square, color);
+}
+
+/** Squares of the pieces giving check to the side to move. */
+export function checkingSquares(fen: string) {
+  const game = openGame(fen);
+  const king = game
+    .board()
+    .flat()
+    .find((piece) => piece?.type === 'k' && piece.color === game.turn());
+  if (!king || !game.isCheck()) return [];
+  return game.attackers(king.square, game.turn() === 'w' ? 'b' : 'w') as Square[];
+}
+
+/** Why the position is a draw by itself (stalemate, too little material, 50 moves), or null. */
+export function drawReason(fen: string) {
+  const game = openGame(fen);
+  if (game.isStalemate()) return 'stalemate';
+  if (game.isInsufficientMaterial()) return 'material';
+  if (game.isDrawByFiftyMoves()) return 'fifty';
+  return null;
 }
 
 export function positionAfter(fen: string, moves: readonly string[], count = moves.length) {

@@ -90,3 +90,93 @@ export interface GuideLesson {
   branches: OpeningBranch[];
   transfers: TransferExercise[];
 }
+
+/** Squares marked on a lesson board: `marks` are tinted, `arrows` run from one square to another. */
+export interface BoardMarks {
+  marks?: string[];
+  arrows?: [string, string][];
+}
+
+/** A position fact a `choice` answer must match, checked by tests against chess.js. */
+export type ChoiceFact =
+  { status: 'check' | 'checkmate' | 'stalemate' | 'none' } | { move: string; legal: boolean };
+
+export type CourseStep =
+  /** One or two short sentences, with an optional board. */
+  | ({ kind: 'read'; text: string; fen?: string; orientation?: ChessColor } & BoardMarks)
+  /** Move your pieces onto every star in as few moves as you can. */
+  | ({ kind: 'stars'; prompt: string; fen: string; stars: string[]; par: number } & BoardMarks)
+  /** Tap every answer square. `destinationsOf` says the answers are that piece's legal moves. */
+  | ({
+      kind: 'tap';
+      prompt: string;
+      fen: string;
+      answers: string[];
+      destinationsOf?: string;
+      checkers?: boolean;
+      explanation: string;
+    } & BoardMarks)
+  /** Pick one answer. */
+  | ({
+      kind: 'choice';
+      prompt: string;
+      fen?: string;
+      orientation?: ChessColor;
+      options: string[];
+      answer: number;
+      fact?: ChoiceFact;
+      explanation: string;
+    } & BoardMarks)
+  /**
+   * Play the line's moves at even plies; odd plies are the scripted replies. On the last move
+   * `alsoAccepted` lists other right answers, and any checkmate is always right.
+   */
+  | ({
+      kind: 'move';
+      prompt: string;
+      fen: string;
+      orientation?: ChessColor;
+      line: string[];
+      alsoAccepted?: string[];
+      hint: string;
+      explanation: string;
+      verification?: { engine: string; depth: number; checkedAt: string };
+    } & BoardMarks)
+  /** Take every enemy piece; your pieces may not stop on a square an enemy piece attacks. */
+  | ({ kind: 'capture'; prompt: string; fen: string; par: number } & BoardMarks)
+  /** Beat a simple defender: checkmate it, or promote a pawn, within the move limit. */
+  | ({
+      kind: 'play';
+      prompt: string;
+      fen: string;
+      orientation?: ChessColor;
+      goal: 'checkmate' | 'promote';
+      limit: number;
+      hint: string;
+      /** Moves that beat the defender within the limit; tests replay them. */
+      solution: string[];
+    } & BoardMarks)
+  /** A few bundled puzzles of one theme and level. */
+  | { kind: 'puzzles'; prompt: string; theme: SkillTheme; level: PuzzleLevel; count: number };
+
+export type CourseStepKind = CourseStep['kind'];
+
+export interface CourseLesson {
+  id: string;
+  title: string;
+  steps: CourseStep[];
+}
+
+export interface CourseUnit {
+  id: string;
+  title: string;
+  lessons: CourseLesson[];
+}
+
+export interface CourseSection {
+  id: string;
+  title: string;
+  /** A one-line description shown above the section on the path. */
+  summary: string;
+  units: CourseUnit[];
+}
