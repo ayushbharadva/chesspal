@@ -982,8 +982,8 @@
             {
               "kind": "move",
               "prompt": "Checkmate in one move.",
-              "fen": "k7/8/1K6/8/8/8/8/7Q w - - 0 1",
-              "line": ["h1h8"],
+              "fen": "k7/8/1K6/8/8/8/8/6Q1 w - - 0 1",
+              "line": ["g1g8"],
               "hint": "Your king already covers a7 and b7.",
               "explanation": "The queen covers the whole eighth rank."
             },
@@ -998,8 +998,8 @@
             {
               "kind": "move",
               "prompt": "Checkmate in one move.",
-              "fen": "7k/8/6K1/8/8/8/8/Q7 w - - 0 1",
-              "line": ["a1a8"],
+              "fen": "7k/8/6K1/8/8/8/Q7/8 w - - 0 1",
+              "line": ["a2a8"],
               "hint": "Check along the back rank.",
               "explanation": "The king has nowhere to go."
             }
@@ -1139,8 +1139,8 @@
             {
               "kind": "move",
               "prompt": "Checkmate in one, and do not stalemate.",
-              "fen": "7k/8/5QK1/8/8/8/8/8 w - - 0 1",
-              "line": ["f6f8"],
+              "fen": "7k/4Q3/6K1/8/8/8/8/8 w - - 0 1",
+              "line": ["e7e8"],
               "hint": "Give check on the back rank.",
               "explanation": "Checkmate, not stalemate."
             }

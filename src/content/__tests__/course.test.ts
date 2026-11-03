@@ -93,6 +93,17 @@ describe('course content', () => {
     for (const { step, name } of steps) {
       // Reading throws on a broken position, or on a full game that is not legal.
       if ('fen' in step && step.fen) expect(() => readPosition(step.fen!)).not.toThrow();
+      // chess.js allows the side not to move to be in check, which no real game reaches.
+      if ('fen' in step && step.fen) {
+        const position = readPosition(step.fen);
+        const waiting = position.turn === 'w' ? 'b' : 'w';
+        const king = position.pieces.find((piece) => piece.type === 'k' && piece.color === waiting);
+        if (king)
+          expect([name, isSquareAttacked(step.fen, king.square, position.turn)]).toEqual([
+            name,
+            false,
+          ]);
+      }
       const squares = [
         ...('marks' in step ? (step.marks ?? []) : []),
         ...('arrows' in step ? (step.arrows ?? []).flat() : []),
