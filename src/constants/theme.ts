@@ -43,6 +43,10 @@ export const Colors = {
     boardTarget: '#1B1D2440',
     boardCheck: '#C8402F8C',
     boardSuccess: '#2E9E6680',
+    boardMark: '#C9993F8C',
+    boardWrong: '#C8402F66',
+    boardArrow: '#1A6B43CC',
+    boardStar: '#7A520A',
     modalBackdrop: '#0E0F1399',
   },
   dark: {
@@ -83,6 +87,10 @@ export const Colors = {
     boardTarget: '#14151A4D',
     boardCheck: '#D9483A99',
     boardSuccess: '#2E9E668C',
+    boardMark: '#E2B65E8C',
+    boardWrong: '#D9483A80',
+    boardArrow: '#2E9E66D9',
+    boardStar: '#5A3A06',
     modalBackdrop: '#000000B3',
   },
 } as const;

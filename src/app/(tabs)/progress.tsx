@@ -14,6 +14,8 @@ import { skillById, skillUnits } from '@/content/skills';
 import { bestRun } from '@/daily-route/route';
 import { Radius, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
+import { courseLessons } from '@/content/course';
+import { bestStars, starTotals } from '@/course/path';
 import { practiceDates } from '@/progress/activity';
 import { useProgressStore } from '@/progress/store';
 import { availableRungs, skillMastered } from '@/skills/ladder';
@@ -28,9 +30,14 @@ export default function ProgressScreen() {
   const completions = useProgressStore((state) => state.completions);
   const guideProgress = useProgressStore((state) => state.guideProgress);
   const learning = useProgressStore((state) => state.lessonProgress.attempts);
+  const courseResults = useProgressStore((state) => state.courseProgress.results);
+  const courseTotals = starTotals(
+    courseLessons.map((entry) => entry.lesson.id),
+    bestStars(courseResults),
+  );
   const independent = attempts.filter((attempt) => attempt.independent).length;
   const learned = guides.filter((guide) => guideProgress[guide.id]?.completedAt).length;
-  const days = practiceDates(completions, learning);
+  const days = practiceDates(completions, learning, courseResults);
   const currentStreak = activityStreak(days, today);
   const bestStreak = bestActivityStreak(days);
   const dayCount = (count: number) => `${count} ${count === 1 ? 'day' : 'days'}`;
@@ -76,6 +83,21 @@ export default function ProgressScreen() {
       </View>
       <Card>
         <ActivityBar />
+      </Card>
+
+      <SectionTitle>Learn</SectionTitle>
+      <Card>
+        <View style={styles.list}>
+          <Stat
+            label="Lessons finished"
+            value={`${courseTotals.finished} / ${courseLessons.length}`}
+          />
+          <Stat
+            label="Stars earned"
+            value={`${courseTotals.stars} / ${courseLessons.length * 3}`}
+            last
+          />
+        </View>
       </Card>
 
       <SectionTitle>Puzzles</SectionTitle>

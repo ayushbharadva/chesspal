@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { Fragment, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import {
   Animated,
   Easing,
@@ -10,6 +10,7 @@ import {
   View,
   type PanResponderInstance,
 } from 'react-native';
+import Svg, { Line, Polygon } from 'react-native-svg';
 
 import {
   classifyMove,
@@ -20,6 +21,7 @@ import {
   type Square,
 } from '@/chess';
 import { Button } from '@/components/button';
+import { Icon } from '@/components/icon';
 import { ScrollLockContext } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
 import { Piece } from '@/components/board/piece';
@@ -51,6 +53,16 @@ interface BoardProps {
   successSquare?: Square;
   /** Raise this number to shake the board, such as a mistake count after a wrong move. */
   shakeKey?: number;
+  /** Squares a drill piece should reach. */
+  stars?: readonly string[];
+  /** Squares tinted to draw the eye, such as a square being named. */
+  marks?: readonly string[];
+  arrows?: readonly (readonly [string, string])[];
+  /** Squares already tapped correctly, and the last wrong tap. */
+  found?: readonly string[];
+  wrongSquare?: string;
+  /** Makes every square tappable instead of moving pieces, for "tap the square" questions. */
+  onSquarePress?: (square: Square) => void;
 }
 
 /** The square under a piece dragged from `origin`, or null when dropped off the board. */
@@ -77,6 +89,12 @@ export function Board({
   hintSquare,
   successSquare,
   shakeKey = 0,
+  stars = [],
+  marks = [],
+  arrows = [],
+  found = [],
+  wrongSquare,
+  onSquarePress,
 }: BoardProps) {
   const theme = useTheme();
   const elevation = useElevation();
@@ -186,6 +204,11 @@ export function Board({
   }
 
   function selectSquare(square: Square) {
+    if (onSquarePress) {
+      haptic('tick');
+      onSquarePress(square);
+      return;
+    }
     if (!interactive) return;
     const piece = position.pieces.find((candidate) => candidate.square === square);
     if (piece?.color === position.turn) {
@@ -294,7 +317,15 @@ export function Board({
                 : highlighted
                   ? theme.boardLabelHighlight
                   : theme.boardLabelDark;
-              const label = `${square}, ${piece ? `${piece.color === 'w' ? 'white' : 'black'} ${PIECE_NAMES[piece.type]}` : 'empty'}${isTarget ? ', legal destination' : ''}`;
+              const star = stars.includes(square);
+              const label = `${square}, ${piece ? `${piece.color === 'w' ? 'white' : 'black'} ${PIECE_NAMES[piece.type]}` : 'empty'}${star ? ', star' : ''}${isTarget ? ', legal destination' : ''}`;
+              const tint = found.includes(square)
+                ? theme.boardSuccess
+                : wrongSquare === square
+                  ? theme.boardWrong
+                  : marks.includes(square)
+                    ? theme.boardMark
+                    : undefined;
               const hidden = dragging === square || (sliding && lastMove?.to === square);
               return (
                 <View key={square} style={styles.square} {...dragHandlers[square]?.panHandlers}>
@@ -302,13 +333,18 @@ export function Board({
                     testID={`square-${square}`}
                     accessibilityRole="button"
                     accessibilityLabel={label}
-                    accessibilityState={{ selected: selected === square, disabled: !interactive }}
+                    accessibilityState={{
+                      selected: selected === square || found.includes(square),
+                      disabled: !interactive && !onSquarePress,
+                    }}
                     accessibilityHint={
-                      interactive
-                        ? isTarget
-                          ? 'Tap to move here'
-                          : 'Tap your piece to see its legal moves'
-                        : 'Board preview'
+                      onSquarePress
+                        ? 'Tap to choose this square'
+                        : interactive
+                          ? isTarget
+                            ? 'Tap to move here'
+                            : 'Tap your piece to see its legal moves'
+                          : 'Board preview'
                     }
                     onPress={() => selectSquare(square)}
                     style={[
@@ -323,6 +359,20 @@ export function Board({
                             : theme.boardDark,
                       },
                     ]}>
+                    {tint && (
+                      <View pointerEvents="none" style={[styles.tint, { backgroundColor: tint }]} />
+                    )}
+                    {star && !piece && (
+                      <View pointerEvents="none" style={styles.star}>
+                        <Icon
+                          name="star"
+                          size={Math.max(12, squareSize * 0.55)}
+                          color="boardStar"
+                          fill="boardStar"
+                          strokeWidth={1.5}
+                        />
+                      </View>
+                    )}
                     {successSquare === square && (
                       <View
                         pointerEvents="none"
@@ -366,6 +416,50 @@ export function Board({
           </View>
         ))}
       </Animated.View>
+      {arrows.length > 0 && boardSize > 0 && (
+        <View
+          pointerEvents="none"
+          style={styles.floating}
+          accessibilityElementsHidden
+          importantForAccessibility="no-hide-descendants">
+          <Svg width={boardSize} height={boardSize}>
+            {arrows.map(([from, to]) => {
+              const start = squareOrigin(from as Square);
+              const end = squareOrigin(to as Square);
+              const [x1, y1, centerX, centerY] = [start.x, start.y, end.x, end.y].map(
+                (value) => value + squareSize / 2,
+              );
+              const angle = Math.atan2(centerY - y1, centerX - x1);
+              // The tip stops short of the centre so a piece on the target square stays visible.
+              const x2 = centerX - Math.cos(angle) * squareSize * 0.3;
+              const y2 = centerY - Math.sin(angle) * squareSize * 0.3;
+              const head = squareSize * 0.38;
+              // Stop the shaft short so it does not poke through the arrowhead.
+              const tipX = x2 - Math.cos(angle) * head * 0.6;
+              const tipY = y2 - Math.sin(angle) * head * 0.6;
+              const corner = (turn: number) =>
+                `${x2 - Math.cos(angle + turn) * head},${y2 - Math.sin(angle + turn) * head}`;
+              return (
+                <Fragment key={`${from}${to}`}>
+                  <Line
+                    x1={x1}
+                    y1={y1}
+                    x2={tipX}
+                    y2={tipY}
+                    stroke={theme.boardArrow}
+                    strokeWidth={squareSize * 0.16}
+                    strokeLinecap="round"
+                  />
+                  <Polygon
+                    points={`${x2},${y2} ${corner(0.5)} ${corner(-0.5)}`}
+                    fill={theme.boardArrow}
+                  />
+                </Fragment>
+              );
+            })}
+          </Svg>
+        </View>
+      )}
       {sliding && lastMove && movedPiece && (
         <Animated.View
           pointerEvents="none"
@@ -483,6 +577,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   tint: { position: 'absolute', top: 0, bottom: 0, left: 0, right: 0 },
+  star: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   check: { position: 'absolute', top: 2, bottom: 2, left: 2, right: 2, borderRadius: 50 },
   outline: { position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, borderWidth: 3 },
   target: { width: '28%', aspectRatio: 1, borderRadius: 50 },

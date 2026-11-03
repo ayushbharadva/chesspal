@@ -9,8 +9,9 @@ import { useProgressStore } from '@/progress/store';
 
 const TABS: readonly { name: string; title: string; icon: IconName }[] = [
   { name: 'index', title: 'Home', icon: 'house' },
+  { name: 'learn', title: 'Learn', icon: 'graduation-cap' },
   { name: 'puzzles', title: 'Puzzles', icon: 'puzzle' },
-  { name: 'learn', title: 'Openings', icon: 'book-open' },
+  { name: 'openings', title: 'Openings', icon: 'book-open' },
   { name: 'progress', title: 'Progress', icon: 'chart' },
 ];
 const TAB_BAR_HEIGHT = 60;
@@ -34,6 +35,7 @@ export default function TabLayout() {
           borderTopColor: theme.border,
         },
         tabBarItemStyle: { paddingTop: Spacing.one + Spacing.half },
+        // Five labels fit a 320-point phone at this size.
         tabBarLabelStyle: { fontFamily: Fonts.semibold, fontSize: 11, lineHeight: 16 },
         sceneStyle: { backgroundColor: theme.background },
       }}>

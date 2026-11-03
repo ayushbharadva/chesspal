@@ -35,6 +35,10 @@ const icons = {
     'M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8',
     'M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z',
   ],
+  lock: [
+    'M5 11h14a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2z',
+    'M7 11V7a5 5 0 0 1 10 0v4',
+  ],
   lightbulb: [
     'M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5',
     'M9 18h6',
@@ -52,6 +56,9 @@ const icons = {
   ],
   shield: [
     'M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z',
+  ],
+  star: [
+    'M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z',
   ],
   sparkles: [
     'M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z',
@@ -94,10 +101,12 @@ type IconProps = {
   size?: number;
   color?: ThemeColor;
   strokeWidth?: number;
+  /** Fills the shape, such as an earned star. */
+  fill?: ThemeColor;
 };
 
 /** Decorative icon; pair it with visible text, which carries the accessible meaning. */
-export function Icon({ name, size = 20, color = 'text', strokeWidth = 2 }: IconProps) {
+export function Icon({ name, size = 20, color = 'text', strokeWidth = 2, fill }: IconProps) {
   const theme = useTheme();
   const stroke = theme[color];
   return (
@@ -105,7 +114,7 @@ export function Icon({ name, size = 20, color = 'text', strokeWidth = 2 }: IconP
       width={size}
       height={size}
       viewBox="0 0 24 24"
-      fill="none"
+      fill={fill ? theme[fill] : 'none'}
       stroke={stroke}
       strokeWidth={strokeWidth}
       strokeLinecap="round"

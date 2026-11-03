@@ -3,6 +3,8 @@ import { createJSONStorage, persist } from 'zustand/middleware';
 
 import { positionAfter, type ChessColor } from '@/chess';
 import { guideById, puzzleById } from '@/content';
+import { courseLessonById } from '@/content/course';
+import { bestStars, lessonStatus, starsForSlips } from '@/course/path';
 import { recordRun, routeScore } from '@/daily-route/route';
 import { type PuzzleLevel, type SkillTheme } from '@/content/types';
 import { branchForGuide } from '@/content/lessons';
@@ -62,6 +64,12 @@ interface ProgressStore extends SavedProgress {
   helpLesson: (key: string, showHint?: boolean) => void;
   answerLesson: (key: string, move: string) => void;
   wrongLesson: (key: string) => void;
+  /** Opens a Learn lesson, resuming it if it was left part-way; false while it is locked. */
+  startCourse: (lessonId: string) => boolean;
+  /** Finishes the current step with its slips; after the last step the lesson's stars are saved. */
+  finishCourseStep: (slips: number) => void;
+  /** Leaves a finished lesson's summary. */
+  closeCourse: () => void;
 }
 
 export const useProgressStore = create<ProgressStore>()(
@@ -389,6 +397,48 @@ export const useProgressStore = create<ProgressStore>()(
           get().saveGuide(next.guideId, { completedAt: result.completedAt });
         }
       },
+      startCourse(lessonId) {
+        if (!get().hydrated || !courseLessonById[lessonId]) return false;
+        const progress = get().courseProgress;
+        if (progress.current?.lessonId === lessonId) return true;
+        if (lessonStatus(lessonId, bestStars(progress.results)) === 'locked') return false;
+        set({ courseProgress: { ...progress, current: { lessonId, step: 0, slips: 0 } } });
+        return true;
+      },
+      finishCourseStep(slips) {
+        const progress = get().courseProgress;
+        const current = progress.current;
+        const entry = current && courseLessonById[current.lessonId];
+        if (!current || !entry || current.step >= entry.lesson.steps.length) return;
+        const next = { ...current, step: current.step + 1, slips: current.slips + slips };
+        if (next.step < entry.lesson.steps.length) {
+          set({ courseProgress: { ...progress, current: next } });
+          return;
+        }
+        const now = new Date();
+        set({
+          courseProgress: {
+            current: next,
+            results: [
+              ...progress.results,
+              {
+                id: `${current.lessonId}-${now.getTime()}`,
+                lessonId: current.lessonId,
+                stars: starsForSlips(next.slips),
+                dateKey: dateKey(now),
+                completedAt: now.toISOString(),
+              },
+            ],
+          },
+        });
+      },
+      closeCourse() {
+        const progress = get().courseProgress;
+        const current = progress.current;
+        const entry = current && courseLessonById[current.lessonId];
+        if (current && entry && current.step >= entry.lesson.steps.length)
+          set({ courseProgress: { ...progress, current: null } });
+      },
     }),
     {
       name: PROGRESS_KEY,
@@ -404,6 +454,7 @@ export const useProgressStore = create<ProgressStore>()(
         skillProgress,
         visionScores,
         routeRuns,
+        courseProgress,
         settings,
       }) => ({
         attempts,
@@ -415,6 +466,7 @@ export const useProgressStore = create<ProgressStore>()(
         skillProgress,
         visionScores,
         routeRuns,
+        courseProgress,
         settings,
       }),
       onRehydrateStorage: () => () => {

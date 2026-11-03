@@ -1,11 +1,13 @@
 import { guideById, puzzleById } from '@/content';
 import { readPosition } from '@/chess';
+import { courseLessonById } from '@/content/course';
 import { branchForGuide } from '@/content/lessons';
 import { lessonTarget } from '@/learning/lesson';
 import { PUZZLE_LEVELS, SKILL_THEMES } from '@/content/types';
 import { ROUTE_FORKS } from '@/daily-route/route';
 import {
   defaultSettings,
+  emptyCourseProgress,
   emptyLessonProgress,
   PIECE_SETS,
   type SavedProgress,
@@ -205,6 +207,29 @@ function routeRuns(value: unknown) {
     )
   );
 }
+function courseProgress(value: unknown) {
+  if (!record(value) || !Array.isArray(value.results)) return false;
+  // Results for lessons removed from the course are kept but ignored by the path.
+  const results = value.results.every(
+    (item: unknown) =>
+      record(item) &&
+      typeof item.id === 'string' &&
+      typeof item.lessonId === 'string' &&
+      (item.stars === 1 || item.stars === 2 || item.stars === 3) &&
+      validDate(item.dateKey) &&
+      typeof item.completedAt === 'string' &&
+      Number.isFinite(Date.parse(item.completedAt)),
+  );
+  const current = value.current;
+  return (
+    results &&
+    (current === null ||
+      (record(current) &&
+        typeof current.lessonId === 'string' &&
+        integer(current.slips) &&
+        integer(current.step)))
+  );
+}
 function settings(value: unknown) {
   return (
     record(value) &&
@@ -241,6 +266,7 @@ export function validProgress(value: unknown): value is SavedProgress {
   if (value.skillProgress !== undefined && !skillProgress(value.skillProgress)) return false;
   if (value.visionScores !== undefined && !visionScores(value.visionScores)) return false;
   if (value.routeRuns !== undefined && !routeRuns(value.routeRuns)) return false;
+  if (value.courseProgress !== undefined && !courseProgress(value.courseProgress)) return false;
   if (value.settings !== undefined && !settings(value.settings)) return false;
   if (
     !value.completions.every(
@@ -339,6 +365,14 @@ export function validProgress(value: unknown): value is SavedProgress {
   return session.results.length === session.index + (session.phase === 'feedback' ? 1 : 0);
 }
 
+/** A run in a lesson that has since been removed or shortened starts over. */
+function courseProgressFor(value: SavedProgress['courseProgress'] | undefined) {
+  if (!value) return emptyCourseProgress();
+  const entry = value.current && courseLessonById[value.current.lessonId];
+  const fits = entry && value.current!.step <= entry.lesson.steps.length;
+  return { ...value, current: fits ? value.current : null };
+}
+
 export function decodeProgress(raw: string) {
   const envelope: unknown = JSON.parse(raw);
   if (!record(envelope) || envelope.version !== 1 || !validProgress(envelope.state))
@@ -359,6 +393,7 @@ export function decodeProgress(raw: string) {
       skillProgress: skillProgressByLevel(state.skillProgress, state.level),
       visionScores: state.visionScores ?? emptyVisionScores(),
       routeRuns: state.routeRuns ?? [],
+      courseProgress: courseProgressFor(state.courseProgress),
       settings: { ...defaultSettings(), ...state.settings },
     },
   };

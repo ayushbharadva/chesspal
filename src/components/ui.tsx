@@ -1,9 +1,10 @@
-import { useState, type ReactNode } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { useEffect, useState, type ReactNode } from 'react';
+import { Animated, Easing, Pressable, StyleSheet, View } from 'react-native';
 
 import { Icon, type IconName } from '@/components/icon';
 import { ThemedText } from '@/components/themed-text';
 import { Radius, Spacing, type ThemeColor } from '@/constants/theme';
+import { useMotionEnabled } from '@/hooks/use-motion';
 import { useElevation, useTheme } from '@/hooks/use-theme';
 
 /** Small rounded label, such as a streak count or a lesson mode. */
@@ -45,13 +46,38 @@ export function ProgressBar({
   fill?: ThemeColor;
 }) {
   const theme = useTheme();
-  const percent = Math.max(0, Math.min(1, value)) * 100;
+  const motion = useMotionEnabled();
+  const share = Math.max(0, Math.min(1, value));
+  const [width] = useState(() => new Animated.Value(share));
+  // The fill slides to its new length; width cannot use the native driver.
+  useEffect(() => {
+    if (!motion) {
+      width.setValue(share);
+      return;
+    }
+    const animation = Animated.timing(width, {
+      toValue: share,
+      duration: 300,
+      easing: Easing.out(Easing.cubic),
+      useNativeDriver: false,
+    });
+    animation.start();
+    return () => animation.stop();
+  }, [share, motion, width]);
   return (
     <View
       style={[styles.track, { backgroundColor: theme[track] }]}
       accessibilityElementsHidden
       importantForAccessibility="no-hide-descendants">
-      <View style={[styles.fill, { width: `${percent}%`, backgroundColor: theme[fill] }]} />
+      <Animated.View
+        style={[
+          styles.fill,
+          {
+            width: width.interpolate({ inputRange: [0, 1], outputRange: ['0%', '100%'] }),
+            backgroundColor: theme[fill],
+          },
+        ]}
+      />
     </View>
   );
 }

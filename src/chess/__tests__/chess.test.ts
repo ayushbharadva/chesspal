@@ -1,9 +1,14 @@
 import {
+  checkingSquares,
   classifyMove,
   describeMove,
+  drawReason,
+  isDrillPosition,
+  isSquareAttacked,
   INITIAL_POSITION,
   legalMoves,
   lineFromSan,
+  playDrillMove,
   playMove,
   positionAfter,
   readPosition,
@@ -71,5 +76,35 @@ describe('classifyMove', () => {
     expect(classify('4k3/8/8/8/8/8/8/R3K3 w - - 0 1', 'a1a8')).toBe('check');
     expect(classify('r3k3/8/8/8/8/8/8/R3K3 w - - 0 1', 'a1a8')).toBe('check');
     expect(classify(afterMoves('f2f3', 'e7e5', 'g2g4'), 'd8h4')).toBe('checkmate');
+  });
+});
+
+describe('drill boards', () => {
+  it('plays a lone piece without kings and keeps the turn with it', () => {
+    const fen = '8/8/8/8/8/8/4R3/8 w - - 0 1';
+    expect(isDrillPosition(fen)).toBe(true);
+    expect(isDrillPosition(INITIAL_POSITION)).toBe(false);
+    expect(legalMoves(fen)).toHaveLength(14);
+    const after = playDrillMove(fen, 'e2e7');
+    expect(after.fen).toBe('8/4R3/8/8/8/8/8/8 w - - 0 1');
+    expect(legalMoves(after.fen, 'e7').length).toBeGreaterThan(0);
+  });
+
+  it('still refuses illegal moves on a drill board', () => {
+    expect(() => playDrillMove('8/8/8/8/3p4/8/4R3/8 w - - 0 1', 'e2d3')).toThrow();
+  });
+
+  it('finds attacked squares and the pieces giving check', () => {
+    const fen = '8/8/8/3p4/4P3/8/8/8 w - - 0 1';
+    expect(isSquareAttacked(fen, 'e4', 'b')).toBe(true);
+    expect(isSquareAttacked(fen, 'e5', 'b')).toBe(false);
+    expect(checkingSquares('4k3/8/8/1B6/8/8/8/R3K3 b - - 0 1')).toEqual(['b5']);
+    expect(checkingSquares(INITIAL_POSITION)).toEqual([]);
+  });
+
+  it('names a draw by the rules', () => {
+    expect(drawReason('7k/5Q2/6K1/8/8/8/8/8 b - - 0 1')).toBe('stalemate');
+    expect(drawReason('8/8/4k3/8/8/2K5/8/8 w - - 0 1')).toBe('material');
+    expect(drawReason(INITIAL_POSITION)).toBeNull();
   });
 });
