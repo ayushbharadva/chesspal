@@ -96,6 +96,36 @@ async function check(fen: string, move: string, limit: number, label: string) {
   if (loss > limit) throw new Error(`${label}: ${move} loses ${loss}cp (best ${best.bestMove})`);
 }
 
+/**
+ * The Lichess tags of every puzzle a course step picks by tag, read from the ignored import file,
+ * so tests in a fresh checkout can check each step's tag without it.
+ */
+async function writeSourceTags() {
+  const rows: { PuzzleId: string; Themes: string }[] = JSON.parse(
+    readFileSync(resolve('content/puzzle-candidates.json'), 'utf8'),
+  );
+  const themes = new Map(rows.map((row) => [row.PuzzleId, row.Themes.split(' ').sort()]));
+  const ids = files
+    .flatMap((file) => (JSON.parse(readFileSync(file, 'utf8')) as CourseSection).units)
+    .flatMap((unit) => unit.lessons.flatMap((lesson) => lesson.steps))
+    .flatMap((step) => (step.kind === 'puzzles' && 'ids' in step ? step.ids : []));
+  const tags = Object.fromEntries(
+    [...new Set(ids)].sort().map((id) => {
+      if (!themes.has(id)) throw new Error(`Puzzle ${id} is not in content/puzzle-candidates.json`);
+      return [id, themes.get(id)];
+    }),
+  );
+  const text = await format(JSON.stringify(tags), {
+    parser: 'json',
+    ...(JSON.parse(readFileSync(resolve('.prettierrc'), 'utf8')) as object),
+  });
+  const path = resolve('content/course/puzzle-tags.json');
+  if (process.argv.includes('--check')) {
+    if (readFileSync(path, 'utf8') !== text)
+      throw new Error('content/course/puzzle-tags.json is out of date');
+  } else writeFileSync(path, text);
+}
+
 async function main() {
   engine.stdin.write('uci\n');
   await until((line) => line === 'uciok');
@@ -136,6 +166,7 @@ async function main() {
         }),
       );
   }
+  await writeSourceTags();
   console.log(
     `Verified ${checked} course move steps at depth ${depth}, maximum loss ${maximumLossCp}cp.`,
   );
