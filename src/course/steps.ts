@@ -8,7 +8,7 @@ import {
   type ChessColor,
   type Square,
 } from '@/chess';
-import { puzzles } from '@/content';
+import { puzzleById, puzzles } from '@/content';
 import { type CourseStep } from '@/content/types';
 
 type StepOf<Kind extends CourseStep['kind']> = Extract<CourseStep, { kind: Kind }>;
@@ -116,9 +116,13 @@ export function replyOutcome(fen: string): PlayOutcome {
 
 /** Puzzles for a puzzle step: the theme and level's puzzles, easiest first, moving on with each replay. */
 export function coursePuzzles(step: StepOf<'puzzles'>, replay: number) {
-  const pool = puzzles
-    .filter((puzzle) => puzzle.level === step.level && puzzle.themes.includes(step.theme))
-    .sort((first, second) => first.rating - second.rating || first.id.localeCompare(second.id));
+  const pool = (
+    'ids' in step
+      ? step.ids.map((id) => puzzleById[id]).filter(Boolean)
+      : puzzles.filter(
+          (puzzle) => puzzle.level === step.level && puzzle.themes.includes(step.theme),
+        )
+  ).sort((first, second) => first.rating - second.rating || first.id.localeCompare(second.id));
   const start = (replay * step.count) % pool.length;
   return Array.from(
     { length: Math.min(step.count, pool.length) },

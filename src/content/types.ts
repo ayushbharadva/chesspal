@@ -161,8 +161,13 @@ export type CourseStep =
       /** Moves that beat the defender within the limit; tests replay them. */
       solution: string[];
     } & BoardMarks)
-  /** A few bundled puzzles of one theme and level. */
-  | { kind: 'puzzles'; prompt: string; theme: SkillTheme; level: PuzzleLevel; count: number };
+  /**
+   * A few bundled puzzles: of one theme and level, or chosen bundled puzzles whose Lichess
+   * source tags include `tag` (such as deflection), which tests check against the source rows.
+   */
+  | ({ kind: 'puzzles'; prompt: string; count: number } & (
+      { theme: SkillTheme; level: PuzzleLevel } | { tag: string; ids: string[] }
+    ));
 
 export type CourseStepKind = CourseStep['kind'];
 

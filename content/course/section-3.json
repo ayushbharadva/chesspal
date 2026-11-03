@@ -2,5 +2,572 @@
   "id": "intermediate",
   "title": "Intermediate",
   "summary": "Endgames, deeper tactics and better pieces.",
-  "units": []
+  "units": [
+    {
+      "id": "pawn-endgames",
+      "title": "Pawn endgames",
+      "lessons": [
+        {
+          "id": "king-pawn-vs-king",
+          "title": "King and pawn against king",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "With king and pawn against king, lead with your king. A king in front of its pawn clears the way.",
+              "fen": "4k3/8/4K3/4P3/8/8/8/8 w - - 0 1",
+              "marks": ["e6"]
+            },
+            {
+              "kind": "choice",
+              "prompt": "Which should usually go first, the king or the pawn?",
+              "options": ["The king", "The pawn"],
+              "answer": 0,
+              "explanation": "The king clears a path; a pawn alone gets caught."
+            },
+            {
+              "kind": "play",
+              "prompt": "Promote your pawn.",
+              "fen": "4k3/8/4K3/4P3/8/8/8/8 w - - 0 1",
+              "goal": "promote",
+              "limit": 18,
+              "hint": "Keep your king beside or in front of the pawn.",
+              "solution": ["e6d6", "e5e6", "e6e7", "d6d7", "d7e6", "e7e8q"]
+            },
+            {
+              "kind": "puzzles",
+              "prompt": "Push your pawn through.",
+              "count": 2,
+              "tag": "promotion",
+              "ids": ["04Mmx", "4EV7r", "0e8rX", "012tD", "0AEXb", "00wL8", "03AhR", "0PWI1"]
+            }
+          ]
+        },
+        {
+          "id": "opposition",
+          "title": "Opposition",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "Kings in opposition face each other with one square between. The side that does not have to move holds the opposition.",
+              "fen": "4k3/8/4K3/4P3/8/8/8/8 b - - 0 1"
+            },
+            {
+              "kind": "move",
+              "prompt": "Black to move. Take the opposition to hold the draw.",
+              "fen": "4k3/8/8/4K3/4P3/8/8/8 b - - 0 1",
+              "line": ["e8e7"],
+              "hint": "Stand face to face with the white king.",
+              "explanation": "Now the white king cannot get past.",
+              "orientation": "b",
+              "verification": {
+                "engine": "Stockfish 19 Lite",
+                "depth": 14,
+                "checkedAt": "2026-11-03T18:47:29.267Z"
+              }
+            },
+            {
+              "kind": "read",
+              "text": "With White to move instead, White takes the opposition and walks past.",
+              "fen": "4k3/8/8/4K3/4P3/8/8/8 w - - 0 1"
+            },
+            {
+              "kind": "play",
+              "prompt": "White to move. Win by getting your king past.",
+              "fen": "4k3/8/8/4K3/4P3/8/8/8 w - - 0 1",
+              "goal": "promote",
+              "limit": 36,
+              "hint": "Step diagonally forward to get around the black king.",
+              "solution": [
+                "e5f6",
+                "f6e6",
+                "e6d6",
+                "d6d7",
+                "d7d6",
+                "d6e6",
+                "e6d7",
+                "e4e5",
+                "d7d8",
+                "d8d7",
+                "d7d8",
+                "d8d7",
+                "e5e6",
+                "e6e7",
+                "e7e8q"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "pawn-square",
+          "title": "The pawn’s square",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "Draw a square from the pawn to its last rank. If the enemy king can step into it, the king catches the pawn.",
+              "fen": "8/8/8/8/k5P1/8/8/7K w - - 0 1",
+              "marks": [
+                "c4",
+                "d4",
+                "e4",
+                "f4",
+                "g4",
+                "c8",
+                "g8",
+                "c5",
+                "c6",
+                "c7",
+                "g5",
+                "g6",
+                "g7",
+                "d8",
+                "e8",
+                "f8"
+              ]
+            },
+            {
+              "kind": "choice",
+              "prompt": "The black king is outside the pawn’s square. What should White do?",
+              "options": ["Push the pawn", "Bring the king first"],
+              "answer": 0,
+              "explanation": "Outside the square, the king cannot catch a running pawn."
+            },
+            {
+              "kind": "play",
+              "prompt": "Run the pawn home.",
+              "fen": "8/8/8/8/k5P1/8/8/7K w - - 0 1",
+              "goal": "promote",
+              "limit": 28,
+              "hint": "Just push. The king is too far away.",
+              "solution": [
+                "g4g5",
+                "h1h2",
+                "h2g3",
+                "g3h4",
+                "h4h5",
+                "h5h6",
+                "h6g6",
+                "g6f7",
+                "g5g6",
+                "g6g7",
+                "g7g8q"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "passed-pawns",
+          "title": "Passed pawns",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "A passed pawn has no enemy pawns ahead of it on its file or the files beside it. Passed pawns must be pushed."
+            },
+            {
+              "kind": "read",
+              "text": "Two passed pawns side by side protect each other. A king alone can rarely stop them.",
+              "fen": "8/8/8/4k3/8/8/PP6/7K w - - 0 1"
+            },
+            {
+              "kind": "play",
+              "prompt": "Promote one of your pawns.",
+              "fen": "8/8/8/4k3/8/8/PP6/7K w - - 0 1",
+              "goal": "promote",
+              "limit": 46,
+              "hint": "Push them together so they protect each other.",
+              "solution": [
+                "h1g1",
+                "g1g2",
+                "g2f2",
+                "f2e3",
+                "e3d2",
+                "d2d3",
+                "d3d4",
+                "d4d5",
+                "d5c5",
+                "c5c6",
+                "b2b3",
+                "b3b4",
+                "b4b5",
+                "c6b6",
+                "a2a3",
+                "b6c6",
+                "b5b6",
+                "b6b7",
+                "c6c7",
+                "b7b8q"
+              ]
+            },
+            {
+              "kind": "puzzles",
+              "prompt": "Push the passed pawn.",
+              "count": 2,
+              "tag": "advancedPawn",
+              "ids": ["04Mmx", "4EV7r", "007fJ", "0LSCd", "0e8rX", "012tD", "0AEXb", "06Qto"]
+            }
+          ]
+        },
+        {
+          "id": "breakthroughs",
+          "title": "Breakthroughs",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "Three pawns against three can break through with a sacrifice in the middle.",
+              "fen": "8/ppp3k1/8/PPP5/8/8/6K1/8 w - - 0 1",
+              "arrows": [["b5", "b6"]]
+            },
+            {
+              "kind": "move",
+              "prompt": "Break through and make a queen.",
+              "fen": "8/ppp3k1/8/PPP5/8/8/6K1/8 w - - 0 1",
+              "line": ["b5b6", "a7b6", "c5c6", "b7c6", "a5a6"],
+              "hint": "Start with the middle pawn: b6!",
+              "explanation": "One pawn will get through, and the black king is too far.",
+              "verification": {
+                "engine": "Stockfish 19 Lite",
+                "depth": 14,
+                "checkedAt": "2026-11-03T18:47:30.061Z"
+              }
+            },
+            {
+              "kind": "choice",
+              "prompt": "Why does the breakthrough work here?",
+              "options": ["The black king is too far away", "White has more pawns"],
+              "answer": 0,
+              "explanation": "Both sides have three pawns. The king’s distance decides it."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tactics-two",
+      "title": "Tactics 2",
+      "lessons": [
+        {
+          "id": "double-check",
+          "title": "Double check",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "In a double check, two pieces give check at once. The king must move: no block or capture stops both."
+            },
+            {
+              "kind": "move",
+              "prompt": "Checkmate with a double check.",
+              "fen": "3qkb2/5p2/8/8/8/8/4B3/4R1K1 w - - 0 1",
+              "line": ["e2b5"],
+              "hint": "Move the bishop with check and uncover the rook.",
+              "explanation": "Two checks, and the king has nowhere to go.",
+              "verification": {
+                "engine": "Stockfish 19 Lite",
+                "depth": 14,
+                "checkedAt": "2026-11-03T18:47:30.061Z"
+              }
+            },
+            {
+              "kind": "puzzles",
+              "prompt": "Find the double check.",
+              "count": 2,
+              "tag": "doubleCheck",
+              "ids": ["01z4c", "01XlK", "3vVnx", "150kr", "6hEnA", "4KdOQ", "07p1C", "00ZEc"]
+            }
+          ]
+        },
+        {
+          "id": "removing-defender",
+          "title": "Removing the defender",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "If one piece guards something important, capture or chase that piece first."
+            },
+            {
+              "kind": "choice",
+              "prompt": "A knight is the only guard of a square you want. What should you look for?",
+              "options": ["A way to take or chase the knight", "A pawn move on the other side"],
+              "answer": 0,
+              "explanation": "Without its guard, the square falls."
+            },
+            {
+              "kind": "puzzles",
+              "prompt": "Remove the defender.",
+              "count": 2,
+              "tag": "capturingDefender",
+              "ids": ["2VJwa", "0I2G2", "03CF0", "09OO6", "08BaP"]
+            }
+          ]
+        },
+        {
+          "id": "deflection-decoy",
+          "title": "Deflection and decoy",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "A deflection lures a defender away from its job. A decoy lures a piece onto a bad square."
+            },
+            {
+              "kind": "puzzles",
+              "prompt": "Deflect the defender.",
+              "count": 3,
+              "tag": "deflection",
+              "ids": [
+                "0LSCd",
+                "11iCa",
+                "0BtUA",
+                "2Fqgm",
+                "1JiDO",
+                "07sC5",
+                "14Nem",
+                "0zzs0",
+                "01pgJ",
+                "053Os",
+                "04711",
+                "07Sg1"
+              ]
+            },
+            {
+              "kind": "puzzles",
+              "prompt": "Lure the piece in.",
+              "count": 2,
+              "tag": "attraction",
+              "ids": ["001w5", "01Xzx", "01EMd", "00aDl", "00ouE", "0265C", "0i8Bx", "022ib"]
+            }
+          ]
+        },
+        {
+          "id": "x-ray-attacks",
+          "title": "X-ray attacks",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "An x-ray attacks through another piece: once that piece moves or is traded, the attack lands."
+            },
+            {
+              "kind": "choice",
+              "prompt": "Your rook and theirs face each other, with their queen behind. What is that?",
+              "options": ["An x-ray", "A fork"],
+              "answer": 0,
+              "explanation": "Your rook looks through their rook at the queen."
+            },
+            {
+              "kind": "puzzles",
+              "prompt": "Use the x-ray.",
+              "count": 3,
+              "tag": "xRayAttack",
+              "ids": [
+                "05Pp0",
+                "01rGp",
+                "0Ch44",
+                "07PAM",
+                "0XVQG",
+                "0HARr",
+                "0XzVS",
+                "0U5KZ",
+                "0M4Pu",
+                "09gK3",
+                "01GBu",
+                "0OujE"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "in-between-moves",
+          "title": "In-between moves",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "Before recapturing, look for a stronger move first, such as a check. That is an in-between move."
+            },
+            {
+              "kind": "choice",
+              "prompt": "Your piece was just taken. What should you check before taking back?",
+              "options": ["Checks and bigger threats", "Nothing, always take back"],
+              "answer": 0,
+              "explanation": "A forcing move first can win more."
+            },
+            {
+              "kind": "puzzles",
+              "prompt": "Find the in-between move.",
+              "count": 3,
+              "tag": "intermezzo",
+              "ids": [
+                "0NKXY",
+                "07ME7",
+                "0D68N",
+                "0GIjw",
+                "0JDnk",
+                "0EzQx",
+                "0FMl9",
+                "0JBf1",
+                "0GnOR",
+                "0Im0f",
+                "06CUg",
+                "04tI7"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "using-pieces",
+      "title": "Using your pieces",
+      "lessons": [
+        {
+          "id": "active-pieces",
+          "title": "Active pieces",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "A piece that controls many squares is active. Improve your worst piece first."
+            },
+            {
+              "kind": "move",
+              "prompt": "Bring your least active piece into play.",
+              "fen": "r4rk1/ppp2ppp/2n5/8/8/2N5/PPP2PPP/R4RK1 w - - 0 1",
+              "line": ["a1d1"],
+              "hint": "The a1 rook does nothing yet.",
+              "explanation": "The rook takes the open d-file.",
+              "alsoAccepted": ["f1d1", "a1e1", "f1e1"],
+              "verification": {
+                "engine": "Stockfish 19 Lite",
+                "depth": 14,
+                "checkedAt": "2026-11-03T18:47:30.367Z"
+              }
+            },
+            {
+              "kind": "choice",
+              "prompt": "Which piece is usually worst in the opening?",
+              "options": ["One still on its first square", "One in the centre"],
+              "answer": 0,
+              "explanation": "Undeveloped pieces do not help."
+            }
+          ]
+        },
+        {
+          "id": "open-files",
+          "title": "Rooks on open files",
+          "steps": [
+            { "kind": "read", "text": "A file with no pawns on it is open. Rooks belong there." },
+            {
+              "kind": "move",
+              "prompt": "Put your rook on an open file.",
+              "fen": "r5k1/pp3ppp/2p5/8/8/2P5/PP3PPP/R5K1 w - - 0 1",
+              "line": ["a1d1"],
+              "hint": "The d- and e-files are open.",
+              "explanation": "The rook now reaches deep into Black’s side.",
+              "alsoAccepted": ["a1e1"],
+              "verification": {
+                "engine": "Stockfish 19 Lite",
+                "depth": 14,
+                "checkedAt": "2026-11-03T18:47:30.448Z"
+              }
+            },
+            {
+              "kind": "puzzles",
+              "prompt": "Use your rook.",
+              "count": 2,
+              "tag": "rookEndgame",
+              "ids": ["01ZiW", "03BFA", "03lZs", "04go3", "06FnM", "041xC", "01Siq", "01qHx"]
+            }
+          ]
+        },
+        {
+          "id": "seventh-rank",
+          "title": "The seventh rank",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "A rook on the seventh rank attacks the pawns that have not moved and boxes in the king."
+            },
+            {
+              "kind": "move",
+              "prompt": "Check, then take the seventh rank.",
+              "fen": "6k1/pp3pp1/2p4p/8/8/8/PP3PPP/3R2K1 w - - 0 1",
+              "line": ["d1d8", "g8h7", "d8d7"],
+              "hint": "Check from d8 first.",
+              "explanation": "The rook attacks b7 and f7 from the seventh rank.",
+              "verification": {
+                "engine": "Stockfish 19 Lite",
+                "depth": 14,
+                "checkedAt": "2026-11-03T18:47:30.641Z"
+              }
+            },
+            {
+              "kind": "choice",
+              "prompt": "Why is the seventh rank strong for a rook?",
+              "options": [
+                "It attacks unmoved pawns and traps the king",
+                "Rooks cannot be attacked there"
+              ],
+              "answer": 0,
+              "explanation": "Pawns that have not moved sit on that rank."
+            }
+          ]
+        },
+        {
+          "id": "knight-outposts",
+          "title": "Knight outposts",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "An outpost is a square an enemy pawn can never attack. A knight there, protected by a pawn, is very strong.",
+              "fen": "r4rk1/pp2bppp/3p4/4p3/2P1P3/2N5/PP3PPP/R4RK1 w - - 0 1",
+              "marks": ["d5"]
+            },
+            {
+              "kind": "move",
+              "prompt": "Jump to the outpost.",
+              "fen": "r4rk1/pp2bppp/3p4/4p3/2P1P3/2N5/PP3PPP/R4RK1 w - - 0 1",
+              "line": ["c3d5"],
+              "hint": "No black pawn can ever attack d5.",
+              "explanation": "The knight can never be chased away by a pawn.",
+              "verification": {
+                "engine": "Stockfish 19 Lite",
+                "depth": 14,
+                "checkedAt": "2026-11-03T18:47:30.709Z"
+              }
+            },
+            {
+              "kind": "choice",
+              "prompt": "What makes d5 an outpost here?",
+              "options": ["No black pawn can attack it", "It is in the centre"],
+              "answer": 0,
+              "explanation": "The c- and e-pawns that could attack it are gone or past it."
+            }
+          ]
+        },
+        {
+          "id": "good-bad-bishops",
+          "title": "Good and bad bishops",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "A bishop blocked by its own pawns on its colour is bad. One whose pawns are on the other colour is good.",
+              "fen": "4k3/8/8/2p1p3/2P1P3/3B4/8/4K3 w - - 0 1"
+            },
+            {
+              "kind": "choice",
+              "prompt": "White’s pawns are on light squares. Which bishop does White want?",
+              "options": ["A dark-squared bishop", "A light-squared bishop"],
+              "answer": 0,
+              "explanation": "Its pawns would not block it."
+            },
+            {
+              "kind": "choice",
+              "prompt": "Your bishop is bad. What helps?",
+              "options": [
+                "Move pawns to the other colour or trade the bishop",
+                "Push more pawns onto its colour"
+              ],
+              "answer": 0,
+              "explanation": "Free its diagonals or swap it off."
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }

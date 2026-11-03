@@ -9,7 +9,8 @@ import {
   withTurn,
   type Square,
 } from '@/chess';
-import { puzzles } from '@/content';
+import candidates from '../../../content/puzzle-candidates.json';
+import { puzzleById, puzzles } from '@/content';
 import { courseLessons, courseSections } from '@/content/course';
 import { type CourseStep } from '@/content/types';
 import { defenderReply } from '@/course/defender';
@@ -22,6 +23,13 @@ import {
 } from '@/course/steps';
 
 const SQUARE = /^[a-h][1-8]$/;
+/** Every Lichess tag of each bundled puzzle's source row, by Lichess puzzle id. */
+const sourceTags = Object.fromEntries(
+  (candidates as { PuzzleId: string; Themes: string }[]).map((row) => [
+    row.PuzzleId,
+    row.Themes.split(' '),
+  ]),
+) as Record<string, string[]>;
 const JARGON = /\b(independent|independently|recall|transfer|scaffold|assisted)\b/i;
 /** Short, plain copy (decision 0007): a prompt or a sentence or two, never a paragraph. */
 const MAX_TEXT = 160;
@@ -275,6 +283,18 @@ describe('course content', () => {
 
   it('has enough bundled puzzles for every puzzle step', () => {
     for (const { step, name } of stepsOf('puzzles')) {
+      if ('ids' in step) {
+        expect([name, new Set(step.ids).size >= step.count * 2]).toEqual([name, true]);
+        for (const id of step.ids) {
+          expect([name, id, Boolean(puzzleById[id])]).toEqual([name, id, true]);
+          expect([
+            name,
+            id,
+            sourceTags[puzzleById[id]?.source.puzzleId]?.includes(step.tag),
+          ]).toEqual([name, id, true]);
+        }
+        continue;
+      }
       const available = puzzles.filter(
         (puzzle) => puzzle.level === step.level && puzzle.themes.includes(step.theme),
       );

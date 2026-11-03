@@ -8,7 +8,7 @@ Progress:
 - ✅ P2 Screens: five tabs, the Learn path, the lesson player, welcome and Home changes, first unit
 - ✅ P3 Section 1 content: Learn the game (rules)
 - ✅ P4 Section 2 content: Beginner, with the engine check script
-- ⬜ P5 Section 3 content: Intermediate
+- ✅ P5 Section 3 content: Intermediate
 - ⬜ P6 Section 4 content: Advanced
 - ⬜ P7 Docs, device checklist and final visual pass
 
@@ -99,11 +99,11 @@ Four sections, 21 units, 84 lessons. Section names show on the path; lesson titl
 
 ### Section 3: Intermediate
 
-| Unit                  | Lessons                                                                                            |
-| --------------------- | -------------------------------------------------------------------------------------------------- |
-| 14. Pawn endgames     | King and pawn against king · Opposition · The pawn's square · Passed pawns · Breakthroughs         |
-| 15. Tactics 2         | Double check · Removing the defender · Deflection and decoy · Overloaded pieces · In-between moves |
-| 16. Using your pieces | Active pieces · Rooks on open files · The seventh rank · Knight outposts · Good and bad bishops    |
+| Unit                  | Lessons                                                                                         |
+| --------------------- | ----------------------------------------------------------------------------------------------- |
+| 14. Pawn endgames     | King and pawn against king · Opposition · The pawn's square · Passed pawns · Breakthroughs      |
+| 15. Tactics 2         | Double check · Removing the defender · Deflection and decoy · X-ray attacks · In-between moves  |
+| 16. Using your pieces | Active pieces · Rooks on open files · The seventh rank · Knight outposts · Good and bad bishops |
 
 ### Section 4: Advanced
 
