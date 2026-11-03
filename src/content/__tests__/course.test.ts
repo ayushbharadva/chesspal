@@ -52,6 +52,29 @@ function texts(step: CourseStep) {
   return list;
 }
 
+/** Pawns of one side that are isolated, doubled or passed, read from files and ranks alone. */
+function pawnsOfKind(fen: string, color: 'w' | 'b', kind: 'isolated' | 'doubled' | 'passed') {
+  const pawns = readPosition(fen).pieces.filter((piece) => piece.type === 'p');
+  const file = (square: string) => square.charCodeAt(0);
+  const rank = (square: string) => Number(square[1]);
+  const own = pawns.filter((pawn) => pawn.color === color);
+  const enemy = pawns.filter((pawn) => pawn.color !== color);
+  const ahead = (from: string, to: string) =>
+    color === 'w' ? rank(to) > rank(from) : rank(to) < rank(from);
+  return own
+    .filter(({ square }) => {
+      if (kind === 'isolated')
+        return !own.some((other) => Math.abs(file(other.square) - file(square)) === 1);
+      if (kind === 'doubled')
+        return own.some((other) => other.square !== square && file(other.square) === file(square));
+      return !enemy.some(
+        (other) => Math.abs(file(other.square) - file(square)) <= 1 && ahead(square, other.square),
+      );
+    })
+    .map((pawn) => pawn.square)
+    .sort();
+}
+
 /** Fewest moves that collect every star (or take every piece safely), by breadth-first search. */
 function fewestMoves(
   fen: string,
@@ -168,6 +191,11 @@ describe('course content', () => {
         expect([name, [...step.answers].sort()]).toEqual([
           name,
           destinations(step.fen, step.destinationsOf as Square),
+        ]);
+      if (step.pawns)
+        expect([name, [...step.answers].sort()]).toEqual([
+          name,
+          pawnsOfKind(step.fen, step.pawns.color, step.pawns.kind),
         ]);
       if (step.checkers)
         expect([name, [...step.answers].sort()]).toEqual([name, checkingSquares(step.fen).sort()]);

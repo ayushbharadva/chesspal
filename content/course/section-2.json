@@ -28,7 +28,7 @@
               "verification": {
                 "engine": "Stockfish 19 Lite",
                 "depth": 14,
-                "checkedAt": "2026-11-03T18:47:27.532Z"
+                "checkedAt": "2026-11-03T18:52:13.400Z"
               }
             },
             {
@@ -51,7 +51,7 @@
               "verification": {
                 "engine": "Stockfish 19 Lite",
                 "depth": 14,
-                "checkedAt": "2026-11-03T18:47:27.854Z"
+                "checkedAt": "2026-11-03T18:52:13.687Z"
               }
             }
           ]
@@ -75,7 +75,7 @@
               "verification": {
                 "engine": "Stockfish 19 Lite",
                 "depth": 14,
-                "checkedAt": "2026-11-03T18:47:28.011Z"
+                "checkedAt": "2026-11-03T18:52:13.844Z"
               }
             },
             {
@@ -101,7 +101,7 @@
               "verification": {
                 "engine": "Stockfish 19 Lite",
                 "depth": 14,
-                "checkedAt": "2026-11-03T18:47:28.183Z"
+                "checkedAt": "2026-11-03T18:52:13.991Z"
               }
             },
             {
@@ -128,7 +128,7 @@
               "verification": {
                 "engine": "Stockfish 19 Lite",
                 "depth": 14,
-                "checkedAt": "2026-11-03T18:47:28.313Z"
+                "checkedAt": "2026-11-03T18:52:14.119Z"
               }
             },
             {
@@ -142,7 +142,7 @@
               "verification": {
                 "engine": "Stockfish 19 Lite",
                 "depth": 14,
-                "checkedAt": "2026-11-03T18:47:28.400Z"
+                "checkedAt": "2026-11-03T18:52:14.207Z"
               }
             },
             {
@@ -179,7 +179,7 @@
               "verification": {
                 "engine": "Stockfish 19 Lite",
                 "depth": 14,
-                "checkedAt": "2026-11-03T18:47:28.735Z"
+                "checkedAt": "2026-11-03T18:52:14.427Z"
               }
             },
             {
@@ -192,7 +192,7 @@
               "verification": {
                 "engine": "Stockfish 19 Lite",
                 "depth": 14,
-                "checkedAt": "2026-11-03T18:47:28.735Z"
+                "checkedAt": "2026-11-03T18:52:14.428Z"
               }
             },
             {
@@ -207,7 +207,7 @@
               "verification": {
                 "engine": "Stockfish 19 Lite",
                 "depth": 14,
-                "checkedAt": "2026-11-03T18:47:28.873Z"
+                "checkedAt": "2026-11-03T18:52:14.525Z"
               }
             },
             {
@@ -221,7 +221,7 @@
               "verification": {
                 "engine": "Stockfish 19 Lite",
                 "depth": 14,
-                "checkedAt": "2026-11-03T18:47:28.873Z"
+                "checkedAt": "2026-11-03T18:52:14.525Z"
               }
             }
           ]
@@ -315,7 +315,7 @@
               "verification": {
                 "engine": "Stockfish 19 Lite",
                 "depth": 14,
-                "checkedAt": "2026-11-03T18:47:28.874Z"
+                "checkedAt": "2026-11-03T18:52:14.526Z"
               }
             },
             {
@@ -368,7 +368,7 @@
               "verification": {
                 "engine": "Stockfish 19 Lite",
                 "depth": 14,
-                "checkedAt": "2026-11-03T18:47:28.874Z"
+                "checkedAt": "2026-11-03T18:52:14.526Z"
               }
             },
             {
@@ -404,7 +404,7 @@
               "verification": {
                 "engine": "Stockfish 19 Lite",
                 "depth": 14,
-                "checkedAt": "2026-11-03T18:47:28.933Z"
+                "checkedAt": "2026-11-03T18:52:14.567Z"
               }
             },
             {
@@ -439,7 +439,7 @@
               "verification": {
                 "engine": "Stockfish 19 Lite",
                 "depth": 14,
-                "checkedAt": "2026-11-03T18:47:29.003Z"
+                "checkedAt": "2026-11-03T18:52:14.598Z"
               }
             },
             {
@@ -471,7 +471,7 @@
               "verification": {
                 "engine": "Stockfish 19 Lite",
                 "depth": 14,
-                "checkedAt": "2026-11-03T18:47:29.091Z"
+                "checkedAt": "2026-11-03T18:52:14.639Z"
               }
             },
             { "kind": "puzzles", "prompt": "Use the pin.", "theme": "pin", "level": 1, "count": 3 }
@@ -495,7 +495,7 @@
               "verification": {
                 "engine": "Stockfish 19 Lite",
                 "depth": 14,
-                "checkedAt": "2026-11-03T18:47:29.143Z"
+                "checkedAt": "2026-11-03T18:52:14.672Z"
               }
             },
             {
@@ -525,7 +525,7 @@
               "verification": {
                 "engine": "Stockfish 19 Lite",
                 "depth": 14,
-                "checkedAt": "2026-11-03T18:47:29.208Z"
+                "checkedAt": "2026-11-03T18:52:14.714Z"
               }
             },
             {
@@ -562,7 +562,7 @@
               "verification": {
                 "engine": "Stockfish 19 Lite",
                 "depth": 14,
-                "checkedAt": "2026-11-03T18:47:29.208Z"
+                "checkedAt": "2026-11-03T18:52:14.715Z"
               }
             },
             {
@@ -593,7 +593,7 @@
               "verification": {
                 "engine": "Stockfish 19 Lite",
                 "depth": 14,
-                "checkedAt": "2026-11-03T18:47:29.208Z"
+                "checkedAt": "2026-11-03T18:52:14.715Z"
               }
             },
             {
@@ -606,7 +606,7 @@
               "verification": {
                 "engine": "Stockfish 19 Lite",
                 "depth": 14,
-                "checkedAt": "2026-11-03T18:47:29.213Z"
+                "checkedAt": "2026-11-03T18:52:14.718Z"
               }
             }
           ]
@@ -629,7 +629,7 @@
               "verification": {
                 "engine": "Stockfish 19 Lite",
                 "depth": 14,
-                "checkedAt": "2026-11-03T18:47:29.213Z"
+                "checkedAt": "2026-11-03T18:52:14.718Z"
               }
             },
             {

@@ -119,6 +119,8 @@ export type CourseStep =
       answers: string[];
       destinationsOf?: string;
       checkers?: boolean;
+      /** The answers are all of one side's pawns of this kind, which tests work out from the board. */
+      pawns?: { color: ChessColor; kind: 'isolated' | 'doubled' | 'passed' };
       explanation: string;
     } & BoardMarks)
   /** Pick one answer. */

@@ -9,7 +9,7 @@ Progress:
 - ✅ P3 Section 1 content: Learn the game (rules)
 - ✅ P4 Section 2 content: Beginner, with the engine check script
 - ✅ P5 Section 3 content: Intermediate
-- ⬜ P6 Section 4 content: Advanced
+- ✅ P6 Section 4 content: Advanced
 - ⬜ P7 Docs, device checklist and final visual pass
 
 Each phase ends with `npm run check` passing, a visual check at mobile width in light and dark mode, and one commit. Nothing is pushed.
@@ -112,7 +112,7 @@ Four sections, 21 units, 84 lessons. Section names show on the path; lesson titl
 | 17. Pawn structure         | The isolated pawn · Doubled and backward pawns · Pawn chains · Pawn majorities · The minority attack                                  |
 | 18. Rook endgames          | Rook behind the passed pawn · Cutting off the king · Building a bridge (Lucena) · The third-rank defence (Philidor) · The active rook |
 | 19. More endgames          | Bishop against knight · The wrong bishop · Queen against pawn · Opposite-coloured bishops                                             |
-| 20. Attack and defence     | Attacking the castled king · Opposite-side castling · The bishop sacrifice on h7 · Defending calmly                                   |
+| 20. Attack and defence     | Attacking the castled king · Opposite-side castling · Sacrifices for the attack · Defending calmly                                    |
 | 21. Thinking like a player | Candidate moves · Stop their plan · Turning an advantage into a win · Seeing moves ahead                                              |
 
 ## Phases

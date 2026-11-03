@@ -2,5 +2,667 @@
   "id": "advanced",
   "title": "Advanced",
   "summary": "Pawn structure, key endgames and planning.",
-  "units": []
+  "units": [
+    {
+      "id": "pawn-structure",
+      "title": "Pawn structure",
+      "lessons": [
+        {
+          "id": "isolated-pawn",
+          "title": "The isolated pawn",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "A pawn with no friendly pawns on the files beside it is isolated. No pawn can ever protect it.",
+              "fen": "6k1/pp3ppp/4p3/8/3P4/8/PP3PPP/6K1 w - - 0 1",
+              "marks": ["d4"]
+            },
+            {
+              "kind": "tap",
+              "prompt": "Tap White’s isolated pawn.",
+              "fen": "6k1/pp3ppp/4p3/8/3P4/8/PP3PPP/6K1 w - - 0 1",
+              "answers": ["d4"],
+              "explanation": "No white pawn stands on the c- or e-file.",
+              "pawns": { "color": "w", "kind": "isolated" }
+            },
+            {
+              "kind": "choice",
+              "prompt": "Where does the other side like to put a piece against an isolated pawn?",
+              "options": ["On the square in front of it", "In a corner"],
+              "answer": 0,
+              "explanation": "No pawn can chase a piece away from there."
+            },
+            {
+              "kind": "read",
+              "text": "An isolated pawn has a plus side too: open files beside it for your rooks, and room for your pieces."
+            }
+          ]
+        },
+        {
+          "id": "doubled-backward",
+          "title": "Doubled and backward pawns",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "Two pawns of one side on the same file are doubled. They cannot protect each other.",
+              "fen": "6k1/pp3ppp/4p3/8/4P3/2P5/P1P2PPP/6K1 w - - 0 1"
+            },
+            {
+              "kind": "tap",
+              "prompt": "Tap both doubled pawns.",
+              "fen": "6k1/pp3ppp/4p3/8/4P3/2P5/P1P2PPP/6K1 w - - 0 1",
+              "answers": ["c2", "c3"],
+              "explanation": "Both sit on the c-file.",
+              "pawns": { "color": "w", "kind": "doubled" }
+            },
+            {
+              "kind": "read",
+              "text": "A backward pawn has fallen behind its neighbours and cannot safely move forward."
+            },
+            {
+              "kind": "choice",
+              "prompt": "Is a doubled pawn always bad?",
+              "options": ["No, it can open a file and guard squares", "Yes, always"],
+              "answer": 0,
+              "explanation": "Weigh its downsides against what it gives you."
+            }
+          ]
+        },
+        {
+          "id": "pawn-chains",
+          "title": "Pawn chains",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "Pawns on a diagonal, each protecting the next, form a chain.",
+              "fen": "r1bqkbnr/pp3ppp/2n1p3/2ppP3/3P4/2P5/PP3PPP/RNBQKBNR w KQkq - 0 5",
+              "arrows": [
+                ["c3", "d4"],
+                ["d4", "e5"]
+              ]
+            },
+            {
+              "kind": "choice",
+              "prompt": "Where is a pawn chain weakest?",
+              "options": ["At its base", "At its head"],
+              "answer": 0,
+              "explanation": "The base has no pawn protecting it."
+            },
+            {
+              "kind": "read",
+              "text": "Attack the base of your opponent’s chain, and play on the side of the board where your chain points."
+            }
+          ]
+        },
+        {
+          "id": "pawn-majorities",
+          "title": "Pawn majorities",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "Having more pawns than your opponent on one side of the board is a majority. Push it to make a passed pawn."
+            },
+            {
+              "kind": "tap",
+              "prompt": "Tap White’s passed pawn.",
+              "fen": "6k1/5ppp/8/1P6/8/8/5PPP/6K1 w - - 0 1",
+              "answers": ["b5"],
+              "explanation": "No black pawn can stop it on the a-, b- or c-file.",
+              "pawns": { "color": "w", "kind": "passed" }
+            },
+            {
+              "kind": "choice",
+              "prompt": "Which majority makes a passed pawn far from the kings?",
+              "options": [
+                "A queenside majority after castling short",
+                "A kingside majority after castling short"
+              ],
+              "answer": 0,
+              "explanation": "The kings are on the kingside, so a passed pawn on the other side is hard to stop."
+            }
+          ]
+        },
+        {
+          "id": "minority-attack",
+          "title": "The minority attack",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "Two pawns can attack three: pushing them creates a weak pawn in the larger group.",
+              "fen": "r4rk1/pp3ppp/2p5/3p4/3P4/8/PP3PPP/R4RK1 w - - 0 1",
+              "arrows": [
+                ["b2", "b4"],
+                ["b4", "b5"]
+              ]
+            },
+            {
+              "kind": "choice",
+              "prompt": "In this structure, which pawns does White push in a minority attack?",
+              "options": ["The a- and b-pawns", "The f- and g-pawns"],
+              "answer": 0,
+              "explanation": "White has two queenside pawns against Black’s three."
+            },
+            {
+              "kind": "read",
+              "text": "After b5 and bxc6, Black is left with a weak pawn to defend for the rest of the game."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rook-endgames",
+      "title": "Rook endgames",
+      "lessons": [
+        {
+          "id": "rook-behind-pawn",
+          "title": "Rook behind the passed pawn",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "Rooks belong behind passed pawns: yours to push them, the other side’s to stop them."
+            },
+            {
+              "kind": "move",
+              "prompt": "Put your rook behind the passed pawn.",
+              "fen": "4r1k1/5pp1/7p/8/P7/8/5PPP/1R4K1 w - - 0 1",
+              "line": ["b1a1"],
+              "hint": "The pawn is on the a-file.",
+              "explanation": "The rook gets stronger with every step the pawn takes.",
+              "verification": {
+                "engine": "Stockfish 19 Lite",
+                "depth": 14,
+                "checkedAt": "2026-11-03T18:52:16.070Z"
+              }
+            },
+            {
+              "kind": "puzzles",
+              "prompt": "Win the rook endgame.",
+              "count": 2,
+              "tag": "rookEndgame",
+              "ids": ["01ZiW", "03BFA", "03lZs", "04go3", "06FnM", "041xC", "01Siq", "01qHx"]
+            }
+          ]
+        },
+        {
+          "id": "cutting-off-king",
+          "title": "Cutting off the king",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "A rook on a file or rank can fence the enemy king out, so your king and pawn walk forward freely."
+            },
+            {
+              "kind": "choice",
+              "prompt": "Your rook cuts the black king off along a file. What does that do?",
+              "options": ["Keeps the king away from your pawn", "Gives check"],
+              "answer": 0,
+              "explanation": "The king cannot cross the rook’s file."
+            },
+            {
+              "kind": "puzzles",
+              "prompt": "Use your rook well.",
+              "count": 2,
+              "tag": "rookEndgame",
+              "ids": ["0aSBt", "0156I", "0Ku2k", "082wl", "01V7x", "035Lb", "04LFh", "0A577"]
+            }
+          ]
+        },
+        {
+          "id": "lucena",
+          "title": "Building a bridge (Lucena)",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "With king and pawn on the seventh against a rook, first fence the enemy king out with your rook.",
+              "fen": "1K1k4/1P6/8/8/8/8/r7/4R3 w - - 0 1",
+              "marks": ["c8", "c7", "c6", "c5"]
+            },
+            {
+              "kind": "move",
+              "prompt": "The black king is cut off. Build the bridge: rook to the fourth rank.",
+              "fen": "1K1k4/1P6/8/8/8/8/r7/4R3 w - - 0 1",
+              "line": ["e1e4"],
+              "hint": "Your rook goes to e4.",
+              "explanation": "When your king steps out, the rook on e4 will block the checks.",
+              "verification": {
+                "engine": "Stockfish 19 Lite",
+                "depth": 14,
+                "checkedAt": "2026-11-03T18:52:16.100Z"
+              }
+            },
+            {
+              "kind": "read",
+              "text": "Your king then walks out, and when the checks come, your rook steps in to block them."
+            }
+          ]
+        },
+        {
+          "id": "philidor",
+          "title": "The third-rank defence (Philidor)",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "Defending rook and pawn with a rook, keep your rook on your third rank so the enemy king cannot advance."
+            },
+            {
+              "kind": "move",
+              "prompt": "Black to move. Put your rook on the sixth rank to stop the king.",
+              "fen": "4k3/8/8/4PK2/8/8/r7/3R4 b - - 0 1",
+              "line": ["a2a6"],
+              "hint": "The sixth rank is your third rank.",
+              "explanation": "The white king cannot step onto the sixth rank.",
+              "orientation": "b",
+              "verification": {
+                "engine": "Stockfish 19 Lite",
+                "depth": 14,
+                "checkedAt": "2026-11-03T18:52:16.170Z"
+              }
+            },
+            {
+              "kind": "read",
+              "text": "When the pawn advances to the sixth, swing your rook to the back and check from behind."
+            }
+          ]
+        },
+        {
+          "id": "active-rook",
+          "title": "The active rook",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "In rook endgames an active rook is often worth a pawn. Attack, do not just defend."
+            },
+            {
+              "kind": "choice",
+              "prompt": "Your rook can guard a pawn passively or attack the enemy pawns. Usually you should…",
+              "options": ["Attack", "Guard passively"],
+              "answer": 0,
+              "explanation": "An active rook keeps the other side busy."
+            },
+            {
+              "kind": "puzzles",
+              "prompt": "Keep your rook active.",
+              "count": 2,
+              "tag": "rookEndgame",
+              "ids": ["00STy", "05N2y", "03Caw", "0LDss", "0rVsK", "00Qqp", "164hR", "02Yx1"]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "more-endgames",
+      "title": "More endgames",
+      "lessons": [
+        {
+          "id": "bishop-vs-knight",
+          "title": "Bishop against knight",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "Bishops like open boards and pawns on both sides. Knights like closed positions and pawns on one side."
+            },
+            {
+              "kind": "choice",
+              "prompt": "Pawns on both wings, open lines. Which piece do you want?",
+              "options": ["The bishop", "The knight"],
+              "answer": 0,
+              "explanation": "A bishop crosses the board in one move."
+            },
+            {
+              "kind": "puzzles",
+              "prompt": "Use the minor piece.",
+              "count": 2,
+              "tag": "bishopEndgame",
+              "ids": ["03sd0", "0LSCd", "1RsP4", "5awzT", "1QGxx", "5nWgO", "1JiDO", "0ELU5"]
+            }
+          ]
+        },
+        {
+          "id": "wrong-bishop",
+          "title": "The wrong bishop",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "King, bishop and rook pawn against a lone king is usually a draw if the bishop cannot cover the corner.",
+              "fen": "7k/8/6K1/7P/8/8/8/3B4 w - - 0 1",
+              "marks": ["h8"]
+            },
+            {
+              "kind": "choice",
+              "prompt": "White has an h-pawn and a light-squared bishop. h8 is dark. If the black king reaches h8…",
+              "options": ["It is usually a draw", "White still wins easily"],
+              "answer": 0,
+              "explanation": "The bishop can never drive the king out of a dark corner."
+            },
+            {
+              "kind": "read",
+              "text": "When ahead, check the promotion square’s colour before trading into such an ending."
+            }
+          ]
+        },
+        {
+          "id": "queen-vs-pawn",
+          "title": "Queen against pawn",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "A queen beats a pawn on the seventh by checking until the king blocks its pawn, then bringing her king closer."
+            },
+            {
+              "kind": "move",
+              "prompt": "Stop the pawn: check and pin until the black king blocks it.",
+              "fen": "7K/8/8/8/8/Q7/2kp4/8 w - - 0 1",
+              "line": ["a3c5", "c2d3", "c5b5", "d3c2", "b5c4", "c2d1", "h8g7"],
+              "hint": "Check from c5 first.",
+              "explanation": "The king stands in front of the pawn, so your king gains a move each time.",
+              "verification": {
+                "engine": "Stockfish 19 Lite",
+                "depth": 14,
+                "checkedAt": "2026-11-03T18:52:16.287Z"
+              }
+            },
+            {
+              "kind": "choice",
+              "prompt": "What does each check aim for?",
+              "options": ["To force the king in front of its pawn", "To take the pawn at once"],
+              "answer": 0,
+              "explanation": "With the king on the promotion square, your own king can step closer."
+            }
+          ]
+        },
+        {
+          "id": "opposite-bishops",
+          "title": "Opposite-coloured bishops",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "If each side has one bishop and they run on different colours, endings are often drawn even a pawn or two down."
+            },
+            {
+              "kind": "choice",
+              "prompt": "You are a pawn behind with opposite-coloured bishops. What should you try?",
+              "options": ["Trade into the bishop ending", "Avoid all trades"],
+              "answer": 0,
+              "explanation": "The defender’s bishop can blockade on squares the other bishop never reaches."
+            },
+            {
+              "kind": "read",
+              "text": "In the middlegame the same bishops favour the attacker, since neither bishop can defend the other’s squares."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "attack-defence",
+      "title": "Attack and defence",
+      "lessons": [
+        {
+          "id": "attacking-king",
+          "title": "Attacking the castled king",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "Bring pieces toward the enemy king before you strike. Three attackers against two defenders usually win."
+            },
+            {
+              "kind": "choice",
+              "prompt": "Before attacking the king, what should you count?",
+              "options": ["Your attackers and their defenders", "The pawns on the other side"],
+              "answer": 0,
+              "explanation": "Attack where you have more pieces."
+            },
+            {
+              "kind": "puzzles",
+              "prompt": "Break through.",
+              "count": 3,
+              "tag": "kingsideAttack",
+              "ids": [
+                "02Goa",
+                "05ad4",
+                "02RSU",
+                "01mgz",
+                "0Isaq",
+                "00Us6",
+                "00mFI",
+                "03CF0",
+                "00qoE",
+                "08HSO",
+                "09sy0",
+                "01jao"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "opposite-castling",
+          "title": "Opposite-side castling",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "When kings castle on opposite sides, both players push pawns at the other king. Speed matters most."
+            },
+            {
+              "kind": "choice",
+              "prompt": "Kings castled on opposite sides. What should you do?",
+              "options": ["Attack the enemy king fast", "Wait and defend"],
+              "answer": 0,
+              "explanation": "The faster attack usually wins."
+            },
+            {
+              "kind": "puzzles",
+              "prompt": "Attack on the queenside.",
+              "count": 2,
+              "tag": "queensideAttack",
+              "ids": ["019Z4", "04gq1", "038Ql", "03qCC", "01244", "02T4Z", "00Lvv", "07sC5"]
+            }
+          ]
+        },
+        {
+          "id": "attacking-sacrifices",
+          "title": "Sacrifices for the attack",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "Giving up material is worth it when it opens the king, for example a bishop taken on h7 with check."
+            },
+            {
+              "kind": "choice",
+              "prompt": "When is a sacrifice worth it?",
+              "options": ["When you can follow up with more threats", "Whenever it looks bold"],
+              "answer": 0,
+              "explanation": "Calculate the follow-up before you give anything away."
+            },
+            {
+              "kind": "puzzles",
+              "prompt": "Find the sacrifice.",
+              "count": 3,
+              "tag": "sacrifice",
+              "ids": [
+                "08xqh",
+                "04xlw",
+                "1E1zz",
+                "02nP5",
+                "0ZByQ",
+                "0rxWN",
+                "0123H",
+                "1eHU6",
+                "0CWTj",
+                "08SqC",
+                "05Fzd",
+                "01m0O"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "defending-calmly",
+          "title": "Defending calmly",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "Under attack, find the one move that stops the threat. Trading attackers is often the best defence."
+            },
+            {
+              "kind": "choice",
+              "prompt": "Your opponent attacks with many pieces. Which trade helps most?",
+              "options": ["Trading off their best attacker", "Trading your own defender"],
+              "answer": 0,
+              "explanation": "Fewer attackers means less danger."
+            },
+            {
+              "kind": "puzzles",
+              "prompt": "Find the defence.",
+              "count": 3,
+              "tag": "defensiveMove",
+              "ids": [
+                "G81TK",
+                "67bnI",
+                "BMeDx",
+                "FEfPX",
+                "4qvno",
+                "GrCDq",
+                "7sIq3",
+                "2KsE5",
+                "0CaOX",
+                "ChWsl",
+                "BFUcw",
+                "5Hiuw"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "thinking",
+      "title": "Thinking like a player",
+      "lessons": [
+        {
+          "id": "candidate-moves",
+          "title": "Candidate moves",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "List a few candidate moves before you choose: checks, captures, threats, then quiet improving moves."
+            },
+            {
+              "kind": "choice",
+              "prompt": "Why list several moves before choosing?",
+              "options": ["So you do not miss a better one", "To use up time"],
+              "answer": 0,
+              "explanation": "The first move you see is not always best."
+            },
+            {
+              "kind": "puzzles",
+              "prompt": "Find the best move.",
+              "theme": "fork",
+              "level": 4,
+              "count": 3
+            }
+          ]
+        },
+        {
+          "id": "stop-their-plan",
+          "title": "Stop their plan",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "After each move by your opponent, ask: what do they want to do next? Then decide whether to stop it."
+            },
+            {
+              "kind": "choice",
+              "prompt": "Your opponent wants to play a knight to a strong square. What can you do?",
+              "options": ["Cover that square first", "Ignore it"],
+              "answer": 0,
+              "explanation": "Taking away a good square is often the best move."
+            },
+            {
+              "kind": "puzzles",
+              "prompt": "Stop the threat.",
+              "count": 3,
+              "tag": "defensiveMove",
+              "ids": [
+                "02W8D",
+                "0DeDy",
+                "0ICJl",
+                "0A2Y3",
+                "09BhL",
+                "05K1G",
+                "03jgY",
+                "02HG7",
+                "05mkR",
+                "0AiI0",
+                "0HbWu",
+                "01Btz"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "converting",
+          "title": "Turning an advantage into a win",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "When ahead, keep it simple: remove your opponent’s chances, trade pieces and push your extra pawn."
+            },
+            {
+              "kind": "choice",
+              "prompt": "You are a piece up. What is the safest plan?",
+              "options": ["Trade pieces and avoid risks", "Start a wild attack"],
+              "answer": 0,
+              "explanation": "Simple play keeps the advantage."
+            },
+            {
+              "kind": "puzzles",
+              "prompt": "Finish the job.",
+              "count": 3,
+              "tag": "crushing",
+              "ids": [
+                "05mlU",
+                "06qxl",
+                "02YmM",
+                "0HMBI",
+                "0AO02",
+                "0AiI0",
+                "00QnO",
+                "0G3dE",
+                "000Pw",
+                "08B34",
+                "0ITA9",
+                "0HbWu"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "seeing-ahead",
+          "title": "Seeing moves ahead",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "Picture the board after each move in a line. Start with forcing moves, which leave the fewest replies."
+            },
+            {
+              "kind": "choice",
+              "prompt": "Which lines are easiest to see far ahead?",
+              "options": ["Forcing ones: checks and captures", "Quiet ones"],
+              "answer": 0,
+              "explanation": "Forcing moves limit the other side’s choices."
+            },
+            {
+              "kind": "puzzles",
+              "prompt": "See the mate coming.",
+              "theme": "mateIn2",
+              "level": 5,
+              "count": 3
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }

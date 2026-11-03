@@ -87,7 +87,8 @@ async function analyse(fen: string, move?: string) {
 async function check(fen: string, move: string, limit: number, label: string) {
   if (playMove(fen, move).checkmate) return;
   const best = await analyse(fen);
-  const answer = await analyse(fen, move);
+  // A second search of the engine's own choice can score it differently; it loses nothing.
+  const answer = move === best.bestMove ? best : await analyse(fen, move);
   const loss = Math.max(0, best.scoreCp - answer.scoreCp);
   console.log(
     `${label}: ${move}, best ${best.bestMove} ${best.scoreCp}, this ${answer.scoreCp}, loss ${loss}`,
