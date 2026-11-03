@@ -760,10 +760,16 @@ it('plays a Learn lesson to stars and unlocks the next one', async () => {
   expect(screen.getByText('White always moves first.')).toBeOnTheScreen();
   await fireEvent.press(screen.getByRole('button', { name: 'Continue' }));
   await fireEvent.press(screen.getByRole('button', { name: 'Continue' }));
+  await fireEvent.press(screen.getByTestId('square-g8'));
+  await fireEvent.press(screen.getByRole('button', { name: 'Continue' }));
   await fireEvent.press(screen.getByRole('button', { name: answers[1] }));
   await fireEvent.press(screen.getByRole('button', { name: 'Continue' }));
   await fireEvent.press(screen.getByRole('button', { name: 'Continue' }));
+  for (const file of 'abcdefgh') await fireEvent.press(screen.getByTestId(`square-${file}2`));
+  await fireEvent.press(screen.getByRole('button', { name: 'Continue' }));
   await fireEvent.press(screen.getByRole('button', { name: answers[2] }));
+  await fireEvent.press(screen.getByRole('button', { name: 'Continue' }));
+  await move('e2e4');
   await fireEvent.press(screen.getByRole('button', { name: 'Finish' }));
   expect(screen.getByText('Well done!')).toBeOnTheScreen();
   expect(screen.getByLabelText('2 of 3 stars')).toBeOnTheScreen();
@@ -778,7 +784,8 @@ it('plays a Learn lesson to stars and unlocks the next one', async () => {
 
 it('checks taps on a Learn board and counts a finished lesson toward the streak', async () => {
   useProgressStore.getState().startCourse('goal-of-chess');
-  for (let step = 0; step < 6; step++) useProgressStore.getState().finishCourseStep(0);
+  const steps = courseLessonById['goal-of-chess'].lesson.steps.length;
+  for (let step = 0; step < steps; step++) useProgressStore.getState().finishCourseStep(0);
   useProgressStore.getState().closeCourse();
   await renderApp('/learn');
   await fireEvent.press(

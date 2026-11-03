@@ -111,6 +111,23 @@ describe('course content', () => {
     }
   });
 
+  it('gives every lesson at least three things to do on a board', () => {
+    // Each puzzle counts; reading and answer buttons do not.
+    for (const entry of courseLessons) {
+      const exercises = entry.lesson.steps.reduce(
+        (total, step) =>
+          total +
+          (step.kind === 'puzzles'
+            ? step.count
+            : step.kind === 'read' || step.kind === 'choice'
+              ? 0
+              : 1),
+        0,
+      );
+      expect([entry.lesson.id, exercises >= 3]).toEqual([entry.lesson.id, true]);
+    }
+  });
+
   it('keeps every text short and plain', () => {
     for (const { step, name } of steps)
       for (const text of texts(step)) {
@@ -258,6 +275,9 @@ describe('course content', () => {
       else if (/give check/i.test(step.prompt))
         for (const final of finals)
           expect([name, readPosition(final).inCheck]).toEqual([name, true]);
+      else if (/make it a draw/i.test(step.prompt))
+        for (const final of finals)
+          expect([name, drawReason(final) !== null]).toEqual([name, true]);
       // A piece moved "to safety" must not stand on a square the other side attacks.
       if (/to safety/i.test(step.prompt))
         for (const final of finals) {

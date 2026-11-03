@@ -40,6 +40,7 @@ Each move is validated through the chess domain adapter. A different legal move 
 - every play step's stored solution beats the app's defender within its move limit;
 - puzzle steps have enough bundled puzzles, and puzzles chosen by Lichess tag (deflection, intermezzo, rook endgame…) carry that tag in their source row in `content/puzzle-candidates.json`;
 - copy stays under 160 characters per text, without learning-science jargon.
+- every lesson has at least three things to do on a board, counting each puzzle.
 
 `npm run content:verify-course` checks every move step after Section 1 with Stockfish 19 Lite at depth 14: each answer within 35 centipawns of the engine's best (or any mate), each scripted reply within 100, and writes the check onto the step. A test requires that record, so editing a line means running the script again (`-- --check` verifies without writing). Section 1 teaches rules, where any legal way out of check is right, so it is checked by tests alone. Lone king-and-pawn races are not engine-scored, since Stockfish without tablebases misjudges them; they are play steps whose solutions the tests replay.
 

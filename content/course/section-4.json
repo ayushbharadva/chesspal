@@ -26,6 +26,22 @@
               "pawns": { "color": "w", "kind": "isolated" }
             },
             {
+              "kind": "tap",
+              "prompt": "Now tap Black’s isolated pawn.",
+              "fen": "6k1/pp3ppp/8/3p4/8/4P3/PP3PPP/6K1 w - - 0 1",
+              "answers": ["d5"],
+              "explanation": "No black pawn stands on the c- or e-file.",
+              "pawns": { "color": "b", "kind": "isolated" }
+            },
+            {
+              "kind": "tap",
+              "prompt": "Tap every isolated white pawn.",
+              "fen": "6k1/pp3ppp/8/8/4P3/8/P1P3PP/6K1 w - - 0 1",
+              "answers": ["a2", "c2", "e4"],
+              "explanation": "Each has empty files on both sides.",
+              "pawns": { "color": "w", "kind": "isolated" }
+            },
+            {
               "kind": "choice",
               "prompt": "Where does the other side like to put a piece against an isolated pawn?",
               "options": ["On the square in front of it", "In a corner"],
@@ -53,6 +69,22 @@
               "fen": "6k1/pp3ppp/4p3/8/4P3/2P5/P1P2PPP/6K1 w - - 0 1",
               "answers": ["c2", "c3"],
               "explanation": "Both sit on the c-file.",
+              "pawns": { "color": "w", "kind": "doubled" }
+            },
+            {
+              "kind": "tap",
+              "prompt": "Tap Black’s doubled pawns.",
+              "fen": "6k1/p4p2/5p2/7p/8/8/PP3PPP/6K1 w - - 0 1",
+              "answers": ["f6", "f7"],
+              "explanation": "Both sit on the f-file.",
+              "pawns": { "color": "b", "kind": "doubled" }
+            },
+            {
+              "kind": "tap",
+              "prompt": "Tap every doubled white pawn.",
+              "fen": "6k1/pp3ppp/8/8/8/1P2P3/1P2P1PP/6K1 w - - 0 1",
+              "answers": ["b2", "b3", "e2", "e3"],
+              "explanation": "Two pairs: on the b-file and the e-file.",
               "pawns": { "color": "w", "kind": "doubled" }
             },
             {
@@ -89,8 +121,55 @@
               "explanation": "The base has no pawn protecting it."
             },
             {
+              "kind": "move",
+              "prompt": "Attack the base of White’s chain.",
+              "fen": "rnbqkbnr/ppp2ppp/4p3/3pP3/3P4/8/PPP2PPP/RNBQKBNR b KQkq - 0 3",
+              "line": ["c7c5"],
+              "hint": "d4 is the base. Which pawn can hit it?",
+              "explanation": "c5 strikes at the base of the chain.",
+              "orientation": "b",
+              "verification": {
+                "engine": "Stockfish 19 Lite",
+                "depth": 14,
+                "checkedAt": "2026-11-03T19:33:29.274Z"
+              }
+            },
+            {
+              "kind": "move",
+              "prompt": "Now protect the base of your chain.",
+              "fen": "rnbqkbnr/pp3ppp/4p3/2ppP3/3P4/8/PPP2PPP/RNBQKBNR w KQkq - 0 4",
+              "line": ["c2c3"],
+              "hint": "Support d4 with another pawn.",
+              "explanation": "c3 keeps the chain standing.",
+              "verification": {
+                "engine": "Stockfish 19 Lite",
+                "depth": 14,
+                "checkedAt": "2026-11-03T19:33:29.346Z"
+              }
+            },
+            {
               "kind": "read",
               "text": "Attack the base of your opponent’s chain, and play on the side of the board where your chain points."
+            },
+            {
+              "kind": "puzzles",
+              "prompt": "Find the best move.",
+              "count": 4,
+              "tag": "advantage",
+              "ids": [
+                "02LLO",
+                "0HCJb",
+                "042gq",
+                "097Ea",
+                "04uXY",
+                "09sy0",
+                "0598v",
+                "09ebA",
+                "04hML",
+                "0DeDy",
+                "00jCD",
+                "03iNA"
+              ]
             }
           ]
         },
@@ -109,6 +188,26 @@
               "answers": ["b5"],
               "explanation": "No black pawn can stop it on the a-, b- or c-file.",
               "pawns": { "color": "w", "kind": "passed" }
+            },
+            {
+              "kind": "puzzles",
+              "prompt": "Push the passed pawn.",
+              "count": 4,
+              "tag": "advancedPawn",
+              "ids": [
+                "0C9wz",
+                "05PKP",
+                "01Dt6",
+                "09BQx",
+                "022ux",
+                "01dGR",
+                "09FaG",
+                "02gM8",
+                "05kdD",
+                "02Dnf",
+                "0x7WQ",
+                "2vY9c"
+              ]
             },
             {
               "kind": "choice",
@@ -143,6 +242,39 @@
               "explanation": "White has two queenside pawns against Black’s three."
             },
             {
+              "kind": "move",
+              "prompt": "Start the minority attack.",
+              "fen": "r1bqrnk1/pp3ppp/2pb1n2/3p2B1/3P4/2NBPN2/PPQ2PPP/1R3RK1 w - - 11 12",
+              "line": ["b2b4"],
+              "hint": "Push the b-pawn two squares.",
+              "explanation": "Next comes b5, to break up Black’s pawns.",
+              "verification": {
+                "engine": "Stockfish 19 Lite",
+                "depth": 14,
+                "checkedAt": "2026-11-03T19:33:29.484Z"
+              }
+            },
+            {
+              "kind": "puzzles",
+              "prompt": "Attack on the queenside.",
+              "count": 4,
+              "tag": "queensideAttack",
+              "ids": [
+                "02YCM",
+                "05MF9",
+                "04XCB",
+                "01cKS",
+                "02FYq",
+                "011JG",
+                "02ljf",
+                "08xX1",
+                "02Cq3",
+                "05pYW",
+                "037Iw",
+                "00zeF"
+              ]
+            },
+            {
               "kind": "read",
               "text": "After b5 and bxc6, Black is left with a weak pawn to defend for the rest of the game."
             }
@@ -172,15 +304,28 @@
               "verification": {
                 "engine": "Stockfish 19 Lite",
                 "depth": 14,
-                "checkedAt": "2026-11-03T18:52:16.070Z"
+                "checkedAt": "2026-11-03T19:33:29.555Z"
               }
             },
             {
               "kind": "puzzles",
               "prompt": "Win the rook endgame.",
-              "count": 2,
+              "count": 4,
               "tag": "rookEndgame",
-              "ids": ["01ZiW", "03BFA", "03lZs", "04go3", "06FnM", "041xC", "01Siq", "01qHx"]
+              "ids": [
+                "1YTss",
+                "140mX",
+                "05rv2",
+                "0lF9z",
+                "0waso",
+                "1ELXZ",
+                "0Kdnc",
+                "069SD",
+                "0c5uw",
+                "1I94t",
+                "03gtp",
+                "19oVT"
+              ]
             }
           ]
         },
@@ -202,9 +347,22 @@
             {
               "kind": "puzzles",
               "prompt": "Use your rook well.",
-              "count": 2,
+              "count": 4,
               "tag": "rookEndgame",
-              "ids": ["0aSBt", "0156I", "0Ku2k", "082wl", "01V7x", "035Lb", "04LFh", "0A577"]
+              "ids": [
+                "0aSBt",
+                "0156I",
+                "0Ku2k",
+                "082wl",
+                "01V7x",
+                "035Lb",
+                "04LFh",
+                "0R7bm",
+                "032t1",
+                "00STy",
+                "05N2y",
+                "03Caw"
+              ]
             }
           ]
         },
@@ -228,12 +386,19 @@
               "verification": {
                 "engine": "Stockfish 19 Lite",
                 "depth": 14,
-                "checkedAt": "2026-11-03T18:52:16.100Z"
+                "checkedAt": "2026-11-03T19:33:29.585Z"
               }
             },
             {
               "kind": "read",
               "text": "Your king then walks out, and when the checks come, your rook steps in to block them."
+            },
+            {
+              "kind": "puzzles",
+              "prompt": "Win the rook endgame.",
+              "count": 3,
+              "tag": "rookEndgame",
+              "ids": ["0LDss", "0rVsK", "00Qqp", "032t1", "00STy", "05N2y", "03Caw"]
             }
           ]
         },
@@ -256,12 +421,29 @@
               "verification": {
                 "engine": "Stockfish 19 Lite",
                 "depth": 14,
-                "checkedAt": "2026-11-03T18:52:16.170Z"
+                "checkedAt": "2026-11-03T19:33:29.654Z"
               }
             },
             {
               "kind": "read",
               "text": "When the pawn advances to the sixth, swing your rook to the back and check from behind."
+            },
+            {
+              "kind": "puzzles",
+              "prompt": "Hold or win the rook endgame.",
+              "count": 4,
+              "tag": "rookEndgame",
+              "ids": [
+                "164hR",
+                "02Yx1",
+                "11cuV",
+                "00STy",
+                "05N2y",
+                "03Caw",
+                "0LDss",
+                "0rVsK",
+                "00Qqp"
+              ]
             }
           ]
         },
@@ -283,9 +465,19 @@
             {
               "kind": "puzzles",
               "prompt": "Keep your rook active.",
-              "count": 2,
+              "count": 4,
               "tag": "rookEndgame",
-              "ids": ["00STy", "05N2y", "03Caw", "0LDss", "0rVsK", "00Qqp", "164hR", "02Yx1"]
+              "ids": [
+                "00STy",
+                "05N2y",
+                "03Caw",
+                "0LDss",
+                "0rVsK",
+                "00Qqp",
+                "164hR",
+                "02Yx1",
+                "11cuV"
+              ]
             }
           ]
         }
@@ -313,9 +505,22 @@
             {
               "kind": "puzzles",
               "prompt": "Use the minor piece.",
-              "count": 2,
+              "count": 4,
               "tag": "bishopEndgame",
-              "ids": ["03sd0", "0LSCd", "1RsP4", "5awzT", "1QGxx", "5nWgO", "1JiDO", "0ELU5"]
+              "ids": [
+                "08Fo5",
+                "03HtZ",
+                "04Dut",
+                "06qxl",
+                "001cr",
+                "05nOx",
+                "036i1",
+                "03TWS",
+                "03sd0",
+                "0LSCd",
+                "1RsP4",
+                "5awzT"
+              ]
             }
           ]
         },
@@ -339,6 +544,35 @@
             {
               "kind": "read",
               "text": "When ahead, check the promotion square’s colour before trading into such an ending."
+            },
+            {
+              "kind": "play",
+              "prompt": "Here the bishop covers the corner. Promote the pawn.",
+              "fen": "7k/8/8/6KP/8/8/8/2B5 w - - 0 1",
+              "goal": "promote",
+              "limit": 30,
+              "hint": "Drive the king out of the corner with your king and bishop.",
+              "solution": ["g5g6", "c1a3", "h5h6", "h6h7", "a3b2"]
+            },
+            {
+              "kind": "puzzles",
+              "prompt": "Use your bishop.",
+              "count": 4,
+              "tag": "bishopEndgame",
+              "ids": [
+                "03sd0",
+                "0LSCd",
+                "1RsP4",
+                "5awzT",
+                "1QGxx",
+                "5nWgO",
+                "1JiDO",
+                "0ELU5",
+                "14Nem",
+                "0EkC2",
+                "02QUU",
+                "04mzK"
+              ]
             }
           ]
         },
@@ -360,7 +594,7 @@
               "verification": {
                 "engine": "Stockfish 19 Lite",
                 "depth": 14,
-                "checkedAt": "2026-11-03T18:52:16.287Z"
+                "checkedAt": "2026-11-03T19:33:29.768Z"
               }
             },
             {
@@ -369,6 +603,26 @@
               "options": ["To force the king in front of its pawn", "To take the pawn at once"],
               "answer": 0,
               "explanation": "With the king on the promotion square, your own king can step closer."
+            },
+            {
+              "kind": "puzzles",
+              "prompt": "Win with the queen.",
+              "count": 4,
+              "tag": "queenEndgame",
+              "ids": [
+                "24TQO",
+                "94HHV",
+                "00pmn",
+                "02Z4F",
+                "01RPQ",
+                "00XqB",
+                "00T85",
+                "07rGU",
+                "0FZKJ",
+                "07SgE",
+                "048Un",
+                "012K5"
+              ]
             }
           ]
         },
@@ -390,6 +644,24 @@
             {
               "kind": "read",
               "text": "In the middlegame the same bishops favour the attacker, since neither bishop can defend the other’s squares."
+            },
+            {
+              "kind": "puzzles",
+              "prompt": "Find the bishop move.",
+              "count": 4,
+              "tag": "bishopEndgame",
+              "ids": [
+                "0UBZz",
+                "02kCY",
+                "08Fo5",
+                "03HtZ",
+                "04Dut",
+                "06qxl",
+                "001cr",
+                "05nOx",
+                "036i1",
+                "03TWS"
+              ]
             }
           ]
         }
@@ -417,7 +689,7 @@
             {
               "kind": "puzzles",
               "prompt": "Break through.",
-              "count": 3,
+              "count": 4,
               "tag": "kingsideAttack",
               "ids": [
                 "02Goa",
@@ -427,11 +699,11 @@
                 "0Isaq",
                 "00Us6",
                 "00mFI",
-                "03CF0",
                 "00qoE",
                 "08HSO",
-                "09sy0",
-                "01jao"
+                "01jao",
+                "00P6j",
+                "08QKN"
               ]
             }
           ]
@@ -454,9 +726,22 @@
             {
               "kind": "puzzles",
               "prompt": "Attack on the queenside.",
-              "count": 2,
+              "count": 4,
               "tag": "queensideAttack",
-              "ids": ["019Z4", "04gq1", "038Ql", "03qCC", "01244", "02T4Z", "00Lvv", "07sC5"]
+              "ids": [
+                "019Z4",
+                "04gq1",
+                "038Ql",
+                "03qCC",
+                "01244",
+                "02T4Z",
+                "00Lvv",
+                "0QpEg",
+                "2GvPp",
+                "005x9",
+                "08eLX",
+                "0F53J"
+              ]
             }
           ]
         },
@@ -478,7 +763,7 @@
             {
               "kind": "puzzles",
               "prompt": "Find the sacrifice.",
-              "count": 3,
+              "count": 4,
               "tag": "sacrifice",
               "ids": [
                 "08xqh",
@@ -487,12 +772,12 @@
                 "02nP5",
                 "0ZByQ",
                 "0rxWN",
-                "0123H",
                 "1eHU6",
                 "0CWTj",
                 "08SqC",
                 "05Fzd",
-                "01m0O"
+                "01m0O",
+                "1W4Zh"
               ]
             }
           ]
@@ -515,10 +800,9 @@
             {
               "kind": "puzzles",
               "prompt": "Find the defence.",
-              "count": 3,
+              "count": 4,
               "tag": "defensiveMove",
               "ids": [
-                "G81TK",
                 "67bnI",
                 "BMeDx",
                 "FEfPX",
@@ -529,7 +813,8 @@
                 "0CaOX",
                 "ChWsl",
                 "BFUcw",
-                "5Hiuw"
+                "5Hiuw",
+                "3oUkA"
               ]
             }
           ]
@@ -558,9 +843,22 @@
             {
               "kind": "puzzles",
               "prompt": "Find the best move.",
-              "theme": "fork",
-              "level": 4,
-              "count": 3
+              "count": 4,
+              "tag": "fork",
+              "ids": [
+                "00dnp",
+                "03i36",
+                "06gjN",
+                "00yLn",
+                "04BPh",
+                "05MHJ",
+                "03ffj",
+                "04wro",
+                "04aWV",
+                "1ScMI",
+                "02dIS",
+                "03nuH"
+              ]
             }
           ]
         },
@@ -582,11 +880,10 @@
             {
               "kind": "puzzles",
               "prompt": "Stop the threat.",
-              "count": 3,
+              "count": 4,
               "tag": "defensiveMove",
               "ids": [
                 "02W8D",
-                "0DeDy",
                 "0ICJl",
                 "0A2Y3",
                 "09BhL",
@@ -596,7 +893,8 @@
                 "05mkR",
                 "0AiI0",
                 "0HbWu",
-                "01Btz"
+                "01Btz",
+                "03tS5"
               ]
             }
           ]
@@ -619,21 +917,21 @@
             {
               "kind": "puzzles",
               "prompt": "Finish the job.",
-              "count": 3,
+              "count": 4,
               "tag": "crushing",
               "ids": [
                 "05mlU",
-                "06qxl",
                 "02YmM",
-                "0HMBI",
                 "0AO02",
-                "0AiI0",
                 "00QnO",
                 "0G3dE",
                 "000Pw",
                 "08B34",
                 "0ITA9",
-                "0HbWu"
+                "03DuL",
+                "00unD",
+                "04nGz",
+                "00isY"
               ]
             }
           ]
@@ -656,9 +954,22 @@
             {
               "kind": "puzzles",
               "prompt": "See the mate coming.",
-              "theme": "mateIn2",
-              "level": 5,
-              "count": 3
+              "count": 4,
+              "tag": "mateIn2",
+              "ids": [
+                "16jgp",
+                "1nBNY",
+                "4jBEY",
+                "4ACEx",
+                "03etK",
+                "01Zuf",
+                "00k2Z",
+                "0h3d9",
+                "224Lc",
+                "1DT46",
+                "4cDH9",
+                "03wxG"
+              ]
             }
           ]
         }

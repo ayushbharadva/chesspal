@@ -42,7 +42,7 @@ A check of chess.js 1.4.0 showed that `new Chess(fen, { skipValidation: true })`
 
 ## How a lesson works
 
-A lesson is 3 to 7 steps and takes a few minutes. Each step is one of:
+A lesson is 3 to 9 steps and takes a few minutes. Every lesson has at least three things to do on a board, counting each puzzle; a test enforces it. Puzzle steps play four bundled puzzles and keep up to twelve for replays. Each step is one of:
 
 | Step      | What the player does                                                        | How it is checked                                                        |
 | --------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------------ |

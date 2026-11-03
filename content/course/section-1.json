@@ -30,6 +30,13 @@
               "arrows": [["a8", "g8"]]
             },
             {
+              "kind": "tap",
+              "prompt": "Tap the black king.",
+              "fen": "R5k1/5ppp/8/8/8/8/5PPP/6K1 b - - 1 1",
+              "answers": ["g8"],
+              "explanation": "The trapped king is on g8."
+            },
+            {
               "kind": "choice",
               "prompt": "How do you win a game of chess?",
               "options": ["Take every piece", "Checkmate the king", "Reach the far side"],
@@ -42,11 +49,26 @@
               "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
             },
             {
+              "kind": "tap",
+              "prompt": "Tap every white pawn.",
+              "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+              "answers": ["a2", "b2", "c2", "d2", "e2", "f2", "g2", "h2"],
+              "explanation": "The pawns stand in a row on rank 2."
+            },
+            {
               "kind": "choice",
               "prompt": "How many pawns does each side start with?",
               "options": ["Six", "Eight", "Ten"],
               "answer": 1,
               "explanation": "Eight pawns stand in a row in front of the other pieces."
+            },
+            {
+              "kind": "move",
+              "prompt": "Make White’s first move: push the e-pawn two squares.",
+              "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+              "line": ["e2e4"],
+              "hint": "Move the pawn in front of the king forward two squares.",
+              "explanation": "The game has begun."
             }
           ]
         },
@@ -722,6 +744,12 @@
                 "c4e2",
                 "c4f1"
               ]
+            },
+            {
+              "kind": "capture",
+              "prompt": "Take every black piece. A protected piece can take you back.",
+              "fen": "8/2p5/1p2n3/8/8/8/8/4R3 w - - 0 1",
+              "par": 5
             }
           ]
         },
@@ -779,6 +807,18 @@
               "prompt": "Take both pieces without landing where one can take you.",
               "fen": "8/8/1b4n1/8/8/8/8/1R6 w - - 0 1",
               "par": 2
+            },
+            {
+              "kind": "capture",
+              "prompt": "Take every piece safely. Check each square before you land.",
+              "fen": "8/8/3r4/8/n6b/8/8/3Q4 w - - 0 1",
+              "par": 4
+            },
+            {
+              "kind": "capture",
+              "prompt": "Take every piece safely with your knight.",
+              "fen": "8/8/8/1p1p4/5p2/2N5/8/8 w - - 0 1",
+              "par": 4
             }
           ]
         },
@@ -866,6 +906,14 @@
               "hint": "Line the rook up with the king.",
               "explanation": "Check! The king must move.",
               "alsoAccepted": ["a1a8"]
+            },
+            {
+              "kind": "move",
+              "prompt": "Give check with your bishop.",
+              "fen": "4k3/8/8/8/8/8/8/4KB2 w - - 0 1",
+              "line": ["f1b5"],
+              "hint": "Find the diagonal that reaches the king.",
+              "explanation": "Check along the diagonal."
             }
           ]
         },
@@ -964,6 +1012,30 @@
               "fact": {
                 "status": "check"
               }
+            },
+            {
+              "kind": "move",
+              "prompt": "Checkmate in one move.",
+              "fen": "7k/8/6K1/8/8/8/8/R7 w - - 0 1",
+              "line": ["a1a8"],
+              "hint": "Your king already covers g7 and h7.",
+              "explanation": "The rook covers the whole back rank."
+            },
+            {
+              "kind": "move",
+              "prompt": "Checkmate in one move.",
+              "fen": "1k6/8/1K6/8/8/8/8/7R w - - 0 1",
+              "line": ["h1h8"],
+              "hint": "Check along the eighth rank.",
+              "explanation": "Your king covers every square in front of his."
+            },
+            {
+              "kind": "move",
+              "prompt": "Checkmate in one move.",
+              "fen": "3k4/8/3K4/8/8/8/8/7Q w - - 0 1",
+              "line": ["h1h8"],
+              "hint": "The queen can reach the back rank.",
+              "explanation": "Checkmate with the queen."
             }
           ]
         },
@@ -1055,6 +1127,15 @@
               "line": ["e1c1"],
               "hint": "The king goes two squares toward the a1 rook.",
               "explanation": "Queenside castling: the rook lands on d1."
+            },
+            {
+              "kind": "move",
+              "prompt": "Castle on the queenside as Black.",
+              "fen": "r3k3/8/8/8/8/8/8/4K3 b q - 0 1",
+              "line": ["e8c8"],
+              "hint": "The king goes two squares toward the a8 rook.",
+              "explanation": "The rook lands on d8.",
+              "orientation": "b"
             }
           ]
         },
@@ -1075,6 +1156,23 @@
               "line": ["e5d6"],
               "hint": "Your pawn moves to d6, behind the black pawn.",
               "explanation": "Taken en passant."
+            },
+            {
+              "kind": "tap",
+              "prompt": "Black just played d7 to d5. Tap every square your pawn can move to.",
+              "fen": "4k3/8/8/3pP3/8/8/8/4K3 w - d6 0 1",
+              "answers": ["d6", "e6"],
+              "destinationsOf": "e5",
+              "explanation": "Forward to e6, or en passant to d6."
+            },
+            {
+              "kind": "move",
+              "prompt": "White just played e2 to e4. Capture it en passant.",
+              "fen": "4k3/8/8/8/3pP3/8/8/4K3 b - e3 0 1",
+              "line": ["d4e3"],
+              "hint": "Your pawn moves to e3, behind the white pawn.",
+              "explanation": "Black can take en passant too.",
+              "orientation": "b"
             },
             {
               "kind": "read",
@@ -1143,6 +1241,22 @@
               "line": ["e7e8"],
               "hint": "Give check on the back rank.",
               "explanation": "Checkmate, not stalemate."
+            },
+            {
+              "kind": "move",
+              "prompt": "Checkmate in one, and do not stalemate.",
+              "fen": "k7/8/1K6/8/8/8/8/2Q5 w - - 0 1",
+              "line": ["c1c8"],
+              "hint": "A quiet queen move would leave the king stuck but not in check.",
+              "explanation": "Checkmate on the back rank."
+            },
+            {
+              "kind": "move",
+              "prompt": "Checkmate in one, and do not stalemate.",
+              "fen": "7k/8/5K2/6Q1/8/8/8/8 w - - 0 1",
+              "line": ["g5g7"],
+              "hint": "Your king can protect the queen.",
+              "explanation": "The queen is protected, so the king cannot take her."
             }
           ]
         },
@@ -1180,6 +1294,30 @@
               "options": ["A rook", "A knight", "A bishop"],
               "answer": 0,
               "explanation": "King and rook can mate. A lone knight or bishop cannot."
+            },
+            {
+              "kind": "move",
+              "prompt": "You are losing. Take the last black piece to make it a draw.",
+              "fen": "8/8/2k5/8/4b3/4K3/8/8 w - - 0 1",
+              "line": ["e3e4"],
+              "hint": "Your king can take the bishop.",
+              "explanation": "King against king: nobody can win."
+            },
+            {
+              "kind": "move",
+              "prompt": "Take the last pawn to make it a draw.",
+              "fen": "8/8/8/8/2k5/8/4p3/4K3 w - - 0 1",
+              "line": ["e1e2"],
+              "hint": "The pawn is about to promote. Your king can take it.",
+              "explanation": "Only kings are left, so it is a draw."
+            },
+            {
+              "kind": "move",
+              "prompt": "Take the rook to make it a draw.",
+              "fen": "8/8/k7/8/8/8/3r4/4K3 w - - 0 1",
+              "line": ["e1d2"],
+              "hint": "Nothing protects the rook.",
+              "explanation": "Without the rook, Black cannot win."
             }
           ]
         }
@@ -1211,6 +1349,22 @@
               "fen": "8/3n4/8/8/q2R2p1/8/8/8 w - - 0 1",
               "line": ["d4a4"],
               "hint": "Count the points of each piece you can take.",
+              "explanation": "The queen is worth 9."
+            },
+            {
+              "kind": "move",
+              "prompt": "Take the piece worth the most.",
+              "fen": "8/8/3b1r2/2p5/4N3/8/8/8 w - - 0 1",
+              "line": ["e4f6"],
+              "hint": "Count the points: bishop 3, rook 5, pawn 1.",
+              "explanation": "The rook is worth 5."
+            },
+            {
+              "kind": "move",
+              "prompt": "Take the piece worth the most.",
+              "fen": "8/8/5q2/n7/8/2B5/1p6/8 w - - 0 1",
+              "line": ["c3f6"],
+              "hint": "Look along both diagonals.",
               "explanation": "The queen is worth 9."
             },
             {
@@ -1260,6 +1414,14 @@
               "explanation": "e4: a pawn to e4."
             },
             {
+              "kind": "move",
+              "prompt": "Play Bc4.",
+              "fen": "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2",
+              "line": ["f1c4"],
+              "hint": "B is the bishop.",
+              "explanation": "Bc4: bishop to c4."
+            },
+            {
               "kind": "choice",
               "prompt": "What does Bxe5 mean?",
               "options": [
@@ -1306,6 +1468,15 @@
               "hint": "Knights belong on f3 and c3.",
               "explanation": "The knight joins the game.",
               "alsoAccepted": ["b1c3"]
+            },
+            {
+              "kind": "move",
+              "prompt": "Now bring out a bishop.",
+              "fen": "r1bqkbnr/pppp1ppp/2n5/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq - 2 3",
+              "line": ["f1c4"],
+              "hint": "The bishop on f1 has open diagonals now.",
+              "explanation": "Two pieces out, and castling is close.",
+              "alsoAccepted": ["f1b5"]
             },
             {
               "kind": "choice",

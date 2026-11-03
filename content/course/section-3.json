@@ -36,9 +36,22 @@
             {
               "kind": "puzzles",
               "prompt": "Push your pawn through.",
-              "count": 2,
+              "count": 4,
               "tag": "promotion",
-              "ids": ["04Mmx", "4EV7r", "0e8rX", "012tD", "0AEXb", "00wL8", "03AhR", "0PWI1"]
+              "ids": [
+                "0e8rX",
+                "012tD",
+                "0AEXb",
+                "00wL8",
+                "03AhR",
+                "0PWI1",
+                "0A2V0",
+                "0PWeF",
+                "03INy",
+                "03HnL",
+                "001w5",
+                "083S4"
+              ]
             }
           ]
         },
@@ -62,7 +75,7 @@
               "verification": {
                 "engine": "Stockfish 19 Lite",
                 "depth": 14,
-                "checkedAt": "2026-11-03T18:52:14.759Z"
+                "checkedAt": "2026-11-03T19:33:28.009Z"
               }
             },
             {
@@ -93,6 +106,32 @@
                 "e5e6",
                 "e6e7",
                 "e7e8q"
+              ]
+            },
+            {
+              "kind": "play",
+              "prompt": "Your king is on the sixth rank in front of the pawn. Promote it.",
+              "fen": "3k4/8/3K4/3P4/8/8/8/8 w - - 0 1",
+              "goal": "promote",
+              "limit": 38,
+              "hint": "Keep the opposition, then step aside for the pawn.",
+              "solution": [
+                "d6c6",
+                "c6c7",
+                "c7c6",
+                "c6d6",
+                "d6c6",
+                "c6d6",
+                "d6c6",
+                "c6d6",
+                "d6e6",
+                "e6d6",
+                "d6e6",
+                "e6d6",
+                "d6c7",
+                "d5d6",
+                "d6d7",
+                "d7d8q"
               ]
             }
           ]
@@ -151,6 +190,41 @@
                 "g6g7",
                 "g7g8q"
               ]
+            },
+            {
+              "kind": "play",
+              "prompt": "The king is outside the square. Run this pawn home too.",
+              "fen": "8/7k/8/8/8/8/1P6/K7 w - - 0 1",
+              "goal": "promote",
+              "limit": 38,
+              "hint": "A first move of two squares helps.",
+              "solution": [
+                "a1a2",
+                "a2b3",
+                "b3a4",
+                "a4b5",
+                "b5a6",
+                "b2b4",
+                "a6b6",
+                "b6a6",
+                "a6b6",
+                "b6a7",
+                "a7a6",
+                "b4b5",
+                "a6a7",
+                "b5b6",
+                "b6b7",
+                "b7b8q"
+              ]
+            },
+            {
+              "kind": "play",
+              "prompt": "One more race. Promote the pawn.",
+              "fen": "8/8/8/8/P7/8/7k/K7 w - - 0 1",
+              "goal": "promote",
+              "limit": 18,
+              "hint": "Count the moves: the king is one too slow.",
+              "solution": ["a4a5", "a1a2", "a2b3", "a5a6", "a6a7", "a7a8q"]
             }
           ]
         },
@@ -200,9 +274,22 @@
             {
               "kind": "puzzles",
               "prompt": "Push the passed pawn.",
-              "count": 2,
+              "count": 4,
               "tag": "advancedPawn",
-              "ids": ["04Mmx", "4EV7r", "007fJ", "0LSCd", "0e8rX", "012tD", "0AEXb", "06Qto"]
+              "ids": [
+                "007fJ",
+                "06Qto",
+                "0E3Co",
+                "033FN",
+                "057Rd",
+                "09eSu",
+                "0HGzz",
+                "0660Y",
+                "03QN9",
+                "08hQ1",
+                "02hRj",
+                "0H27F"
+              ]
             }
           ]
         },
@@ -226,7 +313,7 @@
               "verification": {
                 "engine": "Stockfish 19 Lite",
                 "depth": 14,
-                "checkedAt": "2026-11-03T18:52:15.449Z"
+                "checkedAt": "2026-11-03T19:33:28.692Z"
               }
             },
             {
@@ -235,6 +322,26 @@
               "options": ["The black king is too far away", "White has more pawns"],
               "answer": 0,
               "explanation": "Both sides have three pawns. The king’s distance decides it."
+            },
+            {
+              "kind": "puzzles",
+              "prompt": "Push your pawns through.",
+              "count": 4,
+              "tag": "advancedPawn",
+              "ids": [
+                "00QBx",
+                "0I1RZ",
+                "083Vf",
+                "01Xg6",
+                "0TF2B",
+                "0Hs2E",
+                "00cy1",
+                "15bJJ",
+                "0CBpH",
+                "02eeX",
+                "0A577",
+                "03I4O"
+              ]
             }
           ]
         }
@@ -262,15 +369,27 @@
               "verification": {
                 "engine": "Stockfish 19 Lite",
                 "depth": 14,
-                "checkedAt": "2026-11-03T18:52:15.449Z"
+                "checkedAt": "2026-11-03T19:33:28.693Z"
               }
             },
             {
               "kind": "puzzles",
               "prompt": "Find the double check.",
-              "count": 2,
+              "count": 4,
               "tag": "doubleCheck",
-              "ids": ["01z4c", "01XlK", "3vVnx", "150kr", "6hEnA", "4KdOQ", "07p1C", "00ZEc"]
+              "ids": [
+                "01z4c",
+                "01XlK",
+                "3vVnx",
+                "150kr",
+                "6hEnA",
+                "4KdOQ",
+                "07p1C",
+                "00ZEc",
+                "02NZR",
+                "00TJN",
+                "05CzU"
+              ]
             }
           ]
         },
@@ -294,7 +413,27 @@
               "prompt": "Remove the defender.",
               "count": 2,
               "tag": "capturingDefender",
-              "ids": ["2VJwa", "0I2G2", "03CF0", "09OO6", "08BaP"]
+              "ids": ["0I2G2", "03CF0", "09OO6", "08BaP", "2VJwa"]
+            },
+            {
+              "kind": "puzzles",
+              "prompt": "Lure the defender away.",
+              "count": 4,
+              "tag": "deflection",
+              "ids": [
+                "0JhTk",
+                "0SSxS",
+                "0Dmvj",
+                "00TFd",
+                "00yIS",
+                "0XXUS",
+                "04F28",
+                "00J1Y",
+                "00xgR",
+                "05UHr",
+                "0Gxzg",
+                "08b0e"
+              ]
             }
           ]
         },
@@ -309,11 +448,9 @@
             {
               "kind": "puzzles",
               "prompt": "Deflect the defender.",
-              "count": 3,
+              "count": 4,
               "tag": "deflection",
               "ids": [
-                "0LSCd",
-                "11iCa",
                 "0BtUA",
                 "2Fqgm",
                 "1JiDO",
@@ -323,15 +460,30 @@
                 "01pgJ",
                 "053Os",
                 "04711",
-                "07Sg1"
+                "07Sg1",
+                "002Mm",
+                "01Ie5"
               ]
             },
             {
               "kind": "puzzles",
               "prompt": "Lure the piece in.",
-              "count": 2,
+              "count": 4,
               "tag": "attraction",
-              "ids": ["001w5", "01Xzx", "01EMd", "00aDl", "00ouE", "0265C", "0i8Bx", "022ib"]
+              "ids": [
+                "01Xzx",
+                "01EMd",
+                "00aDl",
+                "00ouE",
+                "0265C",
+                "0i8Bx",
+                "022ib",
+                "01CQ7",
+                "02g7h",
+                "02GG8",
+                "01rCU",
+                "17Oig"
+              ]
             }
           ]
         },
@@ -353,7 +505,7 @@
             {
               "kind": "puzzles",
               "prompt": "Use the x-ray.",
-              "count": 3,
+              "count": 4,
               "tag": "xRayAttack",
               "ids": [
                 "05Pp0",
@@ -390,7 +542,7 @@
             {
               "kind": "puzzles",
               "prompt": "Find the in-between move.",
-              "count": 3,
+              "count": 4,
               "tag": "intermezzo",
               "ids": [
                 "0NKXY",
@@ -434,7 +586,7 @@
               "verification": {
                 "engine": "Stockfish 19 Lite",
                 "depth": 14,
-                "checkedAt": "2026-11-03T18:52:15.733Z"
+                "checkedAt": "2026-11-03T19:33:28.963Z"
               }
             },
             {
@@ -443,6 +595,26 @@
               "options": ["One still on its first square", "One in the centre"],
               "answer": 0,
               "explanation": "Undeveloped pieces do not help."
+            },
+            {
+              "kind": "puzzles",
+              "prompt": "Find the move that makes your pieces work.",
+              "count": 4,
+              "tag": "endgame",
+              "ids": [
+                "05EKx",
+                "01oaC",
+                "003jv",
+                "06DMB",
+                "02OoP",
+                "0546P",
+                "01RPd",
+                "0KGSB",
+                "0LU04",
+                "0Rvm5",
+                "0104L",
+                "01IFr"
+              ]
             }
           ]
         },
@@ -462,15 +634,28 @@
               "verification": {
                 "engine": "Stockfish 19 Lite",
                 "depth": 14,
-                "checkedAt": "2026-11-03T18:52:15.801Z"
+                "checkedAt": "2026-11-03T19:33:29.032Z"
               }
             },
             {
               "kind": "puzzles",
               "prompt": "Use your rook.",
-              "count": 2,
+              "count": 4,
               "tag": "rookEndgame",
-              "ids": ["01ZiW", "03BFA", "03lZs", "04go3", "06FnM", "041xC", "01Siq", "01qHx"]
+              "ids": [
+                "04Bmg",
+                "01zaV",
+                "04JNz",
+                "00DYf",
+                "047Pv",
+                "002vV",
+                "01OTB",
+                "8olww",
+                "0J1zL",
+                "0yBV5",
+                "0P56F",
+                "0SBt2"
+              ]
             }
           ]
         },
@@ -492,7 +677,7 @@
               "verification": {
                 "engine": "Stockfish 19 Lite",
                 "depth": 14,
-                "checkedAt": "2026-11-03T18:52:15.923Z"
+                "checkedAt": "2026-11-03T19:33:29.154Z"
               }
             },
             {
@@ -504,6 +689,26 @@
               ],
               "answer": 0,
               "explanation": "Pawns that have not moved sit on that rank."
+            },
+            {
+              "kind": "puzzles",
+              "prompt": "Use your rook.",
+              "count": 4,
+              "tag": "rookEndgame",
+              "ids": [
+                "08cbn",
+                "0IuoN",
+                "04bSF",
+                "0ILLu",
+                "0112g",
+                "01BI2",
+                "027Ae",
+                "0KDN6",
+                "0HR3m",
+                "08c7j",
+                "0Kzlh",
+                "00RiT"
+              ]
             }
           ]
         },
@@ -527,7 +732,7 @@
               "verification": {
                 "engine": "Stockfish 19 Lite",
                 "depth": 14,
-                "checkedAt": "2026-11-03T18:52:15.992Z"
+                "checkedAt": "2026-11-03T19:33:29.222Z"
               }
             },
             {
@@ -536,6 +741,13 @@
               "options": ["No black pawn can attack it", "It is in the centre"],
               "answer": 0,
               "explanation": "The c- and e-pawns that could attack it are gone or past it."
+            },
+            {
+              "kind": "puzzles",
+              "prompt": "Find the knight move.",
+              "count": 4,
+              "tag": "knightEndgame",
+              "ids": ["08dpJ", "0GEPS", "04pqI", "0HMBI", "02DwR", "03pLv", "00PvX", "0DybW"]
             }
           ]
         },
@@ -564,6 +776,26 @@
               ],
               "answer": 0,
               "explanation": "Free its diagonals or swap it off."
+            },
+            {
+              "kind": "puzzles",
+              "prompt": "Use your bishop.",
+              "count": 4,
+              "tag": "bishopEndgame",
+              "ids": [
+                "5awzT",
+                "1QGxx",
+                "5nWgO",
+                "0ELU5",
+                "0EkC2",
+                "02QUU",
+                "04mzK",
+                "0EV0E",
+                "0CH0w",
+                "01kSp",
+                "0UBZz",
+                "02kCY"
+              ]
             }
           ]
         }
