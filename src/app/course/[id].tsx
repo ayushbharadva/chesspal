@@ -15,6 +15,7 @@ import {
 import { StarRow } from '@/components/course/lesson-row';
 import { ChoiceStep, ReadStep } from '@/components/course/text-steps';
 import { Icon } from '@/components/icon';
+import { FadeIn } from '@/components/motion';
 import { Screen } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
 import { ProgressBar } from '@/components/ui';
@@ -112,22 +113,26 @@ export default function CourseLessonScreen() {
         }>
         <Stack.Screen options={{ title: '' }} />
         <View style={styles.summary}>
-          <StarRow stars={stars} size={44} />
-          <ThemedText type="display" accessibilityRole="header" style={styles.centered}>
-            {PRAISE[stars]}
-          </ThemedText>
-          <ThemedText themeColor="textSecondary" style={styles.centered}>
-            {lesson.title}
-            {stars < 3 ? ' · Play it again without mistakes for three stars.' : ''}
-          </ThemedText>
+          <StarRow stars={stars} size={44} pop />
+          <FadeIn delay={360} style={styles.summaryText}>
+            <ThemedText type="display" accessibilityRole="header" style={styles.centered}>
+              {PRAISE[stars]}
+            </ThemedText>
+            <ThemedText themeColor="textSecondary" style={styles.centered}>
+              {lesson.title}
+              {stars < 3 ? ' · Play it again without mistakes for three stars.' : ''}
+            </ThemedText>
+          </FadeIn>
         </View>
         {next && (
-          <Card variant="muted">
-            <ThemedText type="overline" themeColor="textSecondary">
-              Up next
-            </ThemedText>
-            <ThemedText type="subtitle">{next.lesson.title}</ThemedText>
-          </Card>
+          <FadeIn delay={480}>
+            <Card variant="muted">
+              <ThemedText type="overline" themeColor="textSecondary">
+                Up next
+              </ThemedText>
+              <ThemedText type="subtitle">{next.lesson.title}</ThemedText>
+            </Card>
+          </FadeIn>
         )}
       </Screen>
     );
@@ -142,12 +147,12 @@ export default function CourseLessonScreen() {
         done ? (
           <>
             {solved?.note && solved.step === run.step && (
-              <View style={styles.note}>
+              <FadeIn key={run.step} style={styles.note}>
                 <Icon name="check" size={20} color="success" strokeWidth={2.6} />
                 <ThemedText type="smallBold" themeColor="success" style={styles.noteText}>
                   {solved.note}
                 </ThemedText>
-              </View>
+              </FadeIn>
             )}
             <Button
               label={run.step === total - 1 ? 'Finish' : 'Continue'}
@@ -168,13 +173,14 @@ export default function CourseLessonScreen() {
           {run.step + 1} / {total}
         </ThemedText>
       </View>
-      <StepView
-        key={`${lesson.id}-${run.step}`}
-        step={step}
-        done={done}
-        replay={replay}
-        onComplete={(slips, note) => setSolved({ step: run.step, slips, note })}
-      />
+      <FadeIn key={`${lesson.id}-${run.step}`}>
+        <StepView
+          step={step}
+          done={done}
+          replay={replay}
+          onComplete={(slips, note) => setSolved({ step: run.step, slips, note })}
+        />
+      </FadeIn>
     </Screen>
   );
 }
@@ -185,5 +191,6 @@ const styles = StyleSheet.create({
   note: { flexDirection: 'row', alignItems: 'center', gap: Spacing.two },
   noteText: { flex: 1 },
   summary: { alignItems: 'center', gap: Spacing.three, paddingTop: Spacing.six },
+  summaryText: { gap: Spacing.three },
   centered: { textAlign: 'center' },
 });

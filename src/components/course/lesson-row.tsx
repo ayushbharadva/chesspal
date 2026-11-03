@@ -1,29 +1,48 @@
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { Icon } from '@/components/icon';
+import { PopIn } from '@/components/motion';
 import { ThemedText } from '@/components/themed-text';
 import { Spacing } from '@/constants/theme';
 import { type LessonStatus, type Stars } from '@/course/path';
 import { useTheme } from '@/hooks/use-theme';
 
 /** One to three stars, filled up to `stars`. */
-export function StarRow({ stars, size = 16 }: { stars: number; size?: number }) {
+export function StarRow({
+  stars,
+  size = 16,
+  pop = false,
+}: {
+  stars: number;
+  size?: number;
+  /** Pops the stars in one after another, as when a lesson is just finished. */
+  pop?: boolean;
+}) {
   return (
     <View
       style={styles.stars}
       accessible
       accessibilityLabel={`${stars} of 3 stars`}
       accessibilityRole="image">
-      {[1, 2, 3].map((place) => (
-        <Icon
-          key={place}
-          name="star"
-          size={size}
-          color={place <= stars ? 'accentFill' : 'textSecondary'}
-          fill={place <= stars ? 'accentFill' : undefined}
-          strokeWidth={1.8}
-        />
-      ))}
+      {[1, 2, 3].map((place) => {
+        const star = (
+          <Icon
+            key={place}
+            name="star"
+            size={size}
+            color={place <= stars ? 'accentFill' : 'textSecondary'}
+            fill={place <= stars ? 'accentFill' : undefined}
+            strokeWidth={1.8}
+          />
+        );
+        return pop ? (
+          <PopIn key={place} delay={place * 120}>
+            {star}
+          </PopIn>
+        ) : (
+          star
+        );
+      })}
     </View>
   );
 }

@@ -4,6 +4,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { readPosition } from '@/chess';
 import { Board } from '@/components/board/board';
 import { Icon } from '@/components/icon';
+import { PopIn, Shake } from '@/components/motion';
 import { ThemedText } from '@/components/themed-text';
 import { type CourseStep } from '@/content/types';
 import { Radius, Spacing } from '@/constants/theme';
@@ -73,33 +74,36 @@ export function ChoiceStep({ step, onComplete, done }: StepProps<'choice'>) {
           const isWrong = wrong.includes(index);
           const isRight = done && index === step.answer;
           return (
-            <Pressable
-              key={option}
-              accessibilityRole="button"
-              accessibilityLabel={option}
-              accessibilityState={{ disabled: done || isWrong, selected: isRight }}
-              onPress={() => choose(index)}
-              style={({ pressed }) => [
-                styles.option,
-                { backgroundColor: theme.surface, borderColor: theme.border },
-                isWrong && { backgroundColor: theme.dangerSurface, borderColor: theme.danger },
-                isRight && { backgroundColor: theme.successSurface, borderColor: theme.success },
-                pressed && styles.pressed,
-              ]}>
-              <ThemedText
-                type="subtitle"
-                style={styles.optionText}
-                themeColor={isWrong ? 'danger' : isRight ? 'success' : 'text'}>
-                {option}
-              </ThemedText>
-              {(isWrong || isRight) && (
-                <Icon
-                  name={isWrong ? 'x' : 'check'}
-                  size={20}
-                  color={isWrong ? 'danger' : 'success'}
-                />
-              )}
-            </Pressable>
+            <Shake key={option} shakeKey={isWrong ? 1 : 0}>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={option}
+                accessibilityState={{ disabled: done || isWrong, selected: isRight }}
+                onPress={() => choose(index)}
+                style={({ pressed }) => [
+                  styles.option,
+                  { backgroundColor: theme.surface, borderColor: theme.border },
+                  isWrong && { backgroundColor: theme.dangerSurface, borderColor: theme.danger },
+                  isRight && { backgroundColor: theme.successSurface, borderColor: theme.success },
+                  pressed && styles.pressed,
+                ]}>
+                <ThemedText
+                  type="subtitle"
+                  style={styles.optionText}
+                  themeColor={isWrong ? 'danger' : isRight ? 'success' : 'text'}>
+                  {option}
+                </ThemedText>
+                {(isWrong || isRight) && (
+                  <PopIn>
+                    <Icon
+                      name={isWrong ? 'x' : 'check'}
+                      size={20}
+                      color={isWrong ? 'danger' : 'success'}
+                    />
+                  </PopIn>
+                )}
+              </Pressable>
+            </Shake>
           );
         })}
       </View>
