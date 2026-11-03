@@ -1,9 +1,12 @@
 import {
   checkingSquares,
+  drawReason,
   isDrillPosition,
+  isSquareAttacked,
   legalMoves,
   playMove,
   readPosition,
+  withTurn,
   type Square,
 } from '@/chess';
 import { puzzles } from '@/content';
@@ -169,18 +172,27 @@ describe('course content', () => {
               ? 'check'
               : 'none';
         expect([name, status]).toEqual([name, fact.status]);
-      } else {
+      } else if ('move' in fact) {
         const legal = legalMoves(fen).some((move) => move.uci === fact.move);
         expect([name, legal]).toEqual([name, fact.legal]);
+      } else if ('square' in fact) {
+        expect([name, isSquareAttacked(fen, fact.square as Square, fact.by)]).toEqual([
+          name,
+          fact.attacked,
+        ]);
+      } else {
+        expect([name, drawReason(fen) !== null]).toEqual([name, fact.drawn]);
       }
     }
   });
 
-  it('plays every move line legally', () => {
+  it('plays every move line legally, and mates where the prompt asks for mate', () => {
     for (const { step, name } of stepsOf('move')) {
       expect([name, step.line.length % 2]).toEqual([name, 1]);
       let fen = step.fen;
+      let beforeLast = fen;
       step.line.forEach((move, ply) => {
+        if (ply === step.line.length - 1) beforeLast = fen;
         if (ply === step.line.length - 1)
           for (const other of step.alsoAccepted ?? [])
             expect([name, legalMoves(fen).some((candidate) => candidate.uci === other)]).toEqual([
@@ -189,6 +201,31 @@ describe('course content', () => {
             ]);
         fen = playMove(fen, move).fen;
       });
+      const finals = [
+        fen,
+        ...(step.alsoAccepted ?? []).map((other) => playMove(beforeLast, other).fen),
+      ];
+      if (/checkmate|mate in one/i.test(step.prompt))
+        for (const final of finals)
+          expect([name, readPosition(final).checkmate]).toEqual([name, true]);
+      else if (/give check/i.test(step.prompt))
+        for (const final of finals)
+          expect([name, readPosition(final).inCheck]).toEqual([name, true]);
+      // A piece moved "to safety" must not stand on a square the other side attacks.
+      if (/to safety/i.test(step.prompt))
+        for (const final of finals) {
+          const moved =
+            (step.alsoAccepted ?? []).find((other) => playMove(beforeLast, other).fen === final) ??
+            step.line.at(-1)!;
+          expect([
+            name,
+            isSquareAttacked(
+              withTurn(final, readPosition(beforeLast).turn),
+              moved.slice(2, 4) as Square,
+              readPosition(final).turn,
+            ),
+          ]).toEqual([name, false]);
+        }
     }
   });
 

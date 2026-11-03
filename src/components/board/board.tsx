@@ -417,48 +417,48 @@ export function Board({
         ))}
       </Animated.View>
       {arrows.length > 0 && boardSize > 0 && (
-        <Svg
+        <View
           pointerEvents="none"
-          width={boardSize}
-          height={boardSize}
           style={styles.floating}
           accessibilityElementsHidden
           importantForAccessibility="no-hide-descendants">
-          {arrows.map(([from, to]) => {
-            const start = squareOrigin(from as Square);
-            const end = squareOrigin(to as Square);
-            const [x1, y1, centerX, centerY] = [start.x, start.y, end.x, end.y].map(
-              (value) => value + squareSize / 2,
-            );
-            const angle = Math.atan2(centerY - y1, centerX - x1);
-            // The tip stops short of the centre so a piece on the target square stays visible.
-            const x2 = centerX - Math.cos(angle) * squareSize * 0.3;
-            const y2 = centerY - Math.sin(angle) * squareSize * 0.3;
-            const head = squareSize * 0.38;
-            // Stop the shaft short so it does not poke through the arrowhead.
-            const tipX = x2 - Math.cos(angle) * head * 0.6;
-            const tipY = y2 - Math.sin(angle) * head * 0.6;
-            const corner = (turn: number) =>
-              `${x2 - Math.cos(angle + turn) * head},${y2 - Math.sin(angle + turn) * head}`;
-            return (
-              <Fragment key={`${from}${to}`}>
-                <Line
-                  x1={x1}
-                  y1={y1}
-                  x2={tipX}
-                  y2={tipY}
-                  stroke={theme.boardArrow}
-                  strokeWidth={squareSize * 0.16}
-                  strokeLinecap="round"
-                />
-                <Polygon
-                  points={`${x2},${y2} ${corner(0.5)} ${corner(-0.5)}`}
-                  fill={theme.boardArrow}
-                />
-              </Fragment>
-            );
-          })}
-        </Svg>
+          <Svg width={boardSize} height={boardSize}>
+            {arrows.map(([from, to]) => {
+              const start = squareOrigin(from as Square);
+              const end = squareOrigin(to as Square);
+              const [x1, y1, centerX, centerY] = [start.x, start.y, end.x, end.y].map(
+                (value) => value + squareSize / 2,
+              );
+              const angle = Math.atan2(centerY - y1, centerX - x1);
+              // The tip stops short of the centre so a piece on the target square stays visible.
+              const x2 = centerX - Math.cos(angle) * squareSize * 0.3;
+              const y2 = centerY - Math.sin(angle) * squareSize * 0.3;
+              const head = squareSize * 0.38;
+              // Stop the shaft short so it does not poke through the arrowhead.
+              const tipX = x2 - Math.cos(angle) * head * 0.6;
+              const tipY = y2 - Math.sin(angle) * head * 0.6;
+              const corner = (turn: number) =>
+                `${x2 - Math.cos(angle + turn) * head},${y2 - Math.sin(angle + turn) * head}`;
+              return (
+                <Fragment key={`${from}${to}`}>
+                  <Line
+                    x1={x1}
+                    y1={y1}
+                    x2={tipX}
+                    y2={tipY}
+                    stroke={theme.boardArrow}
+                    strokeWidth={squareSize * 0.16}
+                    strokeLinecap="round"
+                  />
+                  <Polygon
+                    points={`${x2},${y2} ${corner(0.5)} ${corner(-0.5)}`}
+                    fill={theme.boardArrow}
+                  />
+                </Fragment>
+              );
+            })}
+          </Svg>
+        </View>
       )}
       {sliding && lastMove && movedPiece && (
         <Animated.View

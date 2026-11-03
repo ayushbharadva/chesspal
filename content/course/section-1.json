@@ -155,6 +155,1173 @@
           ]
         }
       ]
+    },
+    {
+      "id": "straight-diagonal",
+      "title": "Straight and diagonal",
+      "lessons": [
+        {
+          "id": "the-rook",
+          "title": "The rook",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "The rook moves in straight lines: up, down or sideways, as far as it likes.",
+              "fen": "8/8/8/8/3R4/8/8/8 w - - 0 1",
+              "arrows": [
+                ["d4", "d8"],
+                ["d4", "d1"],
+                ["d4", "a4"],
+                ["d4", "h4"]
+              ]
+            },
+            {
+              "kind": "stars",
+              "prompt": "Move the rook to the star.",
+              "fen": "8/8/8/8/8/8/4R3/8 w - - 0 1",
+              "stars": ["e7"],
+              "par": 1,
+              "arrows": [["e2", "e7"]]
+            },
+            {
+              "kind": "stars",
+              "prompt": "Collect both stars.",
+              "fen": "8/1R6/8/8/8/8/8/8 w - - 0 1",
+              "stars": ["b3", "g3"],
+              "par": 2
+            },
+            {
+              "kind": "stars",
+              "prompt": "Collect every star in as few moves as you can.",
+              "fen": "8/8/8/8/8/8/8/R7 w - - 0 1",
+              "stars": ["a6", "f6", "f2"],
+              "par": 3
+            },
+            {
+              "kind": "tap",
+              "prompt": "Your own pieces block the rook. Tap every square it can move to.",
+              "fen": "8/8/8/8/8/P7/8/R1N5 w - - 0 1",
+              "answers": ["a2", "b1"],
+              "destinationsOf": "a1",
+              "explanation": "The rook stops before its own pieces."
+            },
+            {
+              "kind": "stars",
+              "prompt": "Now use two rooks.",
+              "fen": "8/6R1/8/8/8/8/1R6/8 w - - 0 1",
+              "stars": ["b7", "g2", "e7", "e2"],
+              "par": 4
+            }
+          ]
+        },
+        {
+          "id": "the-bishop",
+          "title": "The bishop",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "The bishop moves diagonally, as far as it likes.",
+              "fen": "8/8/8/8/3B4/8/8/8 w - - 0 1",
+              "arrows": [
+                ["d4", "h8"],
+                ["d4", "a1"],
+                ["d4", "a7"],
+                ["d4", "g1"]
+              ]
+            },
+            {
+              "kind": "stars",
+              "prompt": "Move the bishop to the star.",
+              "fen": "8/8/8/8/8/8/8/2B5 w - - 0 1",
+              "stars": ["h6"],
+              "par": 1,
+              "arrows": [["c1", "h6"]]
+            },
+            {
+              "kind": "stars",
+              "prompt": "Collect both stars.",
+              "fen": "8/8/8/8/8/8/8/5B2 w - - 0 1",
+              "stars": ["b5", "e8"],
+              "par": 2
+            },
+            {
+              "kind": "read",
+              "text": "A bishop always stays on squares of one colour. This one is on dark squares.",
+              "fen": "8/8/8/8/8/8/8/2B5 w - - 0 1",
+              "marks": ["b2", "a3", "d2", "e3", "f4", "g5", "h6"]
+            },
+            {
+              "kind": "choice",
+              "prompt": "A bishop starts on a light square. Can it ever reach a dark square?",
+              "options": ["Yes", "No"],
+              "answer": 1,
+              "explanation": "A bishop never changes colour."
+            },
+            {
+              "kind": "tap",
+              "prompt": "Tap every square this bishop can reach.",
+              "fen": "8/8/8/3P4/8/8/8/7B w - - 0 1",
+              "answers": ["e4", "f3", "g2"],
+              "destinationsOf": "h1",
+              "explanation": "The pawn on d5 stops it."
+            },
+            {
+              "kind": "stars",
+              "prompt": "Collect every star with your two bishops.",
+              "fen": "8/8/8/8/8/8/8/2B2B2 w - - 0 1",
+              "stars": ["a3", "b5", "g5", "h3"],
+              "par": 6
+            }
+          ]
+        },
+        {
+          "id": "the-queen",
+          "title": "The queen",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "The queen moves like a rook and a bishop together: straight or diagonal, as far as she likes.",
+              "fen": "8/8/8/8/3Q4/8/8/8 w - - 0 1",
+              "arrows": [
+                ["d4", "d8"],
+                ["d4", "h8"],
+                ["d4", "h4"],
+                ["d4", "a1"]
+              ]
+            },
+            {
+              "kind": "stars",
+              "prompt": "Move the queen to the star.",
+              "fen": "8/8/8/8/8/8/8/3Q4 w - - 0 1",
+              "stars": ["h5"],
+              "par": 1
+            },
+            {
+              "kind": "stars",
+              "prompt": "Collect both stars.",
+              "fen": "8/8/8/8/8/8/8/Q7 w - - 0 1",
+              "stars": ["h8", "h2"],
+              "par": 2
+            },
+            {
+              "kind": "tap",
+              "prompt": "Tap every square the queen can reach.",
+              "fen": "8/8/8/8/8/P1P5/8/Q1B5 w - - 0 1",
+              "answers": ["a2", "b1", "b2"],
+              "destinationsOf": "a1",
+              "explanation": "Her own pieces block her on every side."
+            },
+            {
+              "kind": "stars",
+              "prompt": "Collect every star in as few moves as you can.",
+              "fen": "8/8/8/8/8/8/8/3Q4 w - - 0 1",
+              "stars": ["d7", "a4", "g4", "g7"],
+              "par": 4
+            },
+            {
+              "kind": "choice",
+              "prompt": "Which piece is the strongest?",
+              "options": ["The queen", "The rook", "The bishop"],
+              "answer": 0,
+              "explanation": "The queen can move in every direction."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "king-knight",
+      "title": "King and knight",
+      "lessons": [
+        {
+          "id": "the-king",
+          "title": "The king",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "The king moves one square in any direction. He is slow, but he is the most important piece.",
+              "fen": "8/8/8/8/4K3/8/8/8 w - - 0 1",
+              "marks": ["d3", "e3", "f3", "d4", "f4", "d5", "e5", "f5"]
+            },
+            {
+              "kind": "stars",
+              "prompt": "Walk the king to the star.",
+              "fen": "8/8/8/8/8/8/8/4K3 w - - 0 1",
+              "stars": ["e4"],
+              "par": 3
+            },
+            {
+              "kind": "stars",
+              "prompt": "Collect both stars.",
+              "fen": "8/8/8/8/8/8/3K4/8 w - - 0 1",
+              "stars": ["b4", "e5"],
+              "par": 5
+            },
+            {
+              "kind": "tap",
+              "prompt": "Tap every square the king can move to.",
+              "fen": "8/8/8/8/8/8/3PPP2/4K3 w - - 0 1",
+              "answers": ["d1", "f1"],
+              "destinationsOf": "e1",
+              "explanation": "Only the two squares beside him are free."
+            },
+            {
+              "kind": "read",
+              "text": "The king may never move to a square where he could be captured.",
+              "fen": "8/8/8/8/8/8/r7/4K3 w - - 0 1",
+              "marks": ["a2", "b2", "c2", "d2", "e2", "f2", "g2", "h2"]
+            },
+            {
+              "kind": "tap",
+              "prompt": "The black rook guards rank 2. Tap every square the king can move to.",
+              "fen": "8/8/8/8/8/8/r7/4K3 w - - 0 1",
+              "answers": ["d1", "f1"],
+              "destinationsOf": "e1",
+              "explanation": "The king stays on rank 1, out of the rook’s reach."
+            }
+          ]
+        },
+        {
+          "id": "the-knight",
+          "title": "The knight",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "The knight moves in an L: two squares one way, then one to the side.",
+              "fen": "8/8/8/8/3N4/8/8/8 w - - 0 1",
+              "marks": ["c6", "e6", "f5", "f3", "e2", "c2", "b3", "b5"]
+            },
+            {
+              "kind": "tap",
+              "prompt": "Tap every square the knight can reach.",
+              "fen": "8/8/8/8/3N4/8/8/8 w - - 0 1",
+              "answers": ["b3", "b5", "c2", "c6", "e2", "e6", "f3", "f5"],
+              "destinationsOf": "d4",
+              "explanation": "Eight squares, all in an L."
+            },
+            {
+              "kind": "stars",
+              "prompt": "Move the knight to the star.",
+              "fen": "8/8/8/8/8/8/8/1N6 w - - 0 1",
+              "stars": ["c3"],
+              "par": 1
+            },
+            {
+              "kind": "read",
+              "text": "The knight is the only piece that jumps. Pieces in the way do not stop it.",
+              "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+              "arrows": [["g1", "f3"]]
+            },
+            {
+              "kind": "stars",
+              "prompt": "Jump to the star.",
+              "fen": "8/8/8/8/8/8/PPPP4/1N6 w - - 0 1",
+              "stars": ["c3"],
+              "par": 1
+            },
+            {
+              "kind": "stars",
+              "prompt": "Collect both stars.",
+              "fen": "8/8/8/8/8/8/8/6N1 w - - 0 1",
+              "stars": ["f3", "e5"],
+              "par": 2
+            }
+          ]
+        },
+        {
+          "id": "knight-practice",
+          "title": "Knight practice",
+          "steps": [
+            {
+              "kind": "stars",
+              "prompt": "Reach the star. It takes more than one jump.",
+              "fen": "8/8/8/8/8/8/8/N7 w - - 0 1",
+              "stars": ["b5"],
+              "par": 3
+            },
+            {
+              "kind": "tap",
+              "prompt": "Tap every square this knight can reach.",
+              "fen": "7N/8/8/8/8/8/8/8 w - - 0 1",
+              "answers": ["f7", "g6"],
+              "destinationsOf": "h8",
+              "explanation": "In a corner a knight has only two squares."
+            },
+            {
+              "kind": "choice",
+              "prompt": "Where is a knight stronger?",
+              "options": ["In the middle", "In a corner"],
+              "answer": 0,
+              "explanation": "In the middle it reaches eight squares, in a corner only two."
+            },
+            {
+              "kind": "stars",
+              "prompt": "Collect every star.",
+              "fen": "8/8/8/8/3N4/8/8/8 w - - 0 1",
+              "stars": ["e6", "g5", "f3"],
+              "par": 3
+            },
+            {
+              "kind": "stars",
+              "prompt": "Collect every star in as few jumps as you can.",
+              "fen": "8/8/8/8/8/8/8/1N6 w - - 0 1",
+              "stars": ["c3", "e4", "g5", "h7"],
+              "par": 4
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pawns",
+      "title": "Pawns",
+      "lessons": [
+        {
+          "id": "pawn-moves",
+          "title": "How pawns move",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "Pawns move straight forward, one square at a time. They never move backward.",
+              "fen": "8/8/8/8/4P3/8/8/8 w - - 0 1",
+              "arrows": [["e4", "e5"]]
+            },
+            {
+              "kind": "read",
+              "text": "On its first move, a pawn may move one or two squares.",
+              "fen": "8/8/8/8/8/8/4P3/8 w - - 0 1",
+              "arrows": [["e2", "e4"]]
+            },
+            {
+              "kind": "tap",
+              "prompt": "Tap every square this pawn can move to.",
+              "fen": "8/8/8/8/8/8/3P4/8 w - - 0 1",
+              "answers": ["d3", "d4"],
+              "destinationsOf": "d2",
+              "explanation": "From its starting square it may go one or two."
+            },
+            {
+              "kind": "stars",
+              "prompt": "Walk the pawn to both stars.",
+              "fen": "8/8/8/8/8/8/4P3/8 w - - 0 1",
+              "stars": ["e4", "e6"],
+              "par": 3
+            },
+            {
+              "kind": "choice",
+              "prompt": "A piece stands right in front of this pawn. Can the pawn move forward?",
+              "options": ["Yes", "No"],
+              "answer": 1,
+              "explanation": "A pawn is blocked by any piece in front of it.",
+              "fen": "8/8/8/4p3/4P3/8/8/8 w - - 0 1",
+              "fact": {
+                "move": "e4e5",
+                "legal": false
+              }
+            },
+            {
+              "kind": "tap",
+              "prompt": "Tap every square this pawn can move to.",
+              "fen": "8/8/8/8/2n5/8/2P5/8 w - - 0 1",
+              "answers": ["c3"],
+              "destinationsOf": "c2",
+              "explanation": "The knight on c4 blocks the second step."
+            }
+          ]
+        },
+        {
+          "id": "pawn-captures",
+          "title": "How pawns capture",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "Pawns capture one square diagonally forward, never straight ahead.",
+              "fen": "8/8/8/3pp3/4P3/8/8/8 w - - 0 1",
+              "arrows": [["e4", "d5"]]
+            },
+            {
+              "kind": "capture",
+              "prompt": "Capture the black pawn.",
+              "fen": "8/8/8/3p4/4P3/8/8/8 w - - 0 1",
+              "par": 1
+            },
+            {
+              "kind": "tap",
+              "prompt": "Tap every square this pawn can move to.",
+              "fen": "8/8/8/3pbn2/4P3/8/8/8 w - - 0 1",
+              "answers": ["d5", "f5"],
+              "destinationsOf": "e4",
+              "explanation": "It can take on d5 or f5, but e5 is blocked."
+            },
+            {
+              "kind": "capture",
+              "prompt": "Take both black pawns.",
+              "fen": "8/8/8/8/3p2p1/2P2P2/8/8 w - - 0 1",
+              "par": 2
+            },
+            {
+              "kind": "choice",
+              "prompt": "Can this pawn capture the knight in front of it?",
+              "options": ["Yes", "No"],
+              "answer": 1,
+              "explanation": "Pawns only capture diagonally.",
+              "fen": "8/8/8/4n3/4P3/8/8/8 w - - 0 1",
+              "fact": {
+                "move": "e4e5",
+                "legal": false
+              }
+            }
+          ]
+        },
+        {
+          "id": "promotion",
+          "title": "Promotion",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "A pawn that reaches the far side becomes a queen, rook, bishop or knight. Most players pick a queen.",
+              "fen": "8/P7/8/8/8/8/8/8 w - - 0 1",
+              "arrows": [["a7", "a8"]]
+            },
+            {
+              "kind": "move",
+              "prompt": "Promote your pawn to a queen.",
+              "fen": "8/1P6/8/8/8/8/8/8 w - - 0 1",
+              "line": ["b7b8q"],
+              "hint": "Move the pawn forward, then choose the queen.",
+              "explanation": "A new queen!"
+            },
+            {
+              "kind": "choice",
+              "prompt": "What can a pawn never become?",
+              "options": ["A queen", "A king", "A knight"],
+              "answer": 1,
+              "explanation": "There is only ever one king for each side."
+            },
+            {
+              "kind": "stars",
+              "prompt": "Walk the pawn to the end.",
+              "fen": "8/8/8/6P1/8/8/8/8 w - - 0 1",
+              "stars": ["g8"],
+              "par": 3
+            },
+            {
+              "kind": "move",
+              "prompt": "Promote by capturing the rook.",
+              "fen": "2nr4/2P5/8/8/8/8/8/8 w - - 0 1",
+              "line": ["c7d8q"],
+              "hint": "The pawn can take diagonally onto d8.",
+              "explanation": "A pawn can promote while capturing.",
+              "alsoAccepted": ["c7d8r", "c7d8b", "c7d8n"]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "capture-defend",
+      "title": "Capturing and defending",
+      "lessons": [
+        {
+          "id": "capturing",
+          "title": "Capturing",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "To capture, move onto an enemy piece’s square. The captured piece leaves the board.",
+              "fen": "8/8/n7/8/8/8/8/R7 w - - 0 1",
+              "arrows": [["a1", "a6"]]
+            },
+            {
+              "kind": "capture",
+              "prompt": "Take the black knight.",
+              "fen": "8/8/n7/8/8/8/8/R7 w - - 0 1",
+              "par": 1
+            },
+            {
+              "kind": "capture",
+              "prompt": "Take both black pieces.",
+              "fen": "1n6/8/8/8/5p2/8/8/2B5 w - - 0 1",
+              "par": 2
+            },
+            {
+              "kind": "capture",
+              "prompt": "Take every black piece with your queen.",
+              "fen": "8/3r4/8/7n/b7/8/8/3Q4 w - - 0 1",
+              "par": 4
+            },
+            {
+              "kind": "choice",
+              "prompt": "Can you capture your own pieces?",
+              "options": ["Yes", "No"],
+              "answer": 1,
+              "explanation": "You only ever capture the other side’s pieces."
+            }
+          ]
+        },
+        {
+          "id": "protecting",
+          "title": "Protecting your pieces",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "A piece is protected when one of your pieces could take back if it is captured.",
+              "fen": "4r3/8/8/8/4N3/3P4/8/8 w - - 0 1",
+              "arrows": [["d3", "e4"]]
+            },
+            {
+              "kind": "choice",
+              "prompt": "Is the white knight on e4 protected?",
+              "options": ["Yes", "No"],
+              "answer": 0,
+              "explanation": "The d3 pawn could take back on e4.",
+              "fen": "4r3/8/8/8/4N3/3P4/8/8 w - - 0 1",
+              "fact": {
+                "square": "e4",
+                "by": "w",
+                "attacked": true
+              }
+            },
+            {
+              "kind": "choice",
+              "prompt": "Is the white bishop on c4 protected?",
+              "options": ["Yes", "No"],
+              "answer": 1,
+              "explanation": "Nothing white could take back on c4.",
+              "fen": "2r5/8/8/8/2B5/8/4P3/8 w - - 0 1",
+              "fact": {
+                "square": "c4",
+                "by": "w",
+                "attacked": false
+              }
+            },
+            {
+              "kind": "move",
+              "prompt": "The rook attacks your knight. Protect it with a pawn.",
+              "fen": "3r4/8/8/8/3N4/8/2P1P3/8 w - - 0 1",
+              "line": ["c2c3"],
+              "hint": "A pawn protects the squares diagonally in front of it.",
+              "explanation": "Now the knight is protected.",
+              "alsoAccepted": ["e2e3"]
+            },
+            {
+              "kind": "move",
+              "prompt": "Your bishop is attacked. Move it to safety.",
+              "fen": "2r5/8/8/8/2B5/8/8/R7 w - - 0 1",
+              "line": ["c4b5"],
+              "hint": "Find a square the rook does not attack.",
+              "explanation": "Moving away also saves a piece.",
+              "alsoAccepted": [
+                "c4a6",
+                "c4d5",
+                "c4e6",
+                "c4f7",
+                "c4b3",
+                "c4a2",
+                "c4d3",
+                "c4e2",
+                "c4f1"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "safe-squares",
+          "title": "Safe squares",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "Before you move a piece, check that no enemy piece can capture it there.",
+              "fen": "8/8/5n2/8/8/8/8/3Q4 w - - 0 1",
+              "marks": ["d5", "e4", "g4", "h5", "d7", "e8", "g8", "h7"]
+            },
+            {
+              "kind": "choice",
+              "prompt": "Is d5 safe for your queen?",
+              "options": ["Safe", "Not safe"],
+              "answer": 1,
+              "explanation": "The knight on f6 attacks d5.",
+              "fen": "8/8/5n2/8/8/8/8/3Q4 w - - 0 1",
+              "fact": {
+                "square": "d5",
+                "by": "b",
+                "attacked": true
+              }
+            },
+            {
+              "kind": "choice",
+              "prompt": "Is h5 safe for your queen?",
+              "options": ["Safe", "Not safe"],
+              "answer": 1,
+              "explanation": "The knight on f6 attacks h5 too.",
+              "fen": "8/8/5n2/8/8/8/8/3Q4 w - - 0 1",
+              "fact": {
+                "square": "h5",
+                "by": "b",
+                "attacked": true
+              }
+            },
+            {
+              "kind": "choice",
+              "prompt": "Is a4 safe for your queen?",
+              "options": ["Safe", "Not safe"],
+              "answer": 0,
+              "explanation": "No black piece reaches a4.",
+              "fen": "8/8/5n2/8/8/8/8/3Q4 w - - 0 1",
+              "fact": {
+                "square": "a4",
+                "by": "b",
+                "attacked": false
+              }
+            },
+            {
+              "kind": "capture",
+              "prompt": "Take both pieces without landing where one can take you.",
+              "fen": "8/8/1b4n1/8/8/8/8/1R6 w - - 0 1",
+              "par": 2
+            }
+          ]
+        },
+        {
+          "id": "capture-battle",
+          "title": "Capture battle",
+          "steps": [
+            {
+              "kind": "capture",
+              "prompt": "Take every black piece. Never land where one can take you.",
+              "fen": "8/8/8/8/P2r4/6B1/8/8 w - - 0 1",
+              "par": 2
+            },
+            {
+              "kind": "capture",
+              "prompt": "Take every black piece safely.",
+              "fen": "2r5/8/3b4/2P5/8/1P6/2B5/8 w - - 0 1",
+              "par": 3
+            },
+            {
+              "kind": "capture",
+              "prompt": "Take every black piece safely.",
+              "fen": "1r6/8/5n2/3P4/4P1P1/1Q6/8/8 w - - 0 1",
+              "par": 3
+            },
+            {
+              "kind": "capture",
+              "prompt": "Take every black piece safely.",
+              "fen": "2r5/8/3N4/5b2/8/8/PPP5/8 w - - 0 1",
+              "par": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "check-mate",
+      "title": "Check and checkmate",
+      "lessons": [
+        {
+          "id": "check",
+          "title": "Check",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "When a king is attacked, it is in check. The player in check must get out of it at once.",
+              "fen": "4k3/8/8/8/8/8/8/4R1K1 b - - 0 1",
+              "arrows": [["e1", "e8"]]
+            },
+            {
+              "kind": "choice",
+              "prompt": "Is the black king in check?",
+              "options": ["Yes", "No"],
+              "answer": 0,
+              "explanation": "The bishop on b5 attacks the king.",
+              "fen": "4k3/8/8/1B6/8/8/8/6K1 b - - 0 1",
+              "fact": {
+                "status": "check"
+              }
+            },
+            {
+              "kind": "choice",
+              "prompt": "Is the black king in check?",
+              "options": ["Yes", "No"],
+              "answer": 1,
+              "explanation": "The knight on e5 does not reach e8.",
+              "fen": "4k3/8/8/4N3/8/8/8/6K1 b - - 0 1",
+              "fact": {
+                "status": "none"
+              }
+            },
+            {
+              "kind": "tap",
+              "prompt": "Tap the piece giving check.",
+              "fen": "4k3/8/8/1B6/8/2N5/8/R5K1 b - - 0 1",
+              "answers": ["b5"],
+              "explanation": "The bishop on b5 attacks the king.",
+              "checkers": true
+            },
+            {
+              "kind": "move",
+              "prompt": "Give check with your rook.",
+              "fen": "4k3/8/8/8/8/8/8/R5K1 w - - 0 1",
+              "line": ["a1e1"],
+              "hint": "Line the rook up with the king.",
+              "explanation": "Check! The king must move.",
+              "alsoAccepted": ["a1a8"]
+            }
+          ]
+        },
+        {
+          "id": "out-of-check",
+          "title": "Getting out of check",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "There are three ways out of check: move the king, block the check, or capture the piece giving it."
+            },
+            {
+              "kind": "move",
+              "prompt": "Move your king out of check.",
+              "fen": "4r1k1/8/8/8/8/8/8/4K3 w - - 0 1",
+              "line": ["e1d1"],
+              "hint": "Step off the e-file.",
+              "explanation": "The king is safe again.",
+              "alsoAccepted": ["e1d2", "e1f1", "e1f2"]
+            },
+            {
+              "kind": "move",
+              "prompt": "Block the check with your bishop.",
+              "fen": "4r1k1/8/8/8/8/8/8/2B1K3 w - - 0 1",
+              "line": ["c1e3"],
+              "hint": "Put the bishop between the rook and your king.",
+              "explanation": "The bishop blocks the check."
+            },
+            {
+              "kind": "move",
+              "prompt": "Capture the piece giving check.",
+              "fen": "R3r1k1/8/8/8/8/8/8/4K3 w - - 0 1",
+              "line": ["a8e8"],
+              "hint": "Your rook can reach e8.",
+              "explanation": "Taking the attacker ends the check."
+            },
+            {
+              "kind": "choice",
+              "prompt": "Can you ever ignore a check?",
+              "options": ["Yes", "No"],
+              "answer": 1,
+              "explanation": "Every move must leave your king out of check."
+            }
+          ]
+        },
+        {
+          "id": "checkmate",
+          "title": "Checkmate",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "Checkmate is a check with no way out. The game ends and the player who gave it wins.",
+              "fen": "3R2k1/5ppp/8/8/8/8/8/6K1 b - - 1 1",
+              "arrows": [["d8", "g8"]]
+            },
+            {
+              "kind": "choice",
+              "prompt": "Check or checkmate?",
+              "options": ["Check", "Checkmate"],
+              "answer": 1,
+              "explanation": "The king cannot move, block or capture.",
+              "fen": "3R2k1/5ppp/8/8/8/8/8/6K1 b - - 1 1",
+              "fact": {
+                "status": "checkmate"
+              }
+            },
+            {
+              "kind": "choice",
+              "prompt": "Check or checkmate?",
+              "options": ["Check", "Checkmate"],
+              "answer": 0,
+              "explanation": "The king can escape to h7.",
+              "fen": "3R2k1/5pp1/7p/8/8/8/8/6K1 b - - 0 1",
+              "fact": {
+                "status": "check"
+              }
+            },
+            {
+              "kind": "choice",
+              "prompt": "Check or checkmate?",
+              "options": ["Check", "Checkmate"],
+              "answer": 1,
+              "explanation": "The king protects the queen, so she cannot be taken.",
+              "fen": "6k1/6Q1/6K1/8/8/8/8/8 b - - 0 1",
+              "fact": {
+                "status": "checkmate"
+              }
+            },
+            {
+              "kind": "choice",
+              "prompt": "Check or checkmate?",
+              "options": ["Check", "Checkmate"],
+              "answer": 0,
+              "explanation": "The king can take the queen, because nothing protects her.",
+              "fen": "6k1/6Q1/8/8/8/8/8/6K1 b - - 0 1",
+              "fact": {
+                "status": "check"
+              }
+            }
+          ]
+        },
+        {
+          "id": "mate-in-one",
+          "title": "Mate in one",
+          "steps": [
+            {
+              "kind": "move",
+              "prompt": "Checkmate in one move.",
+              "fen": "6k1/5ppp/8/8/8/8/8/R5K1 w - - 0 1",
+              "line": ["a1a8"],
+              "hint": "The king is trapped behind its pawns.",
+              "explanation": "Checkmate on the back rank."
+            },
+            {
+              "kind": "move",
+              "prompt": "Checkmate in one move.",
+              "fen": "k7/8/1K6/8/8/8/8/7Q w - - 0 1",
+              "line": ["h1h8"],
+              "hint": "Your king already covers a7 and b7.",
+              "explanation": "The queen covers the whole eighth rank."
+            },
+            {
+              "kind": "move",
+              "prompt": "Checkmate in one move.",
+              "fen": "4k3/8/4K3/8/8/8/8/7R w - - 0 1",
+              "line": ["h1h8"],
+              "hint": "Your king covers the squares in front of his.",
+              "explanation": "The rook checks along the eighth rank."
+            },
+            {
+              "kind": "move",
+              "prompt": "Checkmate in one move.",
+              "fen": "7k/8/6K1/8/8/8/8/Q7 w - - 0 1",
+              "line": ["a1a8"],
+              "hint": "Check along the back rank.",
+              "explanation": "The king has nowhere to go."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "special-moves",
+      "title": "Special moves and draws",
+      "lessons": [
+        {
+          "id": "castling",
+          "title": "Castling",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "Castling moves the king two squares toward a rook, and the rook jumps to the other side of the king.",
+              "fen": "4k3/8/8/8/8/8/8/4K2R w K - 0 1",
+              "arrows": [
+                ["e1", "g1"],
+                ["h1", "f1"]
+              ]
+            },
+            {
+              "kind": "move",
+              "prompt": "Castle on the kingside: move your king two squares right.",
+              "fen": "r3k2r/pppq1ppp/2npbn2/2b1p3/2B1P3/2NPBN2/PPPQ1PPP/R3K2R w KQkq - 0 1",
+              "line": ["e1g1"],
+              "hint": "Move the king to g1.",
+              "explanation": "Your king is tucked away and your rook joins the game."
+            },
+            {
+              "kind": "read",
+              "text": "You may castle only if the king and rook have not moved, the squares between are empty, and the king does not pass through check."
+            },
+            {
+              "kind": "choice",
+              "prompt": "Can White castle on the kingside here?",
+              "options": ["Yes", "No"],
+              "answer": 1,
+              "explanation": "The bishop attacks f1, and the king may not pass through check.",
+              "fen": "4k3/8/8/8/8/8/6b1/4K2R w K - 0 1",
+              "fact": {
+                "move": "e1g1",
+                "legal": false
+              }
+            },
+            {
+              "kind": "move",
+              "prompt": "Castle on the queenside.",
+              "fen": "4k3/8/8/8/8/8/8/R3K3 w Q - 0 1",
+              "line": ["e1c1"],
+              "hint": "The king goes two squares toward the a1 rook.",
+              "explanation": "Queenside castling: the rook lands on d1."
+            }
+          ]
+        },
+        {
+          "id": "en-passant",
+          "title": "En passant",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "If an enemy pawn moves two squares and lands beside your pawn, you may take it as if it moved one.",
+              "fen": "4k3/8/8/3pP3/8/8/8/4K3 w - d6 0 1",
+              "arrows": [["e5", "d6"]]
+            },
+            {
+              "kind": "move",
+              "prompt": "Black just played d7 to d5. Capture it en passant.",
+              "fen": "4k3/8/8/3pP3/8/8/8/4K3 w - d6 0 1",
+              "line": ["e5d6"],
+              "hint": "Your pawn moves to d6, behind the black pawn.",
+              "explanation": "Taken en passant."
+            },
+            {
+              "kind": "read",
+              "text": "You must do it at once. One move later the chance is gone."
+            },
+            {
+              "kind": "choice",
+              "prompt": "The black pawn reached d5 a while ago. Can you take it en passant now?",
+              "options": ["Yes", "No"],
+              "answer": 1,
+              "explanation": "En passant only works on the very next move.",
+              "fen": "4k3/8/8/3pP3/8/8/8/4K3 w - - 0 1",
+              "fact": {
+                "move": "e5d6",
+                "legal": false
+              }
+            }
+          ]
+        },
+        {
+          "id": "stalemate",
+          "title": "Stalemate",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "If the player to move is not in check but has no legal move, it is stalemate. The game is a draw.",
+              "fen": "7k/5Q2/6K1/8/8/8/8/8 b - - 0 1"
+            },
+            {
+              "kind": "choice",
+              "prompt": "Checkmate or stalemate?",
+              "options": ["Checkmate", "Stalemate"],
+              "answer": 1,
+              "explanation": "The king is not in check, but every square around it is covered.",
+              "fen": "7k/5Q2/6K1/8/8/8/8/8 b - - 0 1",
+              "fact": {
+                "status": "stalemate"
+              }
+            },
+            {
+              "kind": "choice",
+              "prompt": "Checkmate, stalemate or neither?",
+              "options": ["Checkmate", "Stalemate", "Neither"],
+              "answer": 1,
+              "explanation": "Black is not in check and cannot move.",
+              "fen": "k7/2Q5/1K6/8/8/8/8/8 b - - 0 1",
+              "fact": {
+                "status": "stalemate"
+              }
+            },
+            {
+              "kind": "choice",
+              "prompt": "Checkmate, stalemate or neither?",
+              "options": ["Checkmate", "Stalemate", "Neither"],
+              "answer": 0,
+              "explanation": "The king is in check and the queen is protected.",
+              "fen": "k7/1Q6/1K6/8/8/8/8/8 b - - 0 1",
+              "fact": {
+                "status": "checkmate"
+              }
+            },
+            {
+              "kind": "move",
+              "prompt": "Checkmate in one, and do not stalemate.",
+              "fen": "7k/8/5QK1/8/8/8/8/8 w - - 0 1",
+              "line": ["f6f8"],
+              "hint": "Give check on the back rank.",
+              "explanation": "Checkmate, not stalemate."
+            }
+          ]
+        },
+        {
+          "id": "other-draws",
+          "title": "Other draws",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "A game is drawn when neither side has enough pieces to checkmate, such as king against king.",
+              "fen": "8/8/4k3/8/8/2K5/8/8 w - - 0 1"
+            },
+            {
+              "kind": "choice",
+              "prompt": "King and bishop against a king. Can anyone win?",
+              "options": ["Yes", "No, it is a draw"],
+              "answer": 1,
+              "explanation": "A king and one bishop cannot checkmate.",
+              "fen": "8/8/4k3/8/8/2KB4/8/8 w - - 0 1",
+              "fact": {
+                "drawn": true
+              }
+            },
+            {
+              "kind": "read",
+              "text": "It is also a draw if the same position comes up three times, or after 50 moves each without a capture or pawn move."
+            },
+            {
+              "kind": "read",
+              "text": "Players can also agree to a draw at any time."
+            },
+            {
+              "kind": "choice",
+              "prompt": "Which of these can checkmate a lone king, with help from its own king?",
+              "options": ["A rook", "A knight", "A bishop"],
+              "answer": 0,
+              "explanation": "King and rook can mate. A lone knight or bishop cannot."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "playing-game",
+      "title": "Playing a game",
+      "lessons": [
+        {
+          "id": "piece-values",
+          "title": "What pieces are worth",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "Players count pieces in points: pawn 1, knight 3, bishop 3, rook 5, queen 9.",
+              "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+            },
+            {
+              "kind": "choice",
+              "prompt": "Which is worth more?",
+              "options": ["A rook", "A bishop"],
+              "answer": 0,
+              "explanation": "A rook is worth 5, a bishop 3."
+            },
+            {
+              "kind": "move",
+              "prompt": "Take the piece worth the most.",
+              "fen": "8/3n4/8/8/q2R2p1/8/8/8 w - - 0 1",
+              "line": ["d4a4"],
+              "hint": "Count the points of each piece you can take.",
+              "explanation": "The queen is worth 9."
+            },
+            {
+              "kind": "choice",
+              "prompt": "You can give your bishop to win a rook. Is that a good trade?",
+              "options": ["Yes", "No"],
+              "answer": 0,
+              "explanation": "You give 3 points and get 5."
+            },
+            {
+              "kind": "choice",
+              "prompt": "Your queen for their knight?",
+              "options": ["Good trade", "Bad trade"],
+              "answer": 1,
+              "explanation": "You would give 9 points for 3."
+            }
+          ]
+        },
+        {
+          "id": "chess-notation",
+          "title": "Reading chess moves",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "A move is a piece letter and a square: K king, Q queen, R rook, B bishop, N knight. Pawns have no letter."
+            },
+            {
+              "kind": "read",
+              "text": "Nf3 means a knight moves to f3. x means a capture, + means check and # means checkmate.",
+              "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+              "arrows": [["g1", "f3"]]
+            },
+            {
+              "kind": "move",
+              "prompt": "Play Nf3.",
+              "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+              "line": ["g1f3"],
+              "hint": "N is the knight.",
+              "explanation": "Nf3: knight to f3."
+            },
+            {
+              "kind": "move",
+              "prompt": "Play e4.",
+              "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+              "line": ["e2e4"],
+              "hint": "No letter means a pawn.",
+              "explanation": "e4: a pawn to e4."
+            },
+            {
+              "kind": "choice",
+              "prompt": "What does Bxe5 mean?",
+              "options": [
+                "A bishop captures on e5",
+                "A bishop moves to e5 with check",
+                "A pawn moves to e5"
+              ],
+              "answer": 0,
+              "explanation": "x means a capture."
+            },
+            {
+              "kind": "choice",
+              "prompt": "What does # mean?",
+              "options": ["Check", "Checkmate", "A capture"],
+              "answer": 1,
+              "explanation": "# marks checkmate."
+            }
+          ]
+        },
+        {
+          "id": "first-moves",
+          "title": "Your first moves",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "Good first moves take the centre with pawns, bring out knights and bishops, and castle early.",
+              "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+              "marks": ["d4", "e4", "d5", "e5"]
+            },
+            {
+              "kind": "move",
+              "prompt": "Start with a centre pawn.",
+              "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+              "line": ["e2e4"],
+              "hint": "Move a pawn in front of the king or queen.",
+              "explanation": "A centre pawn frees your pieces.",
+              "alsoAccepted": ["d2d4"]
+            },
+            {
+              "kind": "move",
+              "prompt": "Bring out a knight toward the centre.",
+              "fen": "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2",
+              "line": ["g1f3"],
+              "hint": "Knights belong on f3 and c3.",
+              "explanation": "The knight joins the game.",
+              "alsoAccepted": ["b1c3"]
+            },
+            {
+              "kind": "choice",
+              "prompt": "Which move develops a piece?",
+              "options": ["Nf3", "h3", "a4"],
+              "answer": 0,
+              "explanation": "Nf3 brings out a knight and attacks e5.",
+              "fen": "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2"
+            },
+            {
+              "kind": "read",
+              "text": "Section 2 builds on this, and the Openings tab has whole openings to learn."
+            }
+          ]
+        }
+      ]
     }
   ]
 }

@@ -99,7 +99,12 @@ export interface BoardMarks {
 
 /** A position fact a `choice` answer must match, checked by tests against chess.js. */
 export type ChoiceFact =
-  { status: 'check' | 'checkmate' | 'stalemate' | 'none' } | { move: string; legal: boolean };
+  | { status: 'check' | 'checkmate' | 'stalemate' | 'none' }
+  | { move: string; legal: boolean }
+  /** Whether `square` is attacked (or, for your own piece, protected) by `by`. */
+  | { square: string; by: ChessColor; attacked: boolean }
+  /** Whether the position is a draw by itself, such as too little material. */
+  | { drawn: boolean };
 
 export type CourseStep =
   /** One or two short sentences, with an optional board. */
