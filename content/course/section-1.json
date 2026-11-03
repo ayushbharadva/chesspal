@@ -27,7 +27,6 @@
               "kind": "read",
               "text": "You win by trapping the other king so it has no way out. That is called checkmate.",
               "fen": "R5k1/5ppp/8/8/8/8/5PPP/6K1 b - - 1 1",
-              "marks": ["g8"],
               "arrows": [["a8", "g8"]]
             },
             {

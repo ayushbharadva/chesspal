@@ -8,6 +8,7 @@ import {
   type ChessColor,
   type Square,
 } from '@/chess';
+import { puzzles } from '@/content';
 import { type CourseStep } from '@/content/types';
 
 type StepOf<Kind extends CourseStep['kind']> = Extract<CourseStep, { kind: Kind }>;
@@ -111,4 +112,16 @@ export function playOutcome(
 /** After the defender's reply: drawn when the player is left without a move or enough material. */
 export function replyOutcome(fen: string): PlayOutcome {
   return drawReason(fen) || legalMoves(fen).length === 0 ? 'drawn' : 'ongoing';
+}
+
+/** Puzzles for a puzzle step: the theme and level's puzzles, easiest first, moving on with each replay. */
+export function coursePuzzles(step: StepOf<'puzzles'>, replay: number) {
+  const pool = puzzles
+    .filter((puzzle) => puzzle.level === step.level && puzzle.themes.includes(step.theme))
+    .sort((first, second) => first.rating - second.rating || first.id.localeCompare(second.id));
+  const start = (replay * step.count) % pool.length;
+  return Array.from(
+    { length: Math.min(step.count, pool.length) },
+    (_, index) => pool[(start + index) % pool.length],
+  );
 }

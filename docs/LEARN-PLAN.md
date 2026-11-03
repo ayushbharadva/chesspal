@@ -5,7 +5,7 @@ Written 2026-11-03 on `feat/next-features`. A step-by-step course from "what is 
 Progress:
 
 - ✅ P1 Foundations: chess helpers, course types and checks, pure course logic, store and save upgrade
-- ⬜ P2 Screens: five tabs, the Learn path, the lesson player, welcome and Home changes, first unit
+- ✅ P2 Screens: five tabs, the Learn path, the lesson player, welcome and Home changes, first unit
 - ⬜ P3 Section 1 content: Learn the game (rules)
 - ⬜ P4 Section 2 content: Beginner, with the engine check script
 - ⬜ P5 Section 3 content: Intermediate

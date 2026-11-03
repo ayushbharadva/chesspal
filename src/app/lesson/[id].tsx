@@ -48,7 +48,7 @@ export default function LessonScreen() {
     return (
       <Screen>
         <ThemedText>This guide is unavailable.</ThemedText>
-        <Button label="Back to openings" onPress={() => router.replace('/learn')} />
+        <Button label="Back to openings" onPress={() => router.replace('/openings')} />
       </Screen>
     );
   if (!state.hydrated)
@@ -303,7 +303,7 @@ export default function LessonScreen() {
         <Button
           variant="secondary"
           label="Done"
-          onPress={() => (router.canGoBack() ? router.back() : router.replace('/learn'))}
+          onPress={() => (router.canGoBack() ? router.back() : router.replace('/openings'))}
         />
       )}
       {(!practicing || done) && !transfer && (

@@ -288,7 +288,7 @@ it('opens a delayed learning review through Learn in recall mode', async () => {
   useProgressStore.setState({
     lessonProgress: { ...emptyProgress().lessonProgress, attempts: [attempt] },
   });
-  const app = await renderApp('/learn');
+  const app = await renderApp('/openings');
   await fireEvent.press(screen.getByRole('button', { name: 'Review Italian Game: Main line' }));
   expect(app.getPathname()).toBe('/lesson/italian-game');
   expect(screen.getByText('From memory')).toBeOnTheScreen();
@@ -307,7 +307,7 @@ it('distinguishes main-line reviews from two different opening guides', async ()
     completedAt: yesterday.toISOString(),
   }));
   useProgressStore.setState({ lessonProgress: { ...emptyProgress().lessonProgress, attempts } });
-  const app = await renderApp('/learn');
+  const app = await renderApp('/openings');
   expect(screen.getByRole('button', { name: 'Review Italian Game: Main line' })).toBeOnTheScreen();
   await fireEvent.press(
     screen.getByRole('button', { name: 'Review Caro-Kann Defence: Main line' }),
@@ -498,6 +498,8 @@ it('clears a skill round with four independent solves and records it', async () 
 it('moves between tabs and returns to the starting tab after a round', async () => {
   const app = await renderApp();
   await fireEvent.press(screen.getByRole('button', { name: /^Openings, tab/ }));
+  expect(app.getPathname()).toBe('/openings');
+  await fireEvent.press(screen.getByRole('button', { name: /^Learn, tab/ }));
   expect(app.getPathname()).toBe('/learn');
   await fireEvent.press(screen.getByRole('button', { name: /^Puzzles, tab/ }));
   expect(app.getPathname()).toBe('/puzzles');
@@ -732,4 +734,61 @@ describe('settings', () => {
     });
     expect(dark.result.current).toBe('light');
   });
+});
+
+it('sends a new player straight to the first Learn lesson', async () => {
+  useProgressStore.setState({ level: null });
+  const app = await renderApp();
+  await fireEvent.press(screen.getByRole('button', { name: 'Get started' }));
+  await fireEvent.press(screen.getByRole('button', { name: "I'm new to chess" }));
+  expect(app.getPathname()).toBe('/course/goal-of-chess');
+  expect(useProgressStore.getState().level).toBe(1);
+  expect(screen.getByText(/Chess is a game for two players/)).toBeOnTheScreen();
+});
+
+it('plays a Learn lesson to stars and unlocks the next one', async () => {
+  const app = await renderApp('/learn');
+  expect(screen.getByRole('button', { name: 'Squares and their names, locked' })).toBeDisabled();
+  await fireEvent.press(screen.getByRole('button', { name: 'Start lesson: The goal of chess' }));
+  expect(app.getPathname()).toBe('/course/goal-of-chess');
+  const answers = ['White', 'Checkmate the king', 'Eight'];
+  await fireEvent.press(screen.getByRole('button', { name: 'Continue' }));
+  await fireEvent.press(screen.getByRole('button', { name: 'Black' }));
+  await fireEvent.press(screen.getByRole('button', { name: answers[0] }));
+  expect(screen.getByText('White always moves first.')).toBeOnTheScreen();
+  await fireEvent.press(screen.getByRole('button', { name: 'Continue' }));
+  await fireEvent.press(screen.getByRole('button', { name: 'Continue' }));
+  await fireEvent.press(screen.getByRole('button', { name: answers[1] }));
+  await fireEvent.press(screen.getByRole('button', { name: 'Continue' }));
+  await fireEvent.press(screen.getByRole('button', { name: 'Continue' }));
+  await fireEvent.press(screen.getByRole('button', { name: answers[2] }));
+  await fireEvent.press(screen.getByRole('button', { name: 'Finish' }));
+  expect(screen.getByText('Well done!')).toBeOnTheScreen();
+  expect(screen.getByLabelText('2 of 3 stars')).toBeOnTheScreen();
+  await fireEvent.press(screen.getByRole('button', { name: 'Done' }));
+  expect(app.getPathname()).toBe('/learn');
+  expect(screen.getByRole('button', { name: 'The goal of chess, 2 of 3 stars' })).toBeOnTheScreen();
+  await fireEvent.press(
+    screen.getByRole('button', { name: 'Start lesson: Squares and their names' }),
+  );
+  expect(app.getPathname()).toBe('/course/square-names');
+});
+
+it('checks taps on a Learn board and counts a finished lesson toward the streak', async () => {
+  useProgressStore.getState().startCourse('goal-of-chess');
+  for (let step = 0; step < 6; step++) useProgressStore.getState().finishCourseStep(0);
+  useProgressStore.getState().closeCourse();
+  await renderApp('/learn');
+  await fireEvent.press(
+    screen.getByRole('button', { name: 'Start lesson: Squares and their names' }),
+  );
+  await fireEvent.press(screen.getByRole('button', { name: 'Continue' }));
+  await fireEvent.press(screen.getByRole('button', { name: 'Continue' }));
+  await fireEvent.press(screen.getByTestId('square-d5'));
+  expect(screen.getByText('That is d5.')).toBeOnTheScreen();
+  await fireEvent.press(screen.getByTestId('square-e4'));
+  expect(screen.getByText('File e, rank 4.')).toBeOnTheScreen();
+  await act(() => router.back());
+  await fireEvent.press(screen.getByRole('button', { name: /^Home, tab/ }));
+  expect(screen.getByLabelText('Practice streak: 1 day')).toBeOnTheScreen();
 });

@@ -8,14 +8,19 @@ import { type IconName } from '@/components/icon';
 import { LevelPicker } from '@/components/level-picker';
 import { Screen } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
-import { IconBadge } from '@/components/ui';
+import { IconBadge, ListRow } from '@/components/ui';
+import { courseLessons } from '@/content/course';
 import { type PuzzleLevel } from '@/content/types';
 import { Spacing } from '@/constants/theme';
 import { useProgressStore } from '@/progress/store';
 
 const FEATURES: readonly { icon: IconName; title: string; detail: string }[] = [
+  {
+    icon: 'graduation-cap',
+    title: 'Learn step by step',
+    detail: 'From the rules to advanced play.',
+  },
   { icon: 'puzzle', title: 'Solve puzzles', detail: 'Find the best move.' },
-  { icon: 'book-open', title: 'Learn openings', detail: 'Start your games well.' },
   { icon: 'flame', title: 'Build a streak', detail: 'Play a little every day.' },
 ];
 
@@ -23,9 +28,17 @@ export default function WelcomeScreen() {
   const [step, setStep] = useState<'intro' | 'level'>('intro');
   const level = useProgressStore((state) => state.level);
   const setLevel = useProgressStore((state) => state.setLevel);
+  const startCourse = useProgressStore((state) => state.startCourse);
   function choose(chosen: PuzzleLevel) {
     setLevel(chosen);
     router.replace('/');
+  }
+  // New players get the easiest puzzles and go straight to the first lesson.
+  function startFromScratch() {
+    setLevel(1);
+    const first = courseLessons[0].lesson.id;
+    router.replace('/learn');
+    if (startCourse(first)) router.push({ pathname: '/course/[id]', params: { id: first } });
   }
   if (step === 'level')
     return (
@@ -38,6 +51,12 @@ export default function WelcomeScreen() {
             We&apos;ll pick puzzles to match. You can change this any time.
           </ThemedText>
         </View>
+        <ListRow
+          icon="graduation-cap"
+          title="I'm new to chess"
+          detail="Start with how the pieces move"
+          onPress={startFromScratch}
+        />
         <LevelPicker current={level} onChoose={choose} />
       </Screen>
     );

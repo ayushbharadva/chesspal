@@ -65,6 +65,7 @@ export default function RootLayout() {
         <Stack.Screen name="workout" options={{ title: 'Puzzles' }} />
         <Stack.Screen name="result" options={{ title: 'Results' }} />
         <Stack.Screen name="lesson/[id]" options={{ title: '' }} />
+        <Stack.Screen name="course/[id]" options={{ title: '' }} />
         <Stack.Screen name="level" options={{ title: 'Level' }} />
         <Stack.Screen name="skill/[id]" options={{ title: '' }} />
         <Stack.Screen name="vision" options={{ title: 'Square trainer' }} />

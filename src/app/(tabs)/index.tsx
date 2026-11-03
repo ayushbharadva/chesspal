@@ -10,9 +10,11 @@ import { Screen } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
 import { ListRow, Pill, ProgressBar, SectionTitle } from '@/components/ui';
 import { guides } from '@/content';
+import { courseLessons } from '@/content/course';
 import { levelName } from '@/content/levels';
 import { skillById } from '@/content/skills';
 import { Spacing } from '@/constants/theme';
+import { bestStars, nextCourseLesson, sectionFinished } from '@/course/path';
 import { ROUTE_MAX_SCORE, routeTheme } from '@/daily-route/route';
 import { lessonTarget } from '@/learning/lesson';
 import { nextLesson } from '@/learning/next-lesson';
@@ -43,6 +45,17 @@ export default function HomeScreen() {
   const start = useProgressStore((state) => state.startPractice);
   const level = useProgressStore((state) => state.level);
   const routeRuns = useProgressStore((state) => state.routeRuns);
+  const course = useProgressStore((state) => state.courseProgress);
+  const startCourse = useProgressStore((state) => state.startCourse);
+  const best = bestStars(course.results);
+  const nextCourse = nextCourseLesson(best);
+  // Until the rules are learned, the next lesson leads Home; afterwards it is a row.
+  const learnFirst = Boolean(nextCourse) && !sectionFinished(courseLessons[0].section.id, best);
+  const resumingCourse = nextCourse && course.current?.lessonId === nextCourse.lesson.id;
+  function openCourse() {
+    if (nextCourse && startCourse(nextCourse.lesson.id))
+      router.push({ pathname: '/course/[id]', params: { id: nextCourse.lesson.id } });
+  }
   const unfinished = session && session.phase !== 'complete';
   const doneToday = completions.some(
     (completion) => completion.dateKey === today && completion.mode !== 'route',
@@ -50,7 +63,10 @@ export default function HomeScreen() {
   const routeToday = routeRuns.find((run) => run.dateKey === today);
   const routeActive = session?.mode === 'route' && session.phase !== 'complete';
   const reviews = reviewQueue(attempts, today).length;
-  const streak = activityStreak(practiceDates(completions, lessons.attempts), today);
+  const streak = activityStreak(
+    practiceDates(completions, lessons.attempts, course.results),
+    today,
+  );
   const step = nextLesson(lessons, today);
   const target = step ? lessonTarget(step.guideId, step.kind, step.targetId) : undefined;
   const lessonStep = step ? LESSON_STEPS[step.reason] : undefined;
@@ -93,10 +109,37 @@ export default function HomeScreen() {
         {getGreeting(new Date().getHours())}.
       </ThemedText>
 
-      <Card variant="hero">
-        <Pill tone="onHero" icon="puzzle" label={`Today's puzzles · ${levelName(level)}`} />
+      {hydrated && learnFirst && nextCourse && (
+        <Card variant="hero">
+          <Pill tone="onHero" icon="graduation-cap" label={`Learn · ${nextCourse.unit.title}`} />
+          <View style={styles.heroText}>
+            <ThemedText type="title" themeColor="onHero">
+              {nextCourse.lesson.title}
+            </ThemedText>
+            <ThemedText themeColor="onHeroSecondary">
+              Lesson {nextCourse.index + 1} of {courseLessons.length}
+            </ThemedText>
+          </View>
+          <Button
+            variant="accent"
+            icon="play"
+            label={resumingCourse ? 'Continue learning' : 'Start learning'}
+            onPress={openCourse}
+          />
+        </Card>
+      )}
+
+      {/* A plain card while the Learn lesson leads, so Home has one hero. */}
+      <Card variant={learnFirst ? 'surface' : 'hero'}>
+        <Pill
+          tone={learnFirst ? 'accent' : 'onHero'}
+          icon="puzzle"
+          label={`Today's puzzles · ${levelName(level)}`}
+        />
         <View style={styles.heroText}>
-          <ThemedText type="title" themeColor="onHero">
+          <ThemedText
+            type={learnFirst ? 'headline' : 'title'}
+            themeColor={learnFirst ? 'text' : 'onHero'}>
             {unfinished
               ? 'Pick up where you left off'
               : doneToday
@@ -105,7 +148,7 @@ export default function HomeScreen() {
                   ? '10 puzzles for today'
                   : 'Your first puzzles'}
           </ThemedText>
-          <ThemedText themeColor="onHeroSecondary">
+          <ThemedText themeColor={learnFirst ? 'textSecondary' : 'onHeroSecondary'}>
             {unfinished
               ? `${session.results.length} of ${session.puzzleIds.length} done.`
               : doneToday
@@ -116,12 +159,12 @@ export default function HomeScreen() {
         {unfinished && (
           <ProgressBar
             value={session.results.length / session.puzzleIds.length}
-            track="heroOverlay"
-            fill="heroAccent"
+            track={learnFirst ? 'surfaceMuted' : 'heroOverlay'}
+            fill={learnFirst ? 'accentFill' : 'heroAccent'}
           />
         )}
         <Button
-          variant="accent"
+          variant={learnFirst ? 'secondary' : 'accent'}
           icon={hydrated ? 'play' : undefined}
           disabled={!hydrated}
           label={
@@ -144,6 +187,19 @@ export default function HomeScreen() {
           detail="Replay earlier puzzles so they stick"
           onPress={() => openPractice(true)}
         />
+      )}
+
+      {hydrated && !learnFirst && nextCourse && (
+        <>
+          <SectionTitle>Learn</SectionTitle>
+          <ListRow
+            icon="graduation-cap"
+            title={nextCourse.lesson.title}
+            detail={`${nextCourse.unit.title} · lesson ${nextCourse.index + 1}`}
+            accessibilityLabel={resumingCourse ? 'Continue learning' : 'Start learning'}
+            onPress={openCourse}
+          />
+        </>
       )}
 
       <SectionTitle>Daily challenge</SectionTitle>
@@ -183,7 +239,7 @@ export default function HomeScreen() {
               icon="book-open"
               title="All lessons tried"
               detail="Replay any opening to keep it fresh"
-              onPress={() => router.navigate('/learn')}
+              onPress={() => router.navigate('/openings')}
             />
           )}
         </>

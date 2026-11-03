@@ -16,7 +16,8 @@ export function ActivityBar() {
   const theme = useTheme();
   const completions = useProgressStore((state) => state.completions);
   const lessons = useProgressStore((state) => state.lessonProgress.attempts);
-  const dates = practiceDates(completions, lessons);
+  const courseResults = useProgressStore((state) => state.courseProgress.results);
+  const dates = practiceDates(completions, lessons, courseResults);
   const streak = activityStreak(dates, today);
   return (
     <View style={styles.container}>
