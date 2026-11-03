@@ -240,6 +240,20 @@ describe('course content', () => {
     }
   });
 
+  it('has a Stockfish check for every move step after the rules section', () => {
+    // `npm run content:verify-course` writes these; editing a line means running it again.
+    for (const entry of courseLessons) {
+      if (entry.section.id === 'rules') continue;
+      entry.lesson.steps.forEach((step, index) => {
+        if (step.kind !== 'move' || isDrillPosition(step.fen)) return;
+        expect([`${entry.lesson.id} step ${index + 1}`, step.verification?.depth]).toEqual([
+          `${entry.lesson.id} step ${index + 1}`,
+          14,
+        ]);
+      });
+    }
+  });
+
   it('beats the defender in every play step with the stored solution', () => {
     for (const { step, name } of stepsOf('play')) {
       expect([name, isDrillPosition(step.fen)]).toEqual([name, false]);

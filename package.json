@@ -60,6 +60,7 @@
     "test:watch": "jest --watch --watchman=false",
     "content:verify": "tsx scripts/content/build-puzzles.ts",
     "content:verify-openings": "tsx scripts/content/verify-opening-practice.ts --check",
+    "content:verify-course": "tsx scripts/content/verify-course.ts",
     "sounds:build": "tsx scripts/sounds/generate-sounds.ts",
     "pieces:build": "tsx scripts/pieces/build-piece-sets.ts",
     "research:analyze": "node scripts/research/analyze-app.mjs",

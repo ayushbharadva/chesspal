@@ -4,6 +4,8 @@ import { renderHook } from '@testing-library/react-native';
 import { act, cleanup, fireEvent, renderRouter, screen } from 'expo-router/testing-library';
 
 import { guideById, puzzleById, puzzles } from '@/content';
+import { courseLessonById, courseLessons } from '@/content/course';
+import { coursePuzzles } from '@/course/steps';
 import { skillById } from '@/content/skills';
 import { branchForGuide, transfersForGuide } from '@/content/lessons';
 import { answerLesson, beginLesson, lessonAttempt, lessonKey } from '@/learning/lesson';
@@ -791,4 +793,59 @@ it('checks taps on a Learn board and counts a finished lesson toward the streak'
   await act(() => router.back());
   await fireEvent.press(screen.getByRole('button', { name: /^Home, tab/ }));
   expect(screen.getByLabelText('Practice streak: 1 day')).toBeOnTheScreen();
+});
+
+/** Marks every lesson before `lessonId` finished and opens it at `step`. */
+function openCourseAt(lessonId: string, step: number) {
+  const now = new Date();
+  const before = courseLessons.slice(0, courseLessonById[lessonId].index);
+  useProgressStore.setState({
+    courseProgress: {
+      results: before.map((entry) => ({
+        id: entry.lesson.id,
+        lessonId: entry.lesson.id,
+        stars: 3 as const,
+        dateKey: dateKey(now),
+        completedAt: now.toISOString(),
+      })),
+      current: { lessonId, step, slips: 0 },
+    },
+  });
+}
+// Router tests run on fake timers; replies wait on a zero-length timer when motion is off.
+const replyPause = () =>
+  act(() => {
+    jest.advanceTimersByTime(1);
+  });
+
+it('plays a Learn line with a scripted reply, counting a hint as a mistake', async () => {
+  openCourseAt('forks', 1);
+  await renderApp('/course/forks');
+  await fireEvent.press(screen.getByRole('button', { name: 'Hint' }));
+  expect(screen.getByText('Find a knight check that also hits a8.')).toBeOnTheScreen();
+  await move('b5c7');
+  await replyPause();
+  await move('c7a8');
+  expect(screen.getByText('The king had to move, so the rook fell.')).toBeOnTheScreen();
+  await fireEvent.press(screen.getByRole('button', { name: 'Continue' }));
+  expect(useProgressStore.getState().courseProgress.current).toMatchObject({ step: 2, slips: 1 });
+});
+
+it('solves the bundled puzzles inside a Learn lesson', async () => {
+  openCourseAt('queen-mates-close', 2);
+  await renderApp('/course/queen-mates-close');
+  const step = courseLessonById['queen-mates-close'].lesson.steps[2];
+  if (step.kind !== 'puzzles') throw new Error('Expected a puzzle step');
+  const list = coursePuzzles(step, 0);
+  for (const [index, puzzle] of list.entries()) {
+    expect(screen.getByText(`Puzzle ${index + 1} of ${list.length}`)).toBeOnTheScreen();
+    for (let ply = 0; ply < puzzle.moves.length; ply += 2) {
+      await move(puzzle.moves[ply]);
+      await replyPause();
+    }
+    if (index < list.length - 1)
+      await fireEvent.press(screen.getByRole('button', { name: 'Next puzzle' }));
+  }
+  await fireEvent.press(screen.getByRole('button', { name: 'Finish' }));
+  expect(screen.getByText('Perfect!')).toBeOnTheScreen();
 });

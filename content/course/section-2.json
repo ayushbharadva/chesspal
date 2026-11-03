@@ -2,5 +2,761 @@
   "id": "beginner",
   "title": "Beginner",
   "summary": "Win more games with simple ideas.",
-  "units": []
+  "units": [
+    {
+      "id": "opening-basics",
+      "title": "Opening basics",
+      "lessons": [
+        {
+          "id": "take-the-centre",
+          "title": "Take the centre",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "The four centre squares matter most. Pieces there reach more of the board.",
+              "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+              "marks": ["d4", "e4", "d5", "e5"]
+            },
+            {
+              "kind": "move",
+              "prompt": "Play a pawn to the centre.",
+              "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+              "line": ["e2e4"],
+              "hint": "Push the pawn in front of your king or queen two squares.",
+              "explanation": "Your pawn takes a centre square and frees a bishop and the queen.",
+              "alsoAccepted": ["d2d4"],
+              "verification": {
+                "engine": "Stockfish 19 Lite",
+                "depth": 14,
+                "checkedAt": "2026-11-03T18:38:10.178Z"
+              }
+            },
+            {
+              "kind": "choice",
+              "prompt": "Which first move does most for the centre?",
+              "options": ["e4", "a4", "h3"],
+              "answer": 0,
+              "explanation": "e4 takes a centre square; edge pawn moves do little.",
+              "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+            },
+            {
+              "kind": "move",
+              "prompt": "White played e4. Answer in the centre.",
+              "fen": "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1",
+              "line": ["e7e5"],
+              "hint": "Meet the pawn with one of your own.",
+              "explanation": "Black claims the centre too.",
+              "orientation": "b",
+              "alsoAccepted": ["c7c5", "e7e6", "c7c6"],
+              "verification": {
+                "engine": "Stockfish 19 Lite",
+                "depth": 14,
+                "checkedAt": "2026-11-03T18:38:10.497Z"
+              }
+            }
+          ]
+        },
+        {
+          "id": "develop-pieces",
+          "title": "Bring out your pieces",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "Develop your knights and bishops early, toward the centre. Pieces at home do nothing."
+            },
+            {
+              "kind": "move",
+              "prompt": "Bring out a bishop.",
+              "fen": "r1bqkbnr/pppp1ppp/2n5/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq - 2 3",
+              "line": ["f1c4"],
+              "hint": "The bishop on f1 can reach c4 or b5.",
+              "explanation": "The bishop eyes f7, Black’s weak spot.",
+              "alsoAccepted": ["f1b5"],
+              "verification": {
+                "engine": "Stockfish 19 Lite",
+                "depth": 14,
+                "checkedAt": "2026-11-03T18:38:10.655Z"
+              }
+            },
+            {
+              "kind": "choice",
+              "prompt": "Which square is better for this knight?",
+              "options": ["f3", "h3"],
+              "answer": 0,
+              "explanation": "From f3 it reaches the centre. On the edge it reaches less.",
+              "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+              "arrows": [
+                ["g1", "f3"],
+                ["g1", "h3"]
+              ]
+            },
+            {
+              "kind": "move",
+              "prompt": "Develop a knight.",
+              "fen": "rnbqkbnr/ppp2ppp/4p3/3p4/2PP4/8/PP2PPPP/RNBQKBNR w KQkq - 0 3",
+              "line": ["b1c3"],
+              "hint": "Both knights have a good square ready.",
+              "explanation": "Another piece joins the game.",
+              "alsoAccepted": ["g1f3"],
+              "verification": {
+                "engine": "Stockfish 19 Lite",
+                "depth": 14,
+                "checkedAt": "2026-11-03T18:38:10.827Z"
+              }
+            },
+            {
+              "kind": "read",
+              "text": "Try not to move the same piece twice in the opening unless you have to."
+            }
+          ]
+        },
+        {
+          "id": "castle-early",
+          "title": "Castle early",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "Castling tucks your king behind pawns and brings a rook toward the centre. Aim to do it in the first ten moves."
+            },
+            {
+              "kind": "move",
+              "prompt": "Castle now.",
+              "fen": "r1bqk1nr/pppp1ppp/2n5/2b1p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 4 4",
+              "line": ["e1g1"],
+              "hint": "The squares between king and rook are empty.",
+              "explanation": "Your king is safe and the rook is ready.",
+              "verification": {
+                "engine": "Stockfish 19 Lite",
+                "depth": 14,
+                "checkedAt": "2026-11-03T18:38:10.956Z"
+              }
+            },
+            {
+              "kind": "move",
+              "prompt": "Castle as Black.",
+              "fen": "r1bqk2r/pppp1ppp/2n2n2/2b1p3/2B1P3/3P1N2/PPP2PPP/RNBQ1RK1 b kq - 0 5",
+              "line": ["e8g8"],
+              "hint": "Move your king two squares toward the h8 rook.",
+              "explanation": "Both kings are safe now.",
+              "orientation": "b",
+              "verification": {
+                "engine": "Stockfish 19 Lite",
+                "depth": 14,
+                "checkedAt": "2026-11-03T18:38:11.043Z"
+              }
+            },
+            {
+              "kind": "choice",
+              "prompt": "Your king is still in the middle and lines are opening. What should you do?",
+              "options": ["Castle soon", "Walk the king forward", "Push the h-pawn"],
+              "answer": 0,
+              "explanation": "A king in the middle is easy to attack."
+            }
+          ]
+        },
+        {
+          "id": "early-traps",
+          "title": "Early traps to avoid",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "f7 and f2 are guarded only by the king at the start, so early attacks often aim there.",
+              "fen": "r1bqkbnr/pppp1ppp/2n5/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR b KQkq - 3 3",
+              "arrows": [
+                ["h5", "f7"],
+                ["c4", "f7"]
+              ]
+            },
+            {
+              "kind": "move",
+              "prompt": "White threatens mate on f7. Stop it.",
+              "fen": "r1bqkbnr/pppp1ppp/2n5/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR b KQkq - 3 3",
+              "line": ["g7g6"],
+              "hint": "Block the queen, or guard f7 with your queen.",
+              "explanation": "The threat is gone, and the white queen will be chased.",
+              "orientation": "b",
+              "alsoAccepted": ["d8e7"],
+              "verification": {
+                "engine": "Stockfish 19 Lite",
+                "depth": 14,
+                "checkedAt": "2026-11-03T18:38:11.389Z"
+              }
+            },
+            {
+              "kind": "move",
+              "prompt": "Black missed the threat. Checkmate in one.",
+              "fen": "r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 4 4",
+              "line": ["h5f7"],
+              "hint": "Take on f7 with the queen; the bishop protects her.",
+              "explanation": "This is called Scholar’s mate.",
+              "verification": {
+                "engine": "Stockfish 19 Lite",
+                "depth": 14,
+                "checkedAt": "2026-11-03T18:38:11.389Z"
+              }
+            },
+            {
+              "kind": "move",
+              "prompt": "The queen was chased. Defend f7 again.",
+              "fen": "r1bqkbnr/pppp1p1p/2n3p1/4p3/2B1P3/5Q2/PPPP1PPP/RNB1K1NR b KQkq - 1 4",
+              "line": ["g8f6"],
+              "hint": "A knight can block the queen’s path.",
+              "explanation": "f7 is safe and a piece is developed.",
+              "orientation": "b",
+              "alsoAccepted": ["d8e7"],
+              "verification": {
+                "engine": "Stockfish 19 Lite",
+                "depth": 14,
+                "checkedAt": "2026-11-03T18:38:11.530Z"
+              }
+            },
+            {
+              "kind": "move",
+              "prompt": "White weakened the king. Checkmate in one.",
+              "fen": "rnbqkbnr/pppp1ppp/8/4p3/6P1/5P2/PPPPP2P/RNBQKBNR b KQkq - 0 2",
+              "line": ["d8h4"],
+              "hint": "Look at the diagonal from your queen to the white king.",
+              "explanation": "The fastest checkmate there is.",
+              "orientation": "b",
+              "verification": {
+                "engine": "Stockfish 19 Lite",
+                "depth": 14,
+                "checkedAt": "2026-11-03T18:38:11.530Z"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "basic-checkmates",
+      "title": "Basic checkmates",
+      "lessons": [
+        {
+          "id": "two-rooks",
+          "title": "Two rooks",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "Two rooks mate by taking turns: one blocks a rank, the other checks. The king is pushed back to the edge.",
+              "fen": "8/8/8/3k4/8/8/R7/1R4K1 w - - 0 1",
+              "arrows": [["a2", "a4"]]
+            },
+            {
+              "kind": "play",
+              "prompt": "Checkmate with your two rooks.",
+              "fen": "8/3k4/8/8/8/8/R7/1R4K1 w - - 0 1",
+              "goal": "checkmate",
+              "limit": 16,
+              "hint": "Keep one rook in front of the king and check with the other.",
+              "solution": ["a2d2", "g1g2", "b1b6", "g2f3", "d2d5", "b6h6"]
+            },
+            {
+              "kind": "play",
+              "prompt": "Checkmate again, from the middle.",
+              "fen": "8/8/8/3k4/8/8/8/R3K2R w - - 0 1",
+              "goal": "checkmate",
+              "limit": 16,
+              "hint": "Line the rooks up on neighbouring ranks or files.",
+              "solution": ["e1e2", "a1a6", "e2f3", "h1c1", "a6a5", "a5d5"]
+            }
+          ]
+        },
+        {
+          "id": "queen-and-king",
+          "title": "Queen and king",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "With a queen, first box the king toward an edge, then bring your king close to help."
+            },
+            {
+              "kind": "read",
+              "text": "Careful: if the king has no move but is not in check, it is stalemate and only a draw.",
+              "fen": "7k/5Q2/6K1/8/8/8/8/8 b - - 0 1"
+            },
+            {
+              "kind": "play",
+              "prompt": "Checkmate with queen and king.",
+              "fen": "8/8/8/4k3/8/8/8/3QK3 w - - 0 1",
+              "goal": "checkmate",
+              "limit": 20,
+              "hint": "Shrink the king’s box, then walk your king over.",
+              "solution": ["d1d7", "d7d5", "d5e4", "e1f2", "e4a4", "a4h4"]
+            },
+            {
+              "kind": "play",
+              "prompt": "Checkmate again.",
+              "fen": "8/8/3k4/8/8/8/8/4K2Q w - - 0 1",
+              "goal": "checkmate",
+              "limit": 20,
+              "hint": "Stay a knight’s jump away from the king to box it in.",
+              "solution": ["h1h5", "h5d5", "e1d2", "d2c3", "c3b4", "b4b5", "d5d7", "b5a6", "d7b7"]
+            }
+          ]
+        },
+        {
+          "id": "rook-and-king",
+          "title": "Rook and king",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "A rook and king can mate too, but only on the edge, with your king facing theirs.",
+              "fen": "2k5/8/2K5/8/8/8/8/7R w - - 0 1",
+              "arrows": [["h1", "h8"]]
+            },
+            {
+              "kind": "move",
+              "prompt": "Checkmate in one move.",
+              "fen": "2k5/8/2K5/8/8/8/8/7R w - - 0 1",
+              "line": ["h1h8"],
+              "hint": "Your king covers the squares in front of his.",
+              "explanation": "The rook checks along the back rank.",
+              "verification": {
+                "engine": "Stockfish 19 Lite",
+                "depth": 14,
+                "checkedAt": "2026-11-03T18:38:11.530Z"
+              }
+            },
+            {
+              "kind": "play",
+              "prompt": "Checkmate with rook and king.",
+              "fen": "6k1/8/8/8/8/8/8/R3K3 w - - 0 1",
+              "goal": "checkmate",
+              "limit": 25,
+              "hint": "Cut the king off with the rook, then bring your king up.",
+              "solution": ["a1a7", "e1d2", "d2e3", "e3d4", "d4d5", "d5e6", "e6f6", "f6g6", "a7a8"]
+            },
+            {
+              "kind": "play",
+              "prompt": "Checkmate from the middle.",
+              "fen": "8/8/8/4k3/8/8/8/R3K3 w - - 0 1",
+              "goal": "checkmate",
+              "limit": 30,
+              "hint": "Use the rook as a fence and push the king back one rank at a time.",
+              "solution": [
+                "a1d1",
+                "e1e2",
+                "e2e3",
+                "e3f4",
+                "f4f5",
+                "d1d7",
+                "f5e6",
+                "e6f6",
+                "f6g6",
+                "d7d8"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "queen-mates-close",
+          "title": "Queen mates up close",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "A queen right next to the king is checkmate when something protects her.",
+              "fen": "6k1/6Q1/7K/8/8/8/8/8 b - - 0 1"
+            },
+            {
+              "kind": "move",
+              "prompt": "Checkmate in one move.",
+              "fen": "6k1/8/7K/8/8/8/1Q6/8 w - - 0 1",
+              "line": ["b2g7"],
+              "hint": "Put the queen next to the king where your king protects her.",
+              "explanation": "The king cannot take a protected queen.",
+              "verification": {
+                "engine": "Stockfish 19 Lite",
+                "depth": 14,
+                "checkedAt": "2026-11-03T18:38:11.531Z"
+              }
+            },
+            {
+              "kind": "puzzles",
+              "prompt": "Find the checkmate.",
+              "theme": "mateIn1",
+              "level": 1,
+              "count": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tactics-one",
+      "title": "Tactics 1",
+      "lessons": [
+        {
+          "id": "free-pieces",
+          "title": "Free pieces",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "A piece nobody protects is free to take. Before every move, look for one."
+            },
+            {
+              "kind": "move",
+              "prompt": "Black’s queen is unprotected. Take it.",
+              "fen": "rnb1kbnr/pppp1ppp/8/4p1q1/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq - 2 3",
+              "line": ["f3g5"],
+              "hint": "Which of your pieces attacks g5?",
+              "explanation": "A whole queen for free.",
+              "verification": {
+                "engine": "Stockfish 19 Lite",
+                "depth": 14,
+                "checkedAt": "2026-11-03T18:38:11.590Z"
+              }
+            },
+            {
+              "kind": "puzzles",
+              "prompt": "Find the free piece.",
+              "theme": "hangingPiece",
+              "level": 1,
+              "count": 3
+            }
+          ]
+        },
+        {
+          "id": "forks",
+          "title": "Forks",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "A fork attacks two pieces at once. Only one can escape.",
+              "fen": "4k3/2N5/8/8/8/8/8/4K3 b - - 1 1",
+              "arrows": [
+                ["c7", "e8"],
+                ["c7", "a8"]
+              ]
+            },
+            {
+              "kind": "move",
+              "prompt": "Fork the king and rook, then win the rook.",
+              "fen": "r3k3/p5pp/8/1N6/8/8/PP4PP/6K1 w - - 0 1",
+              "line": ["b5c7", "e8d7", "c7a8"],
+              "hint": "Find a knight check that also hits a8.",
+              "explanation": "The king had to move, so the rook fell.",
+              "verification": {
+                "engine": "Stockfish 19 Lite",
+                "depth": 14,
+                "checkedAt": "2026-11-03T18:38:11.659Z"
+              }
+            },
+            {
+              "kind": "puzzles",
+              "prompt": "Find the fork.",
+              "theme": "fork",
+              "level": 1,
+              "count": 3
+            }
+          ]
+        },
+        {
+          "id": "pins",
+          "title": "Pins",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "A pin attacks a piece that cannot move without exposing a bigger one behind it.",
+              "fen": "7k/7p/8/4q3/8/2B5/1P3PPP/6K1 b - - 1 1",
+              "arrows": [["c3", "h8"]]
+            },
+            {
+              "kind": "move",
+              "prompt": "Pin the queen to the king and win it.",
+              "fen": "7k/7p/8/4q3/8/8/1P1B1PPP/6K1 w - - 0 1",
+              "line": ["d2c3", "e5c3", "b2c3"],
+              "hint": "Put your bishop on the same diagonal as the queen and king.",
+              "explanation": "The queen could not get out of the pin.",
+              "verification": {
+                "engine": "Stockfish 19 Lite",
+                "depth": 14,
+                "checkedAt": "2026-11-03T18:38:11.748Z"
+              }
+            },
+            { "kind": "puzzles", "prompt": "Use the pin.", "theme": "pin", "level": 1, "count": 3 }
+          ]
+        },
+        {
+          "id": "skewers",
+          "title": "Skewers",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "A skewer attacks a big piece that must move, then takes the piece behind it."
+            },
+            {
+              "kind": "move",
+              "prompt": "Skewer the king and queen.",
+              "fen": "8/8/2k4q/8/8/8/6PP/R5K1 w - - 0 1",
+              "line": ["a1a6", "c6c7", "a6h6"],
+              "hint": "Check the king along the sixth rank.",
+              "explanation": "The king stepped aside and the queen fell.",
+              "verification": {
+                "engine": "Stockfish 19 Lite",
+                "depth": 14,
+                "checkedAt": "2026-11-03T18:38:11.800Z"
+              }
+            },
+            {
+              "kind": "puzzles",
+              "prompt": "Find the skewer.",
+              "theme": "skewer",
+              "level": 1,
+              "count": 3
+            }
+          ]
+        },
+        {
+          "id": "discovered-attacks",
+          "title": "Discovered attacks",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "Moving one piece can uncover an attack by another piece behind it."
+            },
+            {
+              "kind": "move",
+              "prompt": "Move the knight with check and uncover your bishop.",
+              "fen": "1k5q/8/8/4N3/8/8/1B4PP/6K1 w - - 0 1",
+              "line": ["e5c6", "b8c7", "b2h8"],
+              "hint": "The knight can check from c6, opening the bishop’s diagonal.",
+              "explanation": "Black had to answer the check, so the queen was lost.",
+              "verification": {
+                "engine": "Stockfish 19 Lite",
+                "depth": 14,
+                "checkedAt": "2026-11-03T18:38:11.866Z"
+              }
+            },
+            {
+              "kind": "puzzles",
+              "prompt": "Find the discovered attack.",
+              "theme": "discoveredAttack",
+              "level": 1,
+              "count": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mate-patterns",
+      "title": "Mate patterns",
+      "lessons": [
+        {
+          "id": "back-rank-mate",
+          "title": "Back-rank mate",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "A king behind its own unmoved pawns can be mated on the back rank.",
+              "fen": "3R2k1/5ppp/8/8/8/8/8/6K1 b - - 1 1"
+            },
+            {
+              "kind": "move",
+              "prompt": "Checkmate in one move.",
+              "fen": "6k1/5ppp/8/8/8/8/5PPP/3R2K1 w - - 0 1",
+              "line": ["d1d8"],
+              "hint": "The black king has no escape square.",
+              "explanation": "Back-rank mate.",
+              "verification": {
+                "engine": "Stockfish 19 Lite",
+                "depth": 14,
+                "checkedAt": "2026-11-03T18:38:11.866Z"
+              }
+            },
+            {
+              "kind": "puzzles",
+              "prompt": "Find the back-rank mate.",
+              "theme": "backRankMate",
+              "level": 1,
+              "count": 3
+            }
+          ]
+        },
+        {
+          "id": "smothered-mate",
+          "title": "Smothered mate",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "When a king is surrounded by its own pieces, a knight check can be mate.",
+              "fen": "6rk/5Npp/8/8/8/8/8/6K1 b - - 1 1"
+            },
+            {
+              "kind": "move",
+              "prompt": "Checkmate in one move.",
+              "fen": "6rk/6pp/8/6N1/8/8/8/6K1 w - - 0 1",
+              "line": ["g5f7"],
+              "hint": "Which square lets the knight check the king?",
+              "explanation": "Smothered: the king’s own pieces trap it.",
+              "verification": {
+                "engine": "Stockfish 19 Lite",
+                "depth": 14,
+                "checkedAt": "2026-11-03T18:38:11.866Z"
+              }
+            },
+            {
+              "kind": "move",
+              "prompt": "Checkmate in two: give up your queen first.",
+              "fen": "r6k/6pp/7N/8/8/1Q6/6PP/6K1 w - - 0 1",
+              "line": ["b3g8", "a8g8", "h6f7"],
+              "hint": "A queen check on g8 forces the rook to take.",
+              "explanation": "The rook filled the last escape square.",
+              "verification": {
+                "engine": "Stockfish 19 Lite",
+                "depth": 14,
+                "checkedAt": "2026-11-03T18:38:11.870Z"
+              }
+            }
+          ]
+        },
+        {
+          "id": "two-piece-mates",
+          "title": "Mates with two pieces",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "Most mates use two pieces: one checks, the other covers the escape squares or protects the checker."
+            },
+            {
+              "kind": "move",
+              "prompt": "Checkmate in one move.",
+              "fen": "5rk1/5ppp/8/7Q/8/3B4/8/6K1 w - - 0 1",
+              "line": ["h5h7"],
+              "hint": "Your bishop already aims at h7.",
+              "explanation": "The bishop protects the queen, so the king cannot take her.",
+              "verification": {
+                "engine": "Stockfish 19 Lite",
+                "depth": 14,
+                "checkedAt": "2026-11-03T18:38:11.871Z"
+              }
+            },
+            {
+              "kind": "puzzles",
+              "prompt": "Find the checkmate.",
+              "theme": "mateIn1",
+              "level": 2,
+              "count": 3
+            }
+          ]
+        },
+        {
+          "id": "mate-in-two",
+          "title": "Mate in two",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "In a mate in two, your first move forces a reply that allows mate. Checks are the best place to start."
+            },
+            {
+              "kind": "choice",
+              "prompt": "Which moves should you try first in a mate in two?",
+              "options": ["Checks", "Pawn moves", "King moves"],
+              "answer": 0,
+              "explanation": "Checks leave the other side the fewest replies."
+            },
+            {
+              "kind": "puzzles",
+              "prompt": "Find mate in two.",
+              "theme": "mateIn2",
+              "level": 1,
+              "count": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "stop-blundering",
+      "title": "Stop blundering",
+      "lessons": [
+        {
+          "id": "checks-captures-threats",
+          "title": "Checks, captures, threats",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "Before every move, look for checks, captures and threats: yours and your opponent’s."
+            },
+            {
+              "kind": "choice",
+              "prompt": "What should you look at first before you move?",
+              "options": [
+                "Checks, captures and threats",
+                "Which piece looks nicest",
+                "The fastest move"
+              ],
+              "answer": 0,
+              "explanation": "Forcing moves decide most games between beginners."
+            },
+            {
+              "kind": "puzzles",
+              "prompt": "Spot the capture.",
+              "theme": "hangingPiece",
+              "level": 2,
+              "count": 3
+            }
+          ]
+        },
+        {
+          "id": "attackers-defenders",
+          "title": "Count attackers and defenders",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "If a piece is attacked more times than it is defended, it can be won. Count both before you capture."
+            },
+            {
+              "kind": "choice",
+              "prompt": "The pawn on e5 is attacked twice and defended once. Can you win it?",
+              "options": ["Yes", "No"],
+              "answer": 0,
+              "explanation": "Two attackers beat one defender."
+            },
+            {
+              "kind": "choice",
+              "prompt": "Is the black knight on d5 protected?",
+              "options": ["Yes", "No"],
+              "answer": 0,
+              "explanation": "The e6 pawn protects it.",
+              "fen": "4k3/8/4p3/3n4/8/8/8/3QK3 w - - 0 1",
+              "fact": { "square": "d5", "by": "b", "attacked": true }
+            },
+            {
+              "kind": "puzzles",
+              "prompt": "Win material.",
+              "theme": "hangingPiece",
+              "level": 2,
+              "count": 3
+            }
+          ]
+        },
+        {
+          "id": "trade-when-ahead",
+          "title": "Trade when you are ahead",
+          "steps": [
+            {
+              "kind": "read",
+              "text": "When you have more material, trade pieces. The fewer pieces left, the bigger your extra piece counts."
+            },
+            {
+              "kind": "choice",
+              "prompt": "You are a rook ahead. Should you trade queens?",
+              "options": ["Yes", "No"],
+              "answer": 0,
+              "explanation": "With queens gone, your extra rook is even stronger."
+            },
+            {
+              "kind": "choice",
+              "prompt": "You are a piece behind. Should you trade?",
+              "options": ["Trade as much as I can", "Avoid trades"],
+              "answer": 1,
+              "explanation": "Keep pieces on to look for chances."
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }
