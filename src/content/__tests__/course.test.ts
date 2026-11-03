@@ -9,7 +9,7 @@ import {
   withTurn,
   type Square,
 } from '@/chess';
-import candidates from '../../../content/puzzle-candidates.json';
+import puzzleTags from '../../../content/course/puzzle-tags.json';
 import { puzzleById, puzzles } from '@/content';
 import { courseLessons, courseSections } from '@/content/course';
 import { type CourseStep } from '@/content/types';
@@ -23,13 +23,8 @@ import {
 } from '@/course/steps';
 
 const SQUARE = /^[a-h][1-8]$/;
-/** Every Lichess tag of each bundled puzzle's source row, by Lichess puzzle id. */
-const sourceTags = Object.fromEntries(
-  (candidates as { PuzzleId: string; Themes: string }[]).map((row) => [
-    row.PuzzleId,
-    row.Themes.split(' '),
-  ]),
-) as Record<string, string[]>;
+/** Lichess tags of the puzzles course steps pick by tag, copied from their source rows. */
+const sourceTags = puzzleTags as Record<string, string[]>;
 const JARGON = /\b(independent|independently|recall|transfer|scaffold|assisted)\b/i;
 /** Short, plain copy (decision 0007): a prompt or a sentence or two, never a paragraph. */
 const MAX_TEXT = 160;
