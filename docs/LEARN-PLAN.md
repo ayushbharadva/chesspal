@@ -10,7 +10,7 @@ Progress:
 - ✅ P4 Section 2 content: Beginner, with the engine check script
 - ✅ P5 Section 3 content: Intermediate
 - ✅ P6 Section 4 content: Advanced
-- ⬜ P7 Docs, device checklist and final visual pass
+- ✅ P7 Docs, device checklist and final visual pass
 
 Each phase ends with `npm run check` passing, a visual check at mobile width in light and dark mode, and one commit. Nothing is pushed.
 
@@ -42,7 +42,7 @@ A check of chess.js 1.4.0 showed that `new Chess(fen, { skipValidation: true })`
 
 ## How a lesson works
 
-A lesson is 4 to 10 steps and takes 2 to 5 minutes. Each step is one of:
+A lesson is 3 to 7 steps and takes a few minutes. Each step is one of:
 
 | Step      | What the player does                                                        | How it is checked                                                        |
 | --------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
