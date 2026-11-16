@@ -3,6 +3,7 @@ import { Tabs } from 'expo-router/js-tabs';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Icon, type IconName } from '@/components/icon';
+import { SHOW_OPENINGS } from '@/constants/features';
 import { Fonts, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { useProgressStore } from '@/progress/store';
@@ -45,6 +46,7 @@ export default function TabLayout() {
           name={tab.name}
           options={{
             title: tab.title,
+            href: tab.name === 'openings' && !SHOW_OPENINGS ? null : undefined,
             tabBarIcon: ({ focused }) => (
               <Icon
                 name={tab.icon}

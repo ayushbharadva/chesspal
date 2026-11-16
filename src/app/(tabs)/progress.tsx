@@ -12,6 +12,7 @@ import { guides, puzzleById } from '@/content';
 import { levelName } from '@/content/levels';
 import { skillById, skillUnits } from '@/content/skills';
 import { bestRun } from '@/daily-route/route';
+import { SHOW_OPENINGS } from '@/constants/features';
 import { Radius, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { courseLessons } from '@/content/course';
@@ -136,14 +137,18 @@ export default function ProgressScreen() {
         )}
       </Card>
 
-      <SectionTitle>Openings</SectionTitle>
-      <Card>
-        <View style={styles.list}>
-          <Stat label="Guides practiced" value={`${learned} / ${guides.length}`} />
-          <Stat label="Lines played from memory" value={String(fromMemory)} />
-          <Stat label="New positions solved" value={String(newPositions)} last />
-        </View>
-      </Card>
+      {SHOW_OPENINGS && (
+        <>
+          <SectionTitle>Openings</SectionTitle>
+          <Card>
+            <View style={styles.list}>
+              <Stat label="Guides practiced" value={`${learned} / ${guides.length}`} />
+              <Stat label="Lines played from memory" value={String(fromMemory)} />
+              <Stat label="New positions solved" value={String(newPositions)} last />
+            </View>
+          </Card>
+        </>
+      )}
 
       <SectionTitle>More</SectionTitle>
       <Card>

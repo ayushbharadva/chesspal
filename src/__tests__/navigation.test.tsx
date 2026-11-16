@@ -17,6 +17,14 @@ import { flushProgressWrites, PROGRESS_KEY } from '@/storage/storage';
 import { dateKey } from '@/utils/date-key';
 import { reviewQueue, reviewSchedule } from '@/workout/review';
 
+// Openings are switched off in the app; most tests still cover them, so they start switched on.
+let mockShowOpenings = true;
+jest.mock('@/constants/features', () => ({
+  get SHOW_OPENINGS() {
+    return mockShowOpenings;
+  },
+}));
+
 async function renderApp(initialUrl = '/') {
   const rendering = renderRouter('./src/app', { initialUrl });
   await rendering;
@@ -27,6 +35,7 @@ async function move(uci: string) {
   await fireEvent.press(screen.getByTestId(`square-${uci.slice(2, 4)}`));
 }
 beforeEach(async () => {
+  mockShowOpenings = true;
   await flushProgressWrites();
   await AsyncStorage.clear();
   await useProgressStore.persist.rehydrate();
@@ -495,6 +504,17 @@ it('clears a skill round with four independent solves and records it', async () 
   await fireEvent.press(screen.getByRole('button', { name: 'Next: at your level' }));
   expect(app.getPathname()).toBe('/workout');
   expect(screen.getByText('Find the best move')).toBeOnTheScreen();
+});
+
+it('hides openings from the tabs, Home and Progress while they are switched off', async () => {
+  mockShowOpenings = false;
+  await renderApp();
+  expect(screen.getByRole('button', { name: /^Learn, tab/ })).toBeOnTheScreen();
+  expect(screen.queryByRole('button', { name: /^Openings, tab/ })).toBeNull();
+  expect(screen.queryByText('Openings')).toBeNull();
+  await fireEvent.press(screen.getByRole('button', { name: /^Progress, tab/ }));
+  expect(screen.getByText('Current streak')).toBeOnTheScreen();
+  expect(screen.queryByText('Guides practiced')).toBeNull();
 });
 
 it('moves between tabs and returns to the starting tab after a round', async () => {

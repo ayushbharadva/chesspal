@@ -16,6 +16,7 @@ import { skillById } from '@/content/skills';
 import { Spacing } from '@/constants/theme';
 import { bestStars, nextCourseLesson, sectionFinished } from '@/course/path';
 import { ROUTE_MAX_SCORE, routeTheme } from '@/daily-route/route';
+import { SHOW_OPENINGS } from '@/constants/features';
 import { lessonTarget } from '@/learning/lesson';
 import { nextLesson } from '@/learning/next-lesson';
 import { practiceDates } from '@/progress/activity';
@@ -224,7 +225,7 @@ export default function HomeScreen() {
         onPress={() => router.push('/daily-route')}
       />
 
-      {hydrated && (
+      {hydrated && SHOW_OPENINGS && (
         <>
           <SectionTitle>Openings</SectionTitle>
           {step && target && lessonStep ? (
