@@ -23,6 +23,7 @@ import {
 import { strengthsAndWeaknesses } from '@/skills/themes';
 import { bestScore } from '@/vision/coordinates';
 import { reviewQueue } from '@/workout/review';
+import { ROUND_SIZE } from '@/workout/session';
 
 export default function PuzzlesScreen() {
   const today = useLocalDate();
@@ -70,7 +71,7 @@ export default function PuzzlesScreen() {
         detail={
           unfinished
             ? `${session.results.length} of ${session.puzzleIds.length} done`
-            : '10 puzzles from every theme'
+            : `${ROUND_SIZE} puzzles from every theme`
         }
         onPress={() => openPractice()}
       />

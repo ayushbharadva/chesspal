@@ -6,7 +6,7 @@ Automated tests and a production Android bundle export verify shared logic and p
 
 Use the preview APK from `npx eas-cli@latest build --platform android --profile preview` after the owner has configured the Expo project and credentials. Record the build commit, Android version, device and date with each result. The current app remains a draft; none of the items below is marked passed.
 
-- [ ] Fresh install: the welcome screen and level question appear once, Home loads, Start puzzles opens a board, all ten puzzles complete, and Results shows the correct without-help count. Done returns to the tab the round started from.
+- [ ] Fresh install: the welcome screen and level question appear once, Home loads, Start puzzles opens a board, all five puzzles complete, and Results shows the correct without-help count. Done returns to the tab the round started from.
 - [ ] Tabs: Home, Learn, Puzzles, Openings and Progress switch without losing scroll or progress; five labels fit a small phone; the tab bar hides during rounds and lessons and clears the home indicator.
 - [ ] Learn: "I'm new to chess" on first launch opens lesson one. Play a lesson of each step kind (read, choice, tap, stars, capture, move with a reply, play against the defender, puzzles); a wrong tap or move shakes the board, a hint costs a star, and finishing unlocks the next lesson. Leave a lesson part-way, force-close and reopen: it resumes at the same step. Stars, arrows and marked squares are readable on both board colours in both themes, and the long path scrolls smoothly.
 - [ ] Learning path: Home → the opening row opens the demonstration; Play completes practice with hints; return Home → the row now offers a new position. Demonstration viewing alone does not create activity.

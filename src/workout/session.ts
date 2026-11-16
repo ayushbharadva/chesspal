@@ -8,7 +8,10 @@ import { pickRung } from '@/skills/ladder';
 import { strengthsAndWeaknesses } from '@/skills/themes';
 import { reviewQueue, reviewSchedule } from '@/workout/review';
 
-/** Level offsets for fresh puzzles: a fifth easier, a fifth harder, the rest at level (2/6/2 of ten). */
+/** Puzzles in a practice or review round. Skill rounds and the daily challenge set their own length. */
+export const ROUND_SIZE = 5;
+
+/** Level offsets for fresh puzzles: a fifth easier, a fifth harder, the rest at level (1/3/1 of five). */
 export function levelMix(slots: number) {
   const outer = Math.round(slots / 5);
   return [
@@ -21,7 +24,7 @@ export function levelMix(slots: number) {
 export function selectPuzzles(
   attempts: Attempt[],
   mode: PracticeMode,
-  count = 10,
+  count = ROUND_SIZE,
   localDate = dateKey(),
   level: PuzzleLevel = 1,
 ) {
@@ -122,7 +125,7 @@ export function makeSession(
 ): Session {
   const puzzleIds = skill
     ? (pickRung(skill.theme, skill.level, skill.rung, skill.run) ?? [])
-    : selectPuzzles(attempts, mode, 10, localDate, level);
+    : selectPuzzles(attempts, mode, ROUND_SIZE, localDate, level);
   return {
     id,
     mode,

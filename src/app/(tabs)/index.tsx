@@ -24,6 +24,7 @@ import { useLocalDate } from '@/hooks/use-local-date';
 import { activityStreak } from '@/utils/date-key';
 import { getGreeting } from '@/utils/greeting';
 import { reviewQueue } from '@/workout/review';
+import { ROUND_SIZE } from '@/workout/session';
 
 /** What the next opening step asks of the player, as the row's detail and spoken label. */
 const LESSON_STEPS = {
@@ -145,7 +146,7 @@ export default function HomeScreen() {
               : doneToday
                 ? 'Done for today!'
                 : attempts.length
-                  ? '10 puzzles for today'
+                  ? `${ROUND_SIZE} puzzles for today`
                   : 'Your first puzzles'}
           </ThemedText>
           <ThemedText themeColor={learnFirst ? 'textSecondary' : 'onHeroSecondary'}>

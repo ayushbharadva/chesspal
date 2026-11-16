@@ -8,6 +8,7 @@ import {
   makeSession,
   nextPuzzle,
   relevelSession,
+  ROUND_SIZE,
   selectPuzzles,
 } from '@/workout/session';
 
@@ -100,8 +101,8 @@ it.each(['daily', 'extra'] as const)(
 
 it('keeps future reviews out of a workout while unseen puzzles are available', () => {
   const attempted = puzzles.slice(0, 20).map((puzzle) => attempt(puzzle.id, true));
-  const ids = selectPuzzles(attempted, 'daily', 10, today);
-  expect(ids).toHaveLength(10);
+  const ids = selectPuzzles(attempted, 'daily', ROUND_SIZE, today);
+  expect(ids).toHaveLength(5);
   expect(ids.every((id) => !attempted.some((item) => item.puzzleId === id))).toBe(true);
   expect(makeSession('dated', 'daily', today, attempted).puzzleIds).toEqual(ids);
 });
@@ -203,8 +204,8 @@ describe('relevelSession', () => {
     const finished = nextPuzzle({ ...played, results: [result] });
     const releveled = relevelSession(finished, [result], 5);
     expect(releveled.puzzleIds[0]).toBe(first.id);
-    expect(levels(releveled.puzzleIds.slice(1))).toEqual([4, 4, 5, 5, 5, 5, 5, 5, 5]);
-    expect(new Set(releveled.puzzleIds).size).toBe(10);
+    expect(levels(releveled.puzzleIds.slice(1))).toEqual([4, 5, 5, 5]);
+    expect(new Set(releveled.puzzleIds).size).toBe(5);
     expect(releveled.index).toBe(1);
   });
 

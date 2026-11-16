@@ -42,22 +42,22 @@ afterEach(async () => {
   await flushProgressWrites();
 });
 
-it('completes ten real puzzles, shows results and allows more practice', async () => {
+it('completes five real puzzles, shows results and allows more practice', async () => {
   const app = await renderApp();
   await fireEvent.press(screen.getByRole('button', { name: 'Start puzzles' }));
   expect(app.getPathname()).toBe('/workout');
-  expect(screen.getByText('Puzzle 1 of 10 · Beginner')).toBeOnTheScreen();
-  for (let index = 0; index < 10; index += 1) {
+  expect(screen.getByText('Puzzle 1 of 5 · Beginner')).toBeOnTheScreen();
+  for (let index = 0; index < 5; index += 1) {
     const session = useProgressStore.getState().currentSession!;
     const puzzle = puzzleById[session.puzzleIds[index]];
     for (let ply = 0; ply < puzzle.moves.length; ply += 2) await move(puzzle.moves[ply]);
     await fireEvent.press(
-      screen.getByRole('button', { name: index === 9 ? 'See results' : 'Next puzzle' }),
+      screen.getByRole('button', { name: index === 4 ? 'See results' : 'Next puzzle' }),
     );
   }
   expect(app.getPathname()).toBe('/result');
-  expect(screen.getByText('10 / 10')).toBeOnTheScreen();
-  expect(useProgressStore.getState().attempts).toHaveLength(10);
+  expect(screen.getByText('5 / 5')).toBeOnTheScreen();
+  expect(useProgressStore.getState().attempts).toHaveLength(5);
   await fireEvent.press(screen.getByRole('button', { name: 'More puzzles' }));
   expect(app.getPathname()).toBe('/workout');
   expect(useProgressStore.getState().currentSession!.mode).toBe('extra');
@@ -469,7 +469,7 @@ it('welcomes a new player, asks for a level once, then starts practice at that l
   expect(app.getPathname()).toBe('/workout');
   expect(screen.getByText('Tap or drag a piece to move.')).toBeOnTheScreen();
   const ids = useProgressStore.getState().currentSession!.puzzleIds;
-  expect(ids.map((id) => puzzleById[id].level)).toEqual([1, 1, 2, 2, 2, 2, 2, 2, 3, 3]);
+  expect(ids.map((id) => puzzleById[id].level)).toEqual([1, 2, 2, 2, 3]);
 });
 
 it('clears a skill round with four independent solves and records it', async () => {
@@ -533,7 +533,7 @@ it('moves between tabs and returns to the starting tab after a round', async () 
 it('switches the unstarted puzzles of a round in progress when the level changes', async () => {
   const app = await renderApp();
   await fireEvent.press(screen.getByRole('button', { name: 'Start puzzles' }));
-  expect(screen.getByText('Puzzle 1 of 10 · Beginner')).toBeOnTheScreen();
+  expect(screen.getByText('Puzzle 1 of 5 · Beginner')).toBeOnTheScreen();
   const first = useProgressStore.getState().currentSession!;
   const puzzle = puzzleById[first.puzzleIds[0]];
   for (let ply = 0; ply < puzzle.moves.length; ply += 2) await move(puzzle.moves[ply]);
@@ -545,12 +545,10 @@ it('switches the unstarted puzzles of a round in progress when the level changes
   await fireEvent.press(screen.getByRole('button', { name: /^Expert:/ }));
   const session = useProgressStore.getState().currentSession!;
   expect(session.puzzleIds[0]).toBe(puzzle.id);
-  expect(session.puzzleIds.slice(1).map((id) => puzzleById[id].level)).toEqual([
-    4, 4, 5, 5, 5, 5, 5, 5, 5,
-  ]);
+  expect(session.puzzleIds.slice(1).map((id) => puzzleById[id].level)).toEqual([4, 5, 5, 5]);
   await fireEvent.press(screen.getByRole('button', { name: 'Resume puzzles' }));
   expect(app.getPathname()).toBe('/workout');
-  expect(screen.getByText('Puzzle 2 of 10 · Hard')).toBeOnTheScreen();
+  expect(screen.getByText('Puzzle 2 of 5 · Hard')).toBeOnTheScreen();
 });
 
 it('plays a timed square trainer round and saves the score', async () => {
