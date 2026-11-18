@@ -5,6 +5,7 @@ import { act, cleanup, fireEvent, renderRouter, screen } from 'expo-router/testi
 
 import { guideById, puzzleById, puzzles } from '@/content';
 import { courseLessonById, courseLessons } from '@/content/course';
+import { refutationsAt } from '@/content/refutations';
 import { coursePuzzles } from '@/course/steps';
 import { skillById } from '@/content/skills';
 import { branchForGuide, transfersForGuide } from '@/content/lessons';
@@ -21,6 +22,7 @@ import { useProgressStore } from '@/progress/store';
 import { emptyProgress } from '@/progress/types';
 import { flushProgressWrites, PROGRESS_KEY } from '@/storage/storage';
 import { dateKey } from '@/utils/date-key';
+import { wrongMoveMessage } from '@/workout/refutation';
 import { reviewQueue, reviewSchedule } from '@/workout/review';
 
 // Openings are switched off in the app; most tests still cover them, so they start switched on.
@@ -107,6 +109,28 @@ it('starts an unfinished puzzle over after leaving the round, keeping its help',
   expect(app.getPathname()).toBe('/workout');
   expect(screen.queryByText('Hint 1')).not.toBeOnTheScreen();
   expect(screen.queryByText('Not quite. Try again.')).not.toBeOnTheScreen();
+});
+
+it('answers a wrong move with the reply and a reason, then resets the puzzle', async () => {
+  await renderApp();
+  await fireEvent.press(screen.getByRole('button', { name: 'Start puzzles' }));
+  const session = useProgressStore.getState().currentSession!;
+  const puzzle = puzzleById[session.puzzleIds[0]];
+  const [wrong, refutation] = [...refutationsAt(puzzle.id, 0)!].find(
+    ([, candidate]) => candidate.reply,
+  )!;
+  await move(wrong);
+  expect(screen.getByText('Not quite.')).toBeOnTheScreen();
+  expect(screen.getByText(wrongMoveMessage(puzzle, 0, wrong, refutation, true))).toBeOnTheScreen();
+  expect(screen.queryByRole('button', { name: 'Hint' })).not.toBeOnTheScreen();
+  expect(screen.queryByRole('button', { name: 'Back one move' })).not.toBeOnTheScreen();
+  await fireEvent.press(screen.getByRole('button', { name: 'Reset' }));
+  expect(screen.queryByText('Not quite.')).not.toBeOnTheScreen();
+  for (let ply = 0; ply < puzzle.moves.length; ply += 2) await move(puzzle.moves[ply]);
+  expect(useProgressStore.getState().attempts.at(-1)).toMatchObject({
+    puzzleId: puzzle.id,
+    independent: false,
+  });
 });
 
 it('records solution replay as assisted and keeps completion idempotent', async () => {

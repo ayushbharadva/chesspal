@@ -1,6 +1,7 @@
 import { puzzleById, puzzles, type Puzzle } from '@/content';
 import { planRoute, ROUTE_FORKS } from '@/daily-route/route';
 import { clampLevel, SKILL_THEMES, type PuzzleLevel, type SkillTheme } from '@/content/types';
+import { refutationFor } from '@/content/refutations';
 import { checkPuzzleMove } from '@/content/validate';
 import { type Attempt, type PracticeMode, type Session } from '@/progress/types';
 import { dateKey } from '@/utils/date-key';
@@ -139,6 +140,7 @@ export function makeSession(
     usedHelp: false,
     mistakes: 0,
     lastWrong: false,
+    wrongMove: null,
     acceptedFen: null,
     acceptedMove: null,
     results: [],
@@ -179,12 +181,22 @@ export function applyAnswer(session: Session, puzzle: Puzzle, move: string): Ses
   if (
     session.phase !== 'solve' ||
     session.route?.choosing ||
+    session.wrongMove ||
     session.puzzleIds[session.index] !== puzzle.id
   )
     return session;
   const result = checkPuzzleMove(puzzle, session.ply, move);
   if (!result.fen) return session;
-  if (!result.correct) return { ...session, mistakes: session.mistakes + 1, lastWrong: true };
+  if (!result.correct) {
+    // Keep the move on the board for the stored reply; without one, shake and try again.
+    const refuted = refutationFor(puzzle.id, session.ply, move) !== undefined;
+    return {
+      ...session,
+      mistakes: session.mistakes + 1,
+      lastWrong: !refuted,
+      wrongMove: refuted ? move : null,
+    };
+  }
   if (result.complete)
     return {
       ...session,
@@ -207,15 +219,26 @@ export function attemptFor(session: Session, puzzleId: string, now: Date): Attem
 }
 
 /**
- * Starts the current puzzle again from its first move, as when the player leaves a round part-way.
- * Mistakes and help stay, so starting over never turns a helped solve into one without help.
+ * Starts the current puzzle again from its first move: Reset after a wrong move, or leaving a round
+ * part-way. Mistakes and help stay, so starting over never turns a helped solve into one without help.
  */
 export function restartPuzzle(session: Session): Session {
   if (session.phase !== 'solve' && session.phase !== 'replay') return session;
   // Show answer counts as help, so a replay starts over as a replay.
   const hintsShown = session.phase === 'replay' ? 3 : 0;
-  if (session.ply === 0 && session.hintsShown === hintsShown && !session.lastWrong) return session;
-  return { ...session, ply: 0, hintsShown, lastWrong: false };
+  if (
+    session.ply === 0 &&
+    session.hintsShown === hintsShown &&
+    !session.lastWrong &&
+    !session.wrongMove
+  )
+    return session;
+  return { ...session, ply: 0, hintsShown, lastWrong: false, wrongMove: null };
+}
+
+/** Back one move: takes the wrong move back so the player can try again from the same position. */
+export function undoWrongMove(session: Session): Session {
+  return session.wrongMove ? { ...session, wrongMove: null } : session;
 }
 
 export function nextPuzzle(session: Session): Session {
@@ -230,6 +253,7 @@ export function nextPuzzle(session: Session): Session {
     usedHelp: false,
     mistakes: 0,
     lastWrong: false,
+    wrongMove: null,
     acceptedFen: null,
     acceptedMove: null,
     ...(session.route

@@ -25,7 +25,10 @@ export interface Session {
   hintsShown: number;
   usedHelp: boolean;
   mistakes: number;
+  /** A wrong move with no stored reply: shake and say try again. */
   lastWrong: boolean;
+  /** A wrong move on the board with the opponent's stored reply, until Back one move or Reset. */
+  wrongMove: string | null;
   acceptedFen: string | null;
   acceptedMove: string | null;
   results: Attempt[];

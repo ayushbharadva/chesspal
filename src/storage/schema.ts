@@ -333,6 +333,17 @@ export function validProgress(value: unknown): value is SavedProgress {
       /^[a-h][1-8][a-h][1-8][qrbn]?$/.test(session.acceptedMove))
   ))
     return false;
+  // Saves from before wrong-move replies have no `wrongMove`; a shown one belongs to a puzzle in play.
+  if (
+    session.wrongMove !== undefined &&
+    session.wrongMove !== null &&
+    !(
+      typeof session.wrongMove === 'string' &&
+      /^[a-h][1-8][a-h][1-8][qrbn]?$/.test(session.wrongMove) &&
+      session.phase === 'solve'
+    )
+  )
+    return false;
   if (
     session.mode === 'skill'
       ? !record(session.skill) ||
@@ -391,10 +402,14 @@ export function decodeProgress(raw: string) {
   const { state } = envelope;
   const skill = state.currentSession?.skill;
   // Skill rounds saved before levels were recorded were played at the saved level.
+  const saved = state.currentSession && {
+    ...state.currentSession,
+    wrongMove: state.currentSession.wrongMove ?? null,
+  };
   const session =
-    skill && skill.level === undefined
-      ? { ...state.currentSession!, skill: { ...skill, level: state.level ?? 1 } }
-      : state.currentSession;
+    saved && skill && skill.level === undefined
+      ? { ...saved, skill: { ...skill, level: state.level ?? 1 } }
+      : saved;
   return {
     ...envelope,
     state: {

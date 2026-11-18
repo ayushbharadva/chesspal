@@ -38,6 +38,7 @@ import {
   nextPuzzle,
   relevelSession,
   restartPuzzle,
+  undoWrongMove,
 } from '@/workout/session';
 
 interface ProgressStore extends SavedProgress {
@@ -57,6 +58,10 @@ interface ProgressStore extends SavedProgress {
   hint: () => void;
   reveal: () => void;
   replayStep: (delta: number) => void;
+  /** After a wrong move: take it back and try again from the same position. */
+  undoWrongMove: () => void;
+  /** After a wrong move: start the puzzle again from its first move. */
+  resetPuzzle: () => void;
   continuePractice: () => boolean;
   /** Leaving a round part-way: the unfinished puzzle starts again from its first move. */
   leavePractice: () => void;
@@ -174,7 +179,7 @@ export const useProgressStore = create<ProgressStore>()(
       },
       hint() {
         const session = get().currentSession;
-        if (session?.phase === 'solve' && !session.route?.choosing)
+        if (session?.phase === 'solve' && !session.route?.choosing && !session.wrongMove)
           set({
             currentSession: {
               ...session,
@@ -186,7 +191,7 @@ export const useProgressStore = create<ProgressStore>()(
       },
       reveal() {
         const session = get().currentSession;
-        if (session?.phase === 'solve' && !session.route?.choosing)
+        if (session?.phase === 'solve' && !session.route?.choosing && !session.wrongMove)
           set({
             currentSession: {
               ...session,
@@ -217,6 +222,14 @@ export const useProgressStore = create<ProgressStore>()(
             },
           });
         } else set({ currentSession: { ...session, ply } });
+      },
+      undoWrongMove() {
+        const session = get().currentSession;
+        if (session) set({ currentSession: undoWrongMove(session) });
+      },
+      resetPuzzle() {
+        const session = get().currentSession;
+        if (session?.wrongMove) set({ currentSession: restartPuzzle(session) });
       },
       continuePractice() {
         const session = get().currentSession;
