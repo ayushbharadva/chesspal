@@ -6,7 +6,7 @@ Progress:
 
 - ✅ P0 Measure: script written, 50-puzzle sample run, depth and data format chosen (results below)
 - ✅ P1 Full run: `content/refutations.json` committed (results below)
-- [ ] P2 Content access and content tests
+- ✅ P2 Content access and content tests
 - [ ] P3 Pure logic, saved-session upgrade and unit tests
 - [ ] P4 Screen, icon buttons and navigation tests
 - [ ] P5 Docs and decision record
@@ -115,15 +115,15 @@ Checked in this order; the first match wins.
 
 ## Phases
 
-| #   | Phase                    | Done when                                                                                                                                                                                |
-| --- | ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| P0  | Measure                  | ✅ Results above                                                                                                                                                                         |
-| P1  | Full run                 | `content/refutations.json` committed; a second run with the progress file deleted gives the same file                                                                                    |
-| P2  | Content access and tests | Every wrong move in every puzzle has an entry; every reply is legal in its position (chess.js); reasons match the board (a `mate` reply really mates, a `capture` reply really captures) |
-| P3  | Logic and save upgrade   | Unit tests: wrong move, back one move, reset, ignored input while wrong, missing data fallback, old saves, resume mid-reply; checkmate-theme wording                                     |
-| P4  | Screen                   | Navigation test: wrong move → reply → reason → Back one move and Reset (found by label); visual check at mobile width in light and dark                                                  |
-| P5  | Docs                     | Decision 0011; MVP.md, README, content-pipeline.md, DEVICE-TESTING.md and CLAUDE.md app map updated                                                                                      |
-| P6  | Android device           | Cold start time with the new file; the pause and reply feel right; icons readable in both themes; TalkBack reads both buttons                                                            |
+| #   | Phase                    | Done when                                                                                                                                                                                                                                                                                                                                                                          |
+| --- | ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| P0  | Measure                  | ✅ Results above                                                                                                                                                                                                                                                                                                                                                                   |
+| P1  | Full run                 | `content/refutations.json` committed; a second run with the progress file deleted gives the same file                                                                                                                                                                                                                                                                              |
+| P2  | Content access and tests | ✅ `src/content/refutations.ts` and `src/content/__tests__/refutations.test.ts`: every wrong move of every puzzle stored and nothing else; replies legal and reasons matching the board for every eighth puzzle (playing all 164,296 replies took 130 s; the sample takes 9 s). Both tests fail on a deliberately broken entry. Android bundle before P3 imports the file: 4.3 MB. |
+| P3  | Logic and save upgrade   | Unit tests: wrong move, back one move, reset, ignored input while wrong, missing data fallback, old saves, resume mid-reply; checkmate-theme wording                                                                                                                                                                                                                               |
+| P4  | Screen                   | Navigation test: wrong move → reply → reason → Back one move and Reset (found by label); visual check at mobile width in light and dark                                                                                                                                                                                                                                            |
+| P5  | Docs                     | Decision 0011; MVP.md, README, content-pipeline.md, DEVICE-TESTING.md and CLAUDE.md app map updated                                                                                                                                                                                                                                                                                |
+| P6  | Android device           | Cold start time with the new file; the pause and reply feel right; icons readable in both themes; TalkBack reads both buttons                                                                                                                                                                                                                                                      |
 
 ## Risks
 
