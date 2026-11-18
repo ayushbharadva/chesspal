@@ -19,6 +19,7 @@ import {
  *   npm run content:refutations                  all puzzles, into content/refutations.json
  *   npm run content:refutations -- --sample 50   50 puzzles spread across ratings, with timings
  *   --depth 14 --engines 3 --out path            search depth, parallel engines, output file
+ *   --minutes 9                                  stop taking new puzzles after this long
  *
  * Progress is saved after each puzzle to `<out>.progress.jsonl`, so a stopped run resumes.
  * Saved rows with another depth or threshold are redone; after editing this script, delete the file.
@@ -46,6 +47,7 @@ const engineCount = Number(option('engines') ?? Math.max(1, availableParallelism
 const outputPath = resolve(
   option('out') ?? (sampleSize ? 'content/refutations.sample.json' : 'content/refutations.json'),
 );
+const minutes = option('minutes') ? Number(option('minutes')) : Infinity;
 const progressPath = `${outputPath}.progress.jsonl`;
 const settings = `depth ${depth}, also good ${alsoGoodThresholdCp}`;
 
@@ -196,7 +198,14 @@ function encodePly(refutations: Record<string, Refutation>) {
 function readProgress() {
   if (!existsSync(progressPath)) return new Map<string, PuzzleResult>();
   const lines = readFileSync(progressPath, 'utf8').split('\n').filter(Boolean);
-  const rows = lines.map((line) => JSON.parse(line) as PuzzleResult);
+  // A run stopped mid-write can leave a broken last line; that puzzle is simply redone.
+  const rows = lines.flatMap((line) => {
+    try {
+      return [JSON.parse(line) as PuzzleResult];
+    } catch {
+      return [];
+    }
+  });
   return new Map(rows.filter((row) => row.settings === settings).map((row) => [row.id, row]));
 }
 
@@ -241,7 +250,12 @@ async function main() {
   let finished = 0;
   await Promise.all(
     engines.map(async (engine) => {
-      for (let puzzle = queue.shift(); puzzle; puzzle = queue.shift()) {
+      const deadline = started + minutes * 60_000;
+      for (
+        let puzzle = queue.shift();
+        puzzle;
+        puzzle = Date.now() < deadline ? queue.shift() : undefined
+      ) {
         const result = await refutePuzzle(engine, puzzle);
         appendFileSync(progressPath, `${JSON.stringify(result)}\n`);
         done.set(result.id, result);
@@ -249,6 +263,10 @@ async function main() {
       }
     }),
   );
+  if (queue.length) {
+    console.log(`Stopped after ${minutes} minutes with ${queue.length} puzzles to go; run again.`);
+    return;
+  }
 
   const results = puzzles.map((puzzle) => done.get(puzzle.id)!);
   const output = Object.fromEntries(

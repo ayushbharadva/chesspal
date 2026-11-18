@@ -5,7 +5,7 @@ Written 2026-11-17 on `feat/wrong-move-replies`. When a player makes a wrong mov
 Progress:
 
 - ✅ P0 Measure: script written, 50-puzzle sample run, depth and data format chosen (results below)
-- [ ] P1 Full run: `content/refutations.json` committed
+- ✅ P1 Full run: `content/refutations.json` committed (results below)
 - [ ] P2 Content access and content tests
 - [ ] P3 Pure logic, saved-session upgrade and unit tests
 - [ ] P4 Screen, icon buttons and navigation tests
@@ -44,6 +44,14 @@ Timings are from a 2-core cloud machine; divide the engine-hours by the number o
 - **Format: compact strings.** Nested JSON would be about 4.1 MB for the full set; compact strings about 1.7 MB (`puzzles.json` is 2.5 MB).
 - **Wording to fix in P3:** in checkmate puzzles a capture reply is true but misses the point ("Black takes your pawn on f5" when the answer was a mate). Add "That's not checkmate." before the capture line in checkmate themes.
 
+## P1 results (2026-11-18)
+
+- 3,200 puzzles, 164,296 wrong moves searched at depth 14: 3.6 engine-hours (about 1.5 hours with two engines on the 2-core cloud machine, run in nine-minute parts with `--minutes 9`). Higher-rated puzzles take longer, so the P0 estimate of 2.9 was low.
+- `content/refutations.json`: 1.74 MB, every bundled puzzle covered.
+- Reasons: capture 97,250 (59%), defend 57,577 (35%), mate 7,553 (4.6%), escape 1,857, alsoGood 59, stalemate 0.
+- `alsoGood` cases checked by hand: non-mating moves in positions already won, such as a rook move instead of mate in one on the last move of a mate-in-two.
+- Same output: a fresh 50-puzzle run without the progress file matched the committed file for all 50 puzzles.
+
 ## How it works
 
 ### 1. Data (made once on a laptop)
@@ -53,6 +61,7 @@ Timings are from a 2-core cloud machine; divide the engine-hours by the number o
 - For every puzzle position where the player moves, try every legal move except the stored answer and moves that give checkmate (the app already accepts any checkmate).
 - For each wrong move, ask Stockfish for the opponent's best reply and the score after it.
 - Save the reply and a reason letter. Words are not stored; the app builds them from the reason, so copy can change without rerunning the engine.
+- `--minutes N` stops taking new puzzles after N minutes; run again to continue.
 - Runs one Stockfish process per CPU core minus one and saves progress after each puzzle to `content/refutations.json.progress.jsonl` (ignored by Git), so a stopped run resumes. Rows saved with another depth or threshold are redone; after changing how reasons are chosen, delete the progress file.
 
 Format: puzzle id → one string per player move (ply 0, 2, 4…). Each string lists that position's wrong moves, space-separated, as wrong move + reply + reason letter. Moves use UCI (Universal Chess Interface) notation, like `e2e4`; the reply is missing when there is none.
