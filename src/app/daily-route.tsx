@@ -94,7 +94,7 @@ export default function DailyRouteScreen() {
         </Card>
       )}
       <Card>
-        <ThemedText type="overline" themeColor="textSecondary">
+        <ThemedText type="label" themeColor="textSecondary">
           Your record
         </ThemedText>
         <View style={styles.stats}>

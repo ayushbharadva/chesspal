@@ -529,7 +529,7 @@ export function Board({
                   <View style={styles.promotionPiece}>
                     <Piece piece={{ color: position.turn, type: move.promotion! }} />
                   </View>
-                  <ThemedText type="overline" themeColor="textSecondary">
+                  <ThemedText type="label" themeColor="textSecondary">
                     {PIECE_NAMES[move.promotion!]}
                   </ThemedText>
                 </Pressable>

@@ -39,7 +39,7 @@ export function ActivityBar() {
           return (
             <View key={key} style={styles.day}>
               <ThemedText
-                type="overline"
+                type="label"
                 themeColor={isToday ? 'text' : 'textSecondary'}
                 accessibilityElementsHidden
                 importantForAccessibility="no">

@@ -113,7 +113,7 @@ export default function HomeScreen() {
 
       {hydrated && learnFirst && nextCourse && (
         <Card variant="hero">
-          <Pill tone="onHero" icon="graduation-cap" label={`Learn · ${nextCourse.unit.title}`} />
+          <Pill tone="onHero" icon="graduation-cap" label={nextCourse.unit.title} />
           <View style={styles.heroText}>
             <ThemedText type="title" themeColor="onHero">
               {nextCourse.lesson.title}
@@ -133,11 +133,7 @@ export default function HomeScreen() {
 
       {/* A plain card while the Learn lesson leads, so Home has one hero. */}
       <Card variant={learnFirst ? 'surface' : 'hero'}>
-        <Pill
-          tone={learnFirst ? 'accent' : 'onHero'}
-          icon="puzzle"
-          label={`Today's puzzles · ${levelName(level)}`}
-        />
+        <Pill tone={learnFirst ? 'accent' : 'onHero'} icon="puzzle" label={levelName(level)} />
         <View style={styles.heroText}>
           <ThemedText
             type={learnFirst ? 'headline' : 'title'}
@@ -186,7 +182,7 @@ export default function HomeScreen() {
         <ListRow
           icon="rotate-ccw"
           title={`Review ${reviews} puzzle${reviews === 1 ? '' : 's'}`}
-          detail="Replay earlier puzzles so they stick"
+          detail="Try earlier puzzles again"
           onPress={() => openPractice(true)}
         />
       )}

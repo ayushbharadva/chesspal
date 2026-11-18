@@ -51,7 +51,7 @@ export default function LearnScreen() {
           <Pill
             tone="onHero"
             icon="graduation-cap"
-            label={next ? `${next.section.title} · ${next.unit.title}` : 'Course complete'}
+            label={next ? next.unit.title : 'Course complete'}
           />
           <View style={styles.heroText}>
             <ThemedText type="title" themeColor="onHero">
@@ -82,7 +82,7 @@ export default function LearnScreen() {
       {courseSections.map((section, sectionIndex) => (
         <View key={section.id} style={styles.section}>
           <View style={styles.sectionHeader}>
-            <ThemedText type="overline" themeColor="accent">
+            <ThemedText type="label" themeColor="accent">
               Section {sectionIndex + 1}
             </ThemedText>
             <ThemedText type="headline" accessibilityRole="header">

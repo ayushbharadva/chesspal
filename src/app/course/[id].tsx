@@ -130,7 +130,7 @@ export default function CourseLessonScreen() {
         {next && (
           <FadeIn delay={480}>
             <Card variant="muted">
-              <ThemedText type="overline" themeColor="textSecondary">
+              <ThemedText type="label" themeColor="textSecondary">
                 Up next
               </ThemedText>
               <ThemedText type="subtitle">{next.lesson.title}</ThemedText>

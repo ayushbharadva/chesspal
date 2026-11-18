@@ -29,7 +29,7 @@ export function Pill({
   return (
     <View style={[styles.pill, { backgroundColor: background }]}>
       {icon && <Icon name={icon} size={14} color={text} strokeWidth={2.4} />}
-      <ThemedText type="overline" themeColor={text}>
+      <ThemedText type="label" themeColor={text}>
         {label}
       </ThemedText>
     </View>
@@ -244,7 +244,7 @@ export function Chip({
 export function SectionTitle({ children, action }: { children: string; action?: ReactNode }) {
   return (
     <View style={styles.section}>
-      <ThemedText type="overline" themeColor="textSecondary">
+      <ThemedText type="label" themeColor="textSecondary">
         {children}
       </ThemedText>
       {action}

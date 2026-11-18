@@ -99,7 +99,7 @@ export function LessonRow({
         {!last && <View style={[styles.line, { backgroundColor: theme.border }]} />}
       </View>
       <View style={styles.text}>
-        <ThemedText type="overline" themeColor={status === 'next' ? 'accent' : 'textSecondary'}>
+        <ThemedText type="label" themeColor={status === 'next' ? 'accent' : 'textSecondary'}>
           {status === 'next' ? 'Up next' : `Lesson ${number}`}
         </ThemedText>
         <ThemedText type="subtitle" themeColor={locked ? 'textSecondary' : 'text'}>

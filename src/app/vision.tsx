@@ -82,7 +82,7 @@ export default function VisionScreen() {
       {round ? (
         <View style={styles.status}>
           <View style={styles.prompt}>
-            <ThemedText type="overline" themeColor="textSecondary">
+            <ThemedText type="label" themeColor="textSecondary">
               Find
             </ThemedText>
             <ThemedText type="display" accessibilityLiveRegion="polite">
@@ -128,7 +128,7 @@ export default function VisionScreen() {
             onPress={start}
           />
           <Card>
-            <ThemedText type="overline" themeColor="textSecondary">
+            <ThemedText type="label" themeColor="textSecondary">
               {side === 'w' ? 'As White' : 'As Black'}
             </ThemedText>
             <ThemedText type="headline">

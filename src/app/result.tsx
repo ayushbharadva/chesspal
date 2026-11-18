@@ -201,7 +201,7 @@ function Insight({
     <View style={styles.insight} accessible accessibilityLabel={`${label}: ${value}`}>
       <IconBadge name={tone === 'success' ? 'trophy' : 'target'} tone={tone} size={36} />
       <View style={styles.insightText}>
-        <ThemedText type="overline" themeColor="textSecondary">
+        <ThemedText type="label" themeColor="textSecondary">
           {label}
         </ThemedText>
         <ThemedText type="headline">{value}</ThemedText>

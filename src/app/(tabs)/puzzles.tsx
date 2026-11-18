@@ -79,7 +79,7 @@ export default function PuzzlesScreen() {
         <ListRow
           icon="rotate-ccw"
           title={`Review ${reviews} puzzle${reviews === 1 ? '' : 's'}`}
-          detail="Replay earlier puzzles so they stick"
+          detail="Try earlier puzzles again"
           onPress={() => openPractice(true)}
         />
       )}
@@ -89,7 +89,7 @@ export default function PuzzlesScreen() {
         detail={
           routeToday
             ? `${routeToday.score} points today`
-            : `${skillById[routeTheme(today)].name} · new every day`
+            : `Today: ${skillById[routeTheme(today)].name}`
         }
         onPress={() => router.push('/daily-route')}
       />
