@@ -7,7 +7,7 @@ Progress:
 - ✅ P0 Measure: script written, 50-puzzle sample run, depth and data format chosen (results below)
 - ✅ P1 Full run: `content/refutations.json` committed (results below)
 - ✅ P2 Content access and content tests
-- [ ] P3 Pure logic, saved-session upgrade and unit tests
+- ✅ P3 Pure logic, saved-session upgrade and unit tests (notes below)
 - [ ] P4 Screen, icon buttons and navigation tests
 - [ ] P5 Docs and decision record
 - [ ] P6 Android device check
@@ -51,6 +51,12 @@ Timings are from a 2-core cloud machine; divide the engine-hours by the number o
 - Reasons: capture 97,250 (59%), defend 57,577 (35%), mate 7,553 (4.6%), escape 1,857, alsoGood 59, stalemate 0.
 - `alsoGood` cases checked by hand: non-mating moves in positions already won, such as a rook move instead of mate in one on the last move of a mate-in-two.
 - Same output: a fresh 50-puzzle run without the progress file matched the committed file for all 50 puzzles.
+
+## P3 notes (2026-11-18)
+
+- `wrongMoveMessage` in `src/workout/refutation.ts` writes the line. Where a round hides the theme (skill rounds 2 and 3, "Find the best move"), it leaves out "That's not checkmate", the king escape and the theme hint, and ends with "Look for checks, captures and threats."
+- To keep the app usable between phases, P3 already shows the wrong move and the reply on the board, the reason in a danger card, and plain text buttons "Back one move" and "Reset". P4 turns them into icon buttons and adds the pause before the reply, the red square and the sounds.
+- Hint and the hint square stay hidden while a wrong move is shown.
 
 ## How it works
 
@@ -121,7 +127,7 @@ Checked in this order; the first match wins.
 | P0  | Measure                  | ✅ Results above                                                                                                                                                                                                                                                                                                                                                                   |
 | P1  | Full run                 | `content/refutations.json` committed; a second run with the progress file deleted gives the same file                                                                                                                                                                                                                                                                              |
 | P2  | Content access and tests | ✅ `src/content/refutations.ts` and `src/content/__tests__/refutations.test.ts`: every wrong move of every puzzle stored and nothing else; replies legal and reasons matching the board for every eighth puzzle (playing all 164,296 replies took 130 s; the sample takes 9 s). Both tests fail on a deliberately broken entry. Android bundle before P3 imports the file: 4.3 MB. |
-| P3  | Logic and save upgrade   | Unit tests: wrong move, back one move, reset, ignored input while wrong, missing data fallback, old saves, leaving mid-reply clears it; checkmate-theme wording                                                                                                                                                                                                                    |
+| P3  | Logic and save upgrade   | ✅ `src/workout/__tests__/refutation.test.ts` and a navigation test (wrong move → reason → Reset → solve, counted with help)                                                                                                                                                                                                                                                       |
 | P4  | Screen                   | Navigation test: wrong move → reply → reason → Back one move and Reset (found by label); visual check at mobile width in light and dark                                                                                                                                                                                                                                            |
 | P5  | Docs                     | Decision 0012; MVP.md, README, content-pipeline.md, DEVICE-TESTING.md and CLAUDE.md app map updated                                                                                                                                                                                                                                                                                |
 | P6  | Android device           | Cold start time with the new file; the pause and reply feel right; icons readable in both themes; TalkBack reads both buttons                                                                                                                                                                                                                                                      |
