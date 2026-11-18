@@ -8,7 +8,7 @@ Progress:
 - ✅ P1 Full run: `content/refutations.json` committed (results below)
 - ✅ P2 Content access and content tests
 - ✅ P3 Pure logic, saved-session upgrade and unit tests (notes below)
-- [ ] P4 Screen, icon buttons and navigation tests
+- ✅ P4 Screen, icon buttons and navigation tests (notes below)
 - [ ] P5 Docs and decision record
 - [ ] P6 Android device check
 
@@ -57,6 +57,15 @@ Timings are from a 2-core cloud machine; divide the engine-hours by the number o
 - `wrongMoveMessage` in `src/workout/refutation.ts` writes the line. Where a round hides the theme (skill rounds 2 and 3, "Find the best move"), it leaves out "That's not checkmate", the king escape and the theme hint, and ends with "Look for checks, captures and threats."
 - To keep the app usable between phases, P3 already shows the wrong move and the reply on the board, the reason in a danger card, and plain text buttons "Back one move" and "Reset". P4 turns them into icon buttons and adds the pause before the reply, the red square and the sounds.
 - Hint and the hint square stay hidden while a wrong move is shown.
+
+## P4 notes (2026-11-18)
+
+- The reply's square uses the board's existing `wrongSquare` tint (`boardWrong`, already used by Learn drills), so no new colour pair was needed.
+- `IconButton` lives in `src/components/button.tsx` beside `Button`: 64 × 50 or larger, a required `accessibilityLabel`, the same variants. `undo-2` comes from `lucide-static` 1.75.0; `rotate-ccw` was already there and matches it.
+- A second `useReplyPause` holds the wrong move for 480 ms before the reply slides in; the buttons are disabled and the reason waits until the reply lands.
+- Back one move and Reset give the board a new `key`, so the jump back has no slide or sound. The board shakes only for a wrong move without a stored reply.
+- The new-player tip and the hint are hidden while a wrong move is shown.
+- Checked in the web build at 390 px wide in light and dark mode with Chrome (a back-rank mate where Rd7 lets the queen take on e4 with check).
 
 ## How it works
 
@@ -111,7 +120,7 @@ Checked in this order; the first match wins.
 ### 4. Screen (`src/app/workout.tsx`)
 
 - The wrong move stays on the board, no shake. After the usual short pause (`useReplyPause`), the reply slides in.
-- The reply's square is marked in red: a new `dangerSquare` prop on `Board`. Add its colour pair to `src/constants/__tests__/theme.test.ts`.
+- The reply's square is marked in red with the board's `wrongSquare` tint.
 - Sounds: the wrong tone with the player's move; the board already plays the reply's move, capture or check sound. Error haptic on the wrong move.
 - A danger `Card` below the board: title "Not quite.", body the reason line, `accessibilityLiveRegion="polite"`.
 - The footer swaps Hint and Show answer for two icon buttons:
@@ -128,7 +137,7 @@ Checked in this order; the first match wins.
 | P1  | Full run                 | `content/refutations.json` committed; a second run with the progress file deleted gives the same file                                                                                                                                                                                                                                                                              |
 | P2  | Content access and tests | ✅ `src/content/refutations.ts` and `src/content/__tests__/refutations.test.ts`: every wrong move of every puzzle stored and nothing else; replies legal and reasons matching the board for every eighth puzzle (playing all 164,296 replies took 130 s; the sample takes 9 s). Both tests fail on a deliberately broken entry. Android bundle before P3 imports the file: 4.3 MB. |
 | P3  | Logic and save upgrade   | ✅ `src/workout/__tests__/refutation.test.ts` and a navigation test (wrong move → reason → Reset → solve, counted with help)                                                                                                                                                                                                                                                       |
-| P4  | Screen                   | Navigation test: wrong move → reply → reason → Back one move and Reset (found by label); visual check at mobile width in light and dark                                                                                                                                                                                                                                            |
+| P4  | Screen                   | ✅ Navigation tests for Reset on the first move and Back one move on the second; visual check above                                                                                                                                                                                                                                                                                |
 | P5  | Docs                     | Decision 0012; MVP.md, README, content-pipeline.md, DEVICE-TESTING.md and CLAUDE.md app map updated                                                                                                                                                                                                                                                                                |
 | P6  | Android device           | Cold start time with the new file; the pause and reply feel right; icons readable in both themes; TalkBack reads both buttons                                                                                                                                                                                                                                                      |
 

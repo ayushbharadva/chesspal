@@ -24,6 +24,7 @@ import { flushProgressWrites, PROGRESS_KEY } from '@/storage/storage';
 import { dateKey } from '@/utils/date-key';
 import { wrongMoveMessage } from '@/workout/refutation';
 import { reviewQueue, reviewSchedule } from '@/workout/review';
+import { makeSession } from '@/workout/session';
 
 // Openings are switched off in the app; most tests still cover them, so they start switched on.
 let mockShowOpenings = true;
@@ -127,6 +128,30 @@ it('answers a wrong move with the reply and a reason, then resets the puzzle', a
   await fireEvent.press(screen.getByRole('button', { name: 'Reset' }));
   expect(screen.queryByText('Not quite.')).not.toBeOnTheScreen();
   for (let ply = 0; ply < puzzle.moves.length; ply += 2) await move(puzzle.moves[ply]);
+  expect(useProgressStore.getState().attempts.at(-1)).toMatchObject({
+    puzzleId: puzzle.id,
+    independent: false,
+  });
+});
+
+it('takes back a wrong second move with Back one move, keeping the first', async () => {
+  const puzzle = puzzles.find((candidate) => candidate.moves.length === 3)!;
+  useProgressStore.setState({
+    currentSession: { ...makeSession('two-moves', 'extra', dateKey(), []), puzzleIds: [puzzle.id] },
+  });
+  await renderApp('/workout');
+  await move(puzzle.moves[0]);
+  const [wrong] = [...refutationsAt(puzzle.id, 2)!].find(([, candidate]) => candidate.reply)!;
+  await move(wrong);
+  expect(screen.getByText('Not quite.')).toBeOnTheScreen();
+  await fireEvent.press(screen.getByRole('button', { name: 'Back one move' }));
+  expect(screen.queryByText('Not quite.')).not.toBeOnTheScreen();
+  expect(useProgressStore.getState().currentSession).toMatchObject({
+    ply: 2,
+    wrongMove: null,
+    mistakes: 1,
+  });
+  await move(puzzle.moves[2]);
   expect(useProgressStore.getState().attempts.at(-1)).toMatchObject({
     puzzleId: puzzle.id,
     independent: false,
