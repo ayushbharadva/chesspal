@@ -7,6 +7,7 @@ import { Button } from '@/components/button';
 import { Card } from '@/components/card';
 import { Screen } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
+import { CountUp, PopIn } from '@/components/motion';
 import { IconBadge, Pill, ProgressBar } from '@/components/ui';
 import { puzzleById } from '@/content';
 import { skillById } from '@/content/skills';
@@ -58,7 +59,9 @@ export default function ResultScreen() {
   return (
     <Screen>
       <Card variant="hero">
-        <IconBadge name={skill && !cleared ? 'target' : 'trophy'} tone="hero" size={52} />
+        <PopIn delay={120}>
+          <IconBadge name={skill && !cleared ? 'target' : 'trophy'} tone="hero" size={52} />
+        </PopIn>
         <View style={styles.heroText}>
           <Pill
             tone="onHero"
@@ -89,9 +92,14 @@ export default function ResultScreen() {
           </ThemedText>
         </View>
         <View style={styles.score}>
-          <ThemedText type="stat" themeColor="heroAccent">
-            {route ? `${points} points` : `${independent} / ${session.results.length}`}
-          </ThemedText>
+          {/* The score counts up once, the moment the round is over. */}
+          <CountUp value={route ? points : independent}>
+            {(shown) => (
+              <ThemedText type="stat" themeColor="heroAccent">
+                {route ? `${shown} points` : `${shown} / ${session.results.length}`}
+              </ThemedText>
+            )}
+          </CountUp>
           <ThemedText themeColor="onHeroSecondary">
             {route ? `out of ${ROUTE_MAX_SCORE}` : 'solved without help'}
           </ThemedText>

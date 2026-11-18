@@ -25,6 +25,7 @@ import { Icon } from '@/components/icon';
 import { ScrollLockContext } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
 import { Piece } from '@/components/board/piece';
+import { SuccessBurst } from '@/components/board/success-burst';
 import { Fonts, Radius, Spacing } from '@/constants/theme';
 import { useHaptics } from '@/hooks/use-haptics';
 import { useMotionEnabled } from '@/hooks/use-motion';
@@ -363,6 +364,7 @@ export function Board({
                         style={[styles.tint, { backgroundColor: theme.boardSuccess }]}
                       />
                     )}
+                    {successSquare === square && <SuccessBurst />}
                     {checkedKing === square && (
                       <View
                         pointerEvents="none"

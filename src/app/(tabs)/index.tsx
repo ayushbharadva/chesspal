@@ -8,6 +8,7 @@ import { Card } from '@/components/card';
 import { Icon } from '@/components/icon';
 import { Screen } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
+import { BumpOnRise } from '@/components/motion';
 import { ListRow, Pill, ProgressBar, SectionTitle } from '@/components/ui';
 import { guides } from '@/content';
 import { courseLessons } from '@/content/course';
@@ -96,7 +97,9 @@ export default function HomeScreen() {
           <View
             accessible
             accessibilityLabel={`Practice streak: ${streak} ${streak === 1 ? 'day' : 'days'}`}>
-            <Pill icon="flame" tone={streak ? 'accent' : 'muted'} label={String(streak)} />
+            <BumpOnRise value={streak}>
+              <Pill icon="flame" tone={streak ? 'accent' : 'muted'} label={String(streak)} />
+            </BumpOnRise>
           </View>
           <Pressable
             accessibilityRole="button"
