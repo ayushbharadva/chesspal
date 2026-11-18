@@ -64,7 +64,8 @@
     "sounds:build": "tsx scripts/sounds/generate-sounds.ts",
     "pieces:build": "tsx scripts/pieces/build-piece-sets.ts",
     "research:analyze": "node scripts/research/analyze-app.mjs",
-    "check": "npm run typecheck && npm run lint && npm run format:check && npm test"
+    "check": "npm run typecheck && npm run lint && npm run format:check && npm test",
+    "content:refutations": "tsx scripts/content/build-refutations.ts"
   },
   "jest": {
     "preset": "jest-expo",
