@@ -1,4 +1,5 @@
 import { courseLessonById, courseLessons, type CourseEntry } from '@/content/course';
+import { type CourseRun } from '@/progress/types';
 
 export type Stars = 1 | 2 | 3;
 
@@ -50,4 +51,14 @@ export function starTotals(lessonIds: readonly string[], best: Record<string, St
 export function starsForSlips(slips: number): Stars {
   if (slips === 0) return 3;
   return slips <= 2 ? 2 : 1;
+}
+
+/**
+ * A lesson left part-way starts again from step 1. Slips stay, so leaving cannot win back stars.
+ * A finished lesson keeps its place so its summary still shows.
+ */
+export function restartCourseRun(run: CourseRun | null): CourseRun | null {
+  const entry = run && courseLessonById[run.lessonId];
+  if (!run || !entry || run.step === 0 || run.step >= entry.lesson.steps.length) return run;
+  return { ...run, step: 0 };
 }

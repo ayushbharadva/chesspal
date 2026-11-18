@@ -8,8 +8,14 @@ import { courseLessonById, courseLessons } from '@/content/course';
 import { coursePuzzles } from '@/course/steps';
 import { skillById } from '@/content/skills';
 import { branchForGuide, transfersForGuide } from '@/content/lessons';
-import { answerLesson, beginLesson, lessonAttempt, lessonKey } from '@/learning/lesson';
-import { describeMove, INITIAL_POSITION } from '@/chess';
+import {
+  answerLesson,
+  beginLesson,
+  lessonAttempt,
+  lessonKey,
+  restartLesson,
+} from '@/learning/lesson';
+import { describeMove, INITIAL_POSITION, legalMoves, playMove } from '@/chess';
 import { useColorSchemeName } from '@/hooks/use-theme';
 import { useProgressStore } from '@/progress/store';
 import { emptyProgress } from '@/progress/types';
@@ -44,7 +50,6 @@ beforeEach(async () => {
     level: 1,
     hydrated: true,
     storageIssue: false,
-    lessonNotice: null,
   });
 });
 afterEach(async () => {
@@ -70,6 +75,38 @@ it('completes five real puzzles, shows results and allows more practice', async 
   await fireEvent.press(screen.getByRole('button', { name: 'More puzzles' }));
   expect(app.getPathname()).toBe('/workout');
   expect(useProgressStore.getState().currentSession!.mode).toBe('extra');
+});
+
+it('starts an unfinished puzzle over after leaving the round, keeping its help', async () => {
+  const app = await renderApp();
+  await fireEvent.press(screen.getByRole('button', { name: 'Start puzzles' }));
+  await fireEvent.press(screen.getByRole('button', { name: 'Hint' }));
+  const session = useProgressStore.getState().currentSession!;
+  const puzzle = puzzleById[session.puzzleIds[0]];
+  const wrong = legalMoves(puzzle.fen).find(
+    (candidate) =>
+      candidate.uci !== puzzle.moves[0] && !playMove(puzzle.fen, candidate.uci).checkmate,
+  )!;
+  await move(wrong.uci);
+  expect(useProgressStore.getState().currentSession).toMatchObject({
+    hintsShown: 1,
+    usedHelp: true,
+    mistakes: 1,
+  });
+  await act(() => router.back());
+  expect(app.getPathname()).toBe('/');
+  expect(useProgressStore.getState().currentSession).toMatchObject({
+    index: 0,
+    ply: 0,
+    hintsShown: 0,
+    lastWrong: false,
+    usedHelp: true,
+    mistakes: 1,
+  });
+  await fireEvent.press(screen.getByRole('button', { name: 'Resume puzzles' }));
+  expect(app.getPathname()).toBe('/workout');
+  expect(screen.queryByText('Hint 1')).not.toBeOnTheScreen();
+  expect(screen.queryByText('Not quite. Try again.')).not.toBeOnTheScreen();
 });
 
 it('records solution replay as assisted and keeps completion idempotent', async () => {
@@ -168,7 +205,7 @@ it('restores a saved session and displays real progress', async () => {
   expect(screen.getByLabelText('Puzzles played: 0')).toBeOnTheScreen();
 });
 
-it('fades branch help, preserves an interrupted recall and records retries honestly', async () => {
+it('fades branch help, restarts an interrupted recall with its mistakes and records retries honestly', async () => {
   await renderApp('/lesson/italian-game');
   const branch = branchForGuide('italian-game', 'evans-gambit')!;
   await fireEvent.press(screen.getByRole('button', { name: `Choose ${branch.title}` }));
@@ -194,11 +231,11 @@ it('fades branch help, preserves an interrupted recall and records retries hones
     await useProgressStore.persist.rehydrate();
   });
   expect(useProgressStore.getState().lessonProgress.sessions[key]).toMatchObject({
-    ply: 2,
+    ply: 0,
     mistakes: 1,
     scaffold: 'recall',
   });
-  for (let ply = 2; ply < branch.moves.length; ply += 2) await move(branch.moves[ply]);
+  for (let ply = 0; ply < branch.moves.length; ply += 2) await move(branch.moves[ply]);
   expect(useProgressStore.getState().lessonProgress.attempts).toHaveLength(2);
   expect(useProgressStore.getState().lessonProgress.attempts.at(-1)?.independent).toBe(false);
   expect(useProgressStore.getState().attempts).toEqual([]);
@@ -222,9 +259,9 @@ it('returns to the requested main branch after playing a supported alternate', a
   await fireEvent.press(screen.getByRole('button', { name: 'Play' }));
   expect(useProgressStore.getState().lessonProgress.sessions[mainKey]).toMatchObject({
     targetId: 'main',
-    ply: 6,
+    ply: 0,
   });
-  for (let ply = 6; ply < main.moves.length; ply += 2) await move(main.moves[ply]);
+  for (let ply = 0; ply < main.moves.length; ply += 2) await move(main.moves[ply]);
   expect(useProgressStore.getState().lessonProgress.attempts.at(-1)?.targetId).toBe('main');
   expect(useProgressStore.getState().lessonProgress.sessions[alternateKey].ply).toBe(8);
   await fireEvent.press(screen.getByRole('button', { name: `Choose ${alternate.title}` }));
@@ -235,7 +272,7 @@ it('returns to the requested main branch after playing a supported alternate', a
   ).toEqual(['main', 'evans-gambit']);
 });
 
-it('explains a saved-branch resume and preserves both interrupted attempts', async () => {
+it('carries on into a variation left part-way, keeping its earlier help', async () => {
   const now = new Date();
   const mainKey = lessonKey('branch', 'italian-game', 'main');
   const alternateKey = lessonKey('branch', 'italian-game', 'evans-gambit');
@@ -244,26 +281,30 @@ it('explains a saved-branch resume and preserves both interrupted attempts', asy
   for (let ply = 0; ply < alternate.moves.length; ply += 2)
     guided = answerLesson(guided, alternate.moves[ply]);
   const first = lessonAttempt(guided, now);
-  let saved = beginLesson('italian-game', 'branch', 'evans-gambit', [first], now)!;
-  for (const ply of [0, 2, 4, 6, 8]) saved = answerLesson(saved, alternate.moves[ply]);
-  saved = { ...saved, usedHelp: true, hintShown: true, mistakes: 2 };
+  let left = beginLesson('italian-game', 'branch', 'evans-gambit', [first], now)!;
+  for (const ply of [0, 2, 4, 6, 8]) left = answerLesson(left, alternate.moves[ply]);
+  left = restartLesson({ ...left, usedHelp: true, hintShown: true, mistakes: 2 });
   let main = beginLesson('italian-game', 'branch', 'main', [], now)!;
   for (const ply of [0, 2, 4]) main = answerLesson(main, alternate.moves[ply]);
   useProgressStore.setState({
     lessonProgress: {
       ...emptyProgress().lessonProgress,
       attempts: [first],
-      sessions: { [mainKey]: main, [alternateKey]: saved },
+      sessions: { [mainKey]: main, [alternateKey]: left },
       selected: { 'italian-game': mainKey },
     },
   });
   await renderApp('/lesson/italian-game');
   await move('b2b4');
-  expect(screen.getByText(/Picking up where you left off in Evans Gambit/)).toBeOnTheScreen();
-  expect(useProgressStore.getState().lessonProgress.sessions[mainKey]).toEqual(main);
-  expect(useProgressStore.getState().lessonProgress.sessions[alternateKey]).toEqual(saved);
-  expect(useProgressStore.getState().lessonProgress.attempts).toEqual([first]);
-  await move(alternate.moves[10]);
+  expect(useProgressStore.getState().lessonProgress.sessions[mainKey]).toBeUndefined();
+  expect(useProgressStore.getState().lessonProgress.sessions[alternateKey]).toMatchObject({
+    id: main.id,
+    ply: 8,
+    usedHelp: true,
+    mistakes: 2,
+  });
+  for (const ply of [8, 10]) await move(alternate.moves[ply]);
+  expect(useProgressStore.getState().lessonProgress.attempts).toHaveLength(2);
   expect(useProgressStore.getState().lessonProgress.attempts.at(-1)?.independent).toBe(false);
 });
 
@@ -355,7 +396,7 @@ it('connects Home to a demonstration, related application and lesson-only activi
   expect(screen.getByLabelText('New positions solved: 1')).toBeOnTheScreen();
 });
 
-it('resumes an interrupted recalled lesson from Home after storage reload without resetting help', async () => {
+it('restarts an interrupted recalled lesson from Home after storage reload without resetting help', async () => {
   const now = new Date();
   const first = {
     id: 'earlier-guided',
@@ -383,12 +424,17 @@ it('resumes an interrupted recalled lesson from Home after storage reload withou
   await AsyncStorage.setItem(PROGRESS_KEY, JSON.stringify({ version: 1, state: saved }));
   await useProgressStore.persist.rehydrate();
   const app = await renderApp();
-  await fireEvent.press(screen.getByRole('button', { name: 'Resume lesson' }));
+  await fireEvent.press(screen.getByRole('button', { name: 'Restart lesson' }));
   expect(app.getPathname()).toBe('/lesson/italian-game');
-  expect(useProgressStore.getState().lessonProgress.sessions[key]).toEqual(session);
+  expect(useProgressStore.getState().lessonProgress.sessions[key]).toEqual(restartLesson(session));
+  expect(useProgressStore.getState().lessonProgress.sessions[key]).toMatchObject({
+    ply: 0,
+    usedHelp: true,
+    mistakes: 2,
+  });
   expect(screen.getByText('From memory')).toBeOnTheScreen();
   const branch = branchForGuide('italian-game', 'main')!;
-  for (let ply = session.ply; ply < branch.moves.length; ply += 2) await move(branch.moves[ply]);
+  for (let ply = 0; ply < branch.moves.length; ply += 2) await move(branch.moves[ply]);
   expect(useProgressStore.getState().lessonProgress.attempts.at(-1)?.independent).toBe(false);
 });
 
@@ -798,6 +844,25 @@ it('plays a Learn lesson to stars and unlocks the next one', async () => {
     screen.getByRole('button', { name: 'Start lesson: Squares and their names' }),
   );
   expect(app.getPathname()).toBe('/course/square-names');
+});
+
+it('starts a Learn lesson over from step 1 after leaving it, keeping finished slips', async () => {
+  const app = await renderApp('/learn');
+  await fireEvent.press(screen.getByRole('button', { name: 'Start lesson: The goal of chess' }));
+  await fireEvent.press(screen.getByRole('button', { name: 'Continue' }));
+  await fireEvent.press(screen.getByRole('button', { name: 'Black' }));
+  await fireEvent.press(screen.getByRole('button', { name: 'White' }));
+  await fireEvent.press(screen.getByRole('button', { name: 'Continue' }));
+  expect(useProgressStore.getState().courseProgress.current).toMatchObject({ step: 2, slips: 1 });
+  await act(() => router.back());
+  expect(app.getPathname()).toBe('/learn');
+  expect(useProgressStore.getState().courseProgress.current).toMatchObject({
+    lessonId: 'goal-of-chess',
+    step: 0,
+    slips: 1,
+  });
+  await fireEvent.press(screen.getByRole('button', { name: 'Start lesson: The goal of chess' }));
+  expect(screen.getByText(/Chess is a game for two players/)).toBeOnTheScreen();
 });
 
 it('checks taps on a Learn board and counts a finished lesson toward the streak', async () => {

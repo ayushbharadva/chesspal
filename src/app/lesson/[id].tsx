@@ -1,5 +1,5 @@
 import { router, useLocalSearchParams } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Linking, ScrollView, StyleSheet, View } from 'react-native';
 import { describeMove, INITIAL_POSITION, playMove, positionAfter, readPosition } from '@/chess';
 import { Board } from '@/components/board/board';
@@ -33,6 +33,9 @@ export default function LessonScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const guide = guideById[id];
   const state = useProgressStore();
+  const leaveLessons = useProgressStore((store) => store.leaveLessons);
+  // Leaving part-way starts unfinished lessons over from their first move next time.
+  useEffect(() => leaveLessons, [leaveLessons]);
   const [chosenMode, setMode] = useState<'learn' | 'practice' | null>(null);
   const [message, setMessage] = useState('');
   const haptic = useHaptics();
@@ -185,11 +188,6 @@ export default function LessonScreen() {
         shakeKey={practicing ? (session?.mistakes ?? 0) : 0}
         hintSquare={hint && !transfer ? expected?.from : undefined}
       />
-      {state.lessonNotice?.key === key && (
-        <ThemedText type="small" themeColor="textSecondary" accessibilityLiveRegion="polite">
-          {state.lessonNotice.text}
-        </ThemedText>
-      )}
       {mode === 'learn' && !transfer && (
         <View style={styles.row}>
           <View style={styles.action}>

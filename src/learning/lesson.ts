@@ -28,7 +28,6 @@ export function beginLesson(
   targetId: string,
   attempts: LessonAttempt[],
   now: Date,
-  legacyPly = 0,
 ): LessonSession | undefined {
   const target = lessonTarget(guideId, kind, targetId);
   if (!target) return undefined;
@@ -37,20 +36,36 @@ export function beginLesson(
       attempt.guideId === guideId && attempt.kind === kind && attempt.targetId === targetId,
   );
   const guided = kind === 'branch' && !practiced;
-  const firstPly = guideById[guideId].side === 'b' ? 1 : 0;
-  const branch = kind === 'branch' ? branchForGuide(guideId, targetId)! : undefined;
-  const resumedPly = branch && legacyPly < branch.moves.length ? legacyPly : firstPly;
   return {
     id: `lesson-${now.getTime()}-${Math.random().toString(36).slice(2, 8)}`,
     guideId,
     kind,
     targetId,
-    ply: branch ? (guided && targetId === 'main' ? Math.max(firstPly, resumedPly) : firstPly) : 0,
+    ply: firstLessonPly(guideId, kind),
     phase: 'solve',
     scaffold: guided ? 'guided' : 'recall',
     usedHelp: guided,
     hintShown: guided,
     mistakes: 0,
+    lastWrong: false,
+    acceptedMove: null,
+  };
+}
+/** Variations start on the player's first move; a new-position exercise is a single move. */
+function firstLessonPly(guideId: string, kind: LessonKind) {
+  return kind === 'branch' && guideById[guideId].side === 'b' ? 1 : 0;
+}
+/**
+ * A lesson left part-way starts again from its first move. Help and mistakes stay, so starting
+ * over never turns a helped attempt into one without help.
+ */
+export function restartLesson(session: LessonSession): LessonSession {
+  const ply = firstLessonPly(session.guideId, session.kind);
+  if (session.phase !== 'solve' || (session.ply === ply && !session.lastWrong)) return session;
+  return {
+    ...session,
+    ply,
+    hintShown: session.scaffold === 'guided',
     lastWrong: false,
     acceptedMove: null,
   };

@@ -4,7 +4,7 @@ import { createJSONStorage, persist } from 'zustand/middleware';
 import { positionAfter, type ChessColor } from '@/chess';
 import { guideById, puzzleById } from '@/content';
 import { courseLessonById } from '@/content/course';
-import { bestStars, lessonStatus, starsForSlips } from '@/course/path';
+import { bestStars, lessonStatus, restartCourseRun, starsForSlips } from '@/course/path';
 import { recordRun, routeScore } from '@/daily-route/route';
 import { type PuzzleLevel, type SkillTheme } from '@/content/types';
 import { branchForGuide } from '@/content/lessons';
@@ -14,6 +14,7 @@ import {
   lessonAttempt,
   lessonKey,
   lessonTarget,
+  restartLesson,
   wrongLessonMove,
 } from '@/learning/lesson';
 import {
@@ -36,12 +37,12 @@ import {
   makeSession,
   nextPuzzle,
   relevelSession,
+  restartPuzzle,
 } from '@/workout/session';
 
 interface ProgressStore extends SavedProgress {
   hydrated: boolean;
   storageIssue: boolean;
-  lessonNotice: { key: string; text: string } | null;
   startPractice: (mode?: PracticeMode) => boolean;
   /** Saves the level and moves a practice round's unstarted puzzles to it. */
   setLevel: (level: PuzzleLevel) => void;
@@ -57,6 +58,8 @@ interface ProgressStore extends SavedProgress {
   reveal: () => void;
   replayStep: (delta: number) => void;
   continuePractice: () => boolean;
+  /** Leaving a round part-way: the unfinished puzzle starts again from its first move. */
+  leavePractice: () => void;
   saveGuide: (id: string, progress: Partial<GuideProgress>) => void;
   selectLesson: (guideId: string, kind: LessonKind, targetId: string) => void;
   viewLesson: (guideId: string, branchId: string, ply: number) => void;
@@ -64,12 +67,16 @@ interface ProgressStore extends SavedProgress {
   helpLesson: (key: string, showHint?: boolean) => void;
   answerLesson: (key: string, move: string) => void;
   wrongLesson: (key: string) => void;
+  /** Leaving opening lessons part-way: each unfinished one starts again from its first move. */
+  leaveLessons: () => void;
   /** Opens a Learn lesson, resuming it if it was left part-way; false while it is locked. */
   startCourse: (lessonId: string) => boolean;
   /** Finishes the current step with its slips; after the last step the lesson's stars are saved. */
   finishCourseStep: (slips: number) => void;
   /** Leaves a finished lesson's summary. */
   closeCourse: () => void;
+  /** Leaving a Learn lesson part-way: it starts again from step 1. */
+  leaveCourse: () => void;
 }
 
 export const useProgressStore = create<ProgressStore>()(
@@ -78,7 +85,6 @@ export const useProgressStore = create<ProgressStore>()(
       ...emptyProgress(),
       hydrated: false,
       storageIssue: false,
-      lessonNotice: null,
       startPractice(mode = 'daily') {
         if (!get().hydrated) return false;
         const active = get().currentSession;
@@ -258,6 +264,10 @@ export const useProgressStore = create<ProgressStore>()(
         set({ currentSession: next });
         return false;
       },
+      leavePractice() {
+        const session = get().currentSession;
+        if (session) set({ currentSession: restartPuzzle(session) });
+      },
       saveGuide(id, patch) {
         const guide = guideById[id];
         if (!guide) return;
@@ -276,7 +286,6 @@ export const useProgressStore = create<ProgressStore>()(
         const progress = get().lessonProgress;
         const key = lessonKey(kind, guideId, targetId);
         set({
-          lessonNotice: null,
           lessonProgress: {
             ...progress,
             selected: {
@@ -305,14 +314,7 @@ export const useProgressStore = create<ProgressStore>()(
         if (existing && !restart) {
           return;
         }
-        const session = beginLesson(
-          guideId,
-          kind,
-          targetId,
-          progress.attempts,
-          new Date(),
-          kind === 'branch' && targetId === 'main' ? get().guideProgress[guideId]?.practicePly : 0,
-        );
+        const session = beginLesson(guideId, kind, targetId, progress.attempts, new Date());
         if (!session) return;
         set({
           lessonProgress: {
@@ -354,23 +356,18 @@ export const useProgressStore = create<ProgressStore>()(
         const progress = get().lessonProgress;
         const session = progress.sessions[key];
         if (!session || session.phase !== 'solve') return;
-        const next = answerLesson(session, move);
-        const nextKey = lessonKey(next.kind, next.guideId, next.targetId);
+        const answered = answerLesson(session, move);
+        const nextKey = lessonKey(answered.kind, answered.guideId, answered.targetId);
         const destination = progress.sessions[nextKey];
-        if (nextKey !== key && destination?.phase === 'solve' && destination.id !== session.id) {
-          const target = lessonTarget(next.guideId, next.kind, next.targetId)!;
-          set({
-            lessonNotice: {
-              key: nextKey,
-              text: `Picking up where you left off in ${target.title}.`,
-            },
-            lessonProgress: {
-              ...progress,
-              selected: { ...progress.selected, [next.guideId]: nextKey },
-            },
-          });
-          return;
-        }
+        // Moving into a variation left unfinished earlier: carry on here, keeping its earlier help.
+        const next =
+          nextKey !== key && destination?.phase === 'solve' && destination.id !== session.id
+            ? {
+                ...answered,
+                usedHelp: answered.usedHelp || destination.usedHelp,
+                mistakes: answered.mistakes + destination.mistakes,
+              }
+            : answered;
         const sessions = { ...progress.sessions };
         if (nextKey !== key) delete sessions[key];
         sessions[nextKey] = next;
@@ -380,7 +377,6 @@ export const useProgressStore = create<ProgressStore>()(
             ? [...progress.attempts, result]
             : progress.attempts;
         set({
-          lessonNotice: null,
           lessonProgress: {
             ...progress,
             attempts,
@@ -396,6 +392,13 @@ export const useProgressStore = create<ProgressStore>()(
         } else if (next.kind === 'branch' && result) {
           get().saveGuide(next.guideId, { completedAt: result.completedAt });
         }
+      },
+      leaveLessons() {
+        const progress = get().lessonProgress;
+        const sessions = Object.fromEntries(
+          Object.entries(progress.sessions).map(([key, session]) => [key, restartLesson(session)]),
+        );
+        set({ lessonProgress: { ...progress, sessions } });
       },
       startCourse(lessonId) {
         if (!get().hydrated || !courseLessonById[lessonId]) return false;
@@ -438,6 +441,10 @@ export const useProgressStore = create<ProgressStore>()(
         const entry = current && courseLessonById[current.lessonId];
         if (current && entry && current.step >= entry.lesson.steps.length)
           set({ courseProgress: { ...progress, current: null } });
+      },
+      leaveCourse() {
+        const progress = get().courseProgress;
+        set({ courseProgress: { ...progress, current: restartCourseRun(progress.current) } });
       },
     }),
     {

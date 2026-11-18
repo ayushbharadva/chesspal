@@ -1,6 +1,6 @@
 # Wrong-move replies: plan
 
-Written 2026-11-17 on `feat/wrong-move-replies`. When a player makes a wrong move in a puzzle, the opponent replies with the move that punishes it, a short line says why, and the player can go back one move or reset the puzzle. Decision record: [0011](decisions/0011-wrong-move-replies.md) (to write in P5).
+Written 2026-11-17 on `feat/wrong-move-replies`. When a player makes a wrong move in a puzzle, the opponent replies with the move that punishes it, a short line says why, and the player can go back one move or reset the puzzle. Decision record: [0012](decisions/0012-wrong-move-replies.md) (to write in P5). Unfinished puzzles now start over when left ([decision 0011](decisions/0011-restart-unfinished-items.md)), so a wrong move on show is never restored.
 
 Progress:
 
@@ -99,7 +99,8 @@ Checked in this order; the first match wins.
   - `resetPuzzle(session)` sets ply to 0, clears `wrongMove` and hints; mistakes and help stay.
   - While `wrongMove` is set, answers, hints and Show answer are ignored.
   - No stored data for a move: behave as today (`lastWrong`, shake, "Not quite. Try again.").
-- `src/storage/schema.ts`: the saved session gains `wrongMove` (a move or `null`). Older saves load with `null`. A round saved mid-reply resumes there.
+- `src/storage/schema.ts`: the saved session gains `wrongMove` (a move or `null`) for validation; older saves load with `null`. Leaving or reopening clears it with the rest of the unfinished puzzle ([decision 0011](decisions/0011-restart-unfinished-items.md)).
+- Reset reuses `restartPuzzle` from decision 0011.
 
 ### 4. Screen (`src/app/workout.tsx`)
 
@@ -120,9 +121,9 @@ Checked in this order; the first match wins.
 | P0  | Measure                  | ✅ Results above                                                                                                                                                                                                                                                                                                                                                                   |
 | P1  | Full run                 | `content/refutations.json` committed; a second run with the progress file deleted gives the same file                                                                                                                                                                                                                                                                              |
 | P2  | Content access and tests | ✅ `src/content/refutations.ts` and `src/content/__tests__/refutations.test.ts`: every wrong move of every puzzle stored and nothing else; replies legal and reasons matching the board for every eighth puzzle (playing all 164,296 replies took 130 s; the sample takes 9 s). Both tests fail on a deliberately broken entry. Android bundle before P3 imports the file: 4.3 MB. |
-| P3  | Logic and save upgrade   | Unit tests: wrong move, back one move, reset, ignored input while wrong, missing data fallback, old saves, resume mid-reply; checkmate-theme wording                                                                                                                                                                                                                               |
+| P3  | Logic and save upgrade   | Unit tests: wrong move, back one move, reset, ignored input while wrong, missing data fallback, old saves, leaving mid-reply clears it; checkmate-theme wording                                                                                                                                                                                                                    |
 | P4  | Screen                   | Navigation test: wrong move → reply → reason → Back one move and Reset (found by label); visual check at mobile width in light and dark                                                                                                                                                                                                                                            |
-| P5  | Docs                     | Decision 0011; MVP.md, README, content-pipeline.md, DEVICE-TESTING.md and CLAUDE.md app map updated                                                                                                                                                                                                                                                                                |
+| P5  | Docs                     | Decision 0012; MVP.md, README, content-pipeline.md, DEVICE-TESTING.md and CLAUDE.md app map updated                                                                                                                                                                                                                                                                                |
 | P6  | Android device           | Cold start time with the new file; the pause and reply feel right; icons readable in both themes; TalkBack reads both buttons                                                                                                                                                                                                                                                      |
 
 ## Risks

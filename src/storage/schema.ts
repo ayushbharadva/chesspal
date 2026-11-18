@@ -2,7 +2,8 @@ import { guideById, puzzleById } from '@/content';
 import { readPosition } from '@/chess';
 import { courseLessonById } from '@/content/course';
 import { branchForGuide } from '@/content/lessons';
-import { lessonTarget } from '@/learning/lesson';
+import { restartCourseRun } from '@/course/path';
+import { lessonTarget, restartLesson } from '@/learning/lesson';
 import { PUZZLE_LEVELS, SKILL_THEMES } from '@/content/types';
 import { ROUTE_FORKS } from '@/daily-route/route';
 import {
@@ -13,6 +14,7 @@ import {
   type SavedProgress,
 } from '@/progress/types';
 import { emptyVisionScores, KEPT_SCORES } from '@/vision/coordinates';
+import { restartPuzzle } from '@/workout/session';
 
 function record(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
@@ -365,12 +367,21 @@ export function validProgress(value: unknown): value is SavedProgress {
   return session.results.length === session.index + (session.phase === 'feedback' ? 1 : 0);
 }
 
-/** A run in a lesson that has since been removed or shortened starts over. */
+/** A run in a lesson that has since been removed or shortened is dropped; others start over. */
 function courseProgressFor(value: SavedProgress['courseProgress'] | undefined) {
   if (!value) return emptyCourseProgress();
   const entry = value.current && courseLessonById[value.current.lessonId];
   const fits = entry && value.current!.step <= entry.lesson.steps.length;
-  return { ...value, current: fits ? value.current : null };
+  return { ...value, current: fits ? restartCourseRun(value.current) : null };
+}
+
+/** Opening lessons left part-way start again from their first move. */
+function lessonProgressFor(value: SavedProgress['lessonProgress'] | undefined) {
+  if (!value) return emptyLessonProgress();
+  const sessions = Object.fromEntries(
+    Object.entries(value.sessions).map(([key, session]) => [key, restartLesson(session)]),
+  );
+  return { ...value, sessions };
 }
 
 export function decodeProgress(raw: string) {
@@ -379,16 +390,18 @@ export function decodeProgress(raw: string) {
     throw new Error('Invalid saved progress');
   const { state } = envelope;
   const skill = state.currentSession?.skill;
+  // Skill rounds saved before levels were recorded were played at the saved level.
+  const session =
+    skill && skill.level === undefined
+      ? { ...state.currentSession!, skill: { ...skill, level: state.level ?? 1 } }
+      : state.currentSession;
   return {
     ...envelope,
     state: {
       ...state,
-      // Skill rounds saved before levels were recorded were played at the saved level.
-      currentSession:
-        skill && skill.level === undefined
-          ? { ...state.currentSession!, skill: { ...skill, level: state.level ?? 1 } }
-          : state.currentSession,
-      lessonProgress: state.lessonProgress ?? emptyLessonProgress(),
+      // Reopening the app starts an unfinished puzzle or lesson from the beginning.
+      currentSession: session && restartPuzzle(session),
+      lessonProgress: lessonProgressFor(state.lessonProgress),
       level: state.level ?? null,
       skillProgress: skillProgressByLevel(state.skillProgress, state.level),
       visionScores: state.visionScores ?? emptyVisionScores(),

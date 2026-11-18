@@ -13,8 +13,8 @@ Offline chess practice and opening guides for beginners who already know the rul
 - **Square trainer:** 30-second rounds of finding squares by name, from either side.
 - **Learn:** Italian Game, Caro-Kann Defence and Queen’s Gambit, with three example branches per guide. Follow a demonstration, practice with guidance, then recall without move notes or hints.
 - **Apply the idea:** six original exercises use unfamiliar positions. Try the stated goal, see its explanation after answering, and return for delayed recall.
-- **Next step:** Home helps you resume a lesson, return for a due recall, or apply an opening idea in a new position.
-- **Progress:** independent and assisted puzzle solves and lesson recalls, practiced guides, activity and streaks. Completed lessons count toward activity alongside workouts. Workouts, branch positions and exercises resume automatically.
+- **Next step:** Home helps you restart an unfinished lesson, return for a due recall, or apply an opening idea in a new position.
+- **Progress:** independent and assisted puzzle solves and lesson recalls, practiced guides, activity and streaks. Completed lessons count toward activity alongside workouts. Rounds continue from the puzzle you reached; a puzzle or lesson left part-way starts again from its beginning, keeping any help used.
 - **Recall:** scheduled reviews return after a delay, including puzzles previously solved independently. Workouts mix due reviews with fresh practice.
 - **Daily challenge:** five themed puzzles a day; twice you pick a normal or a hard puzzle, scored against your own usual score.
 - **Sound effects:** quiet wooden sounds for moves, captures, checks and checkmates, plus soft tones for solves and mistakes.

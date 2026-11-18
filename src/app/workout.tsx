@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { describeMove, playMove, positionAfter, readPosition, type Square } from '@/chess';
@@ -33,6 +33,9 @@ export default function WorkoutScreen() {
   const replayStep = useProgressStore((state) => state.replayStep);
   const next = useProgressStore((state) => state.continuePractice);
   const chooseRoute = useProgressStore((state) => state.chooseRoute);
+  const leavePractice = useProgressStore((state) => state.leavePractice);
+  // Leaving part-way starts the unfinished puzzle over next time.
+  useEffect(() => leavePractice, [leavePractice]);
   // The move tip is only for the first few puzzles a player ever sees.
   const newPlayer = useProgressStore((state) => state.attempts.length < 3);
   const haptic = useHaptics();

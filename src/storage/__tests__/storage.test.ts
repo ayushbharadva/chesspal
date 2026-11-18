@@ -8,19 +8,20 @@ beforeEach(async () => {
   await flushProgressWrites();
   await AsyncStorage.clear();
 });
-it('round-trips an interrupted session', async () => {
+it('starts an interrupted puzzle over on reload, keeping the round and its help', async () => {
+  const round = makeSession('resume', 'daily', '2026-10-13', []);
   const state = {
     ...emptyProgress(),
-    currentSession: {
-      ...makeSession('resume', 'daily', '2026-10-13', []),
-      usedHelp: true,
-      hintsShown: 1,
-    },
+    currentSession: { ...round, usedHelp: true, mistakes: 1, hintsShown: 1, lastWrong: true },
   };
   const raw = JSON.stringify({ state, version: 1 });
+  const restarted = {
+    ...state,
+    currentSession: { ...state.currentSession, hintsShown: 0, lastWrong: false },
+  };
   await progressStorage.setItem(PROGRESS_KEY, raw);
-  expect(await progressStorage.getItem(PROGRESS_KEY)).toBe(raw);
-  expect(decodeProgress(raw).state).toEqual(state);
+  expect(decodeProgress(raw).state).toEqual(restarted);
+  expect(JSON.parse((await progressStorage.getItem(PROGRESS_KEY))!).state).toEqual(restarted);
 });
 it('backs up corruption and rejects impossible saved positions', async () => {
   await AsyncStorage.setItem(PROGRESS_KEY, '{broken');

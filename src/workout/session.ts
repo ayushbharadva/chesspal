@@ -206,6 +206,18 @@ export function attemptFor(session: Session, puzzleId: string, now: Date): Attem
   };
 }
 
+/**
+ * Starts the current puzzle again from its first move, as when the player leaves a round part-way.
+ * Mistakes and help stay, so starting over never turns a helped solve into one without help.
+ */
+export function restartPuzzle(session: Session): Session {
+  if (session.phase !== 'solve' && session.phase !== 'replay') return session;
+  // Show answer counts as help, so a replay starts over as a replay.
+  const hintsShown = session.phase === 'replay' ? 3 : 0;
+  if (session.ply === 0 && session.hintsShown === hintsShown && !session.lastWrong) return session;
+  return { ...session, ply: 0, hintsShown, lastWrong: false };
+}
+
 export function nextPuzzle(session: Session): Session {
   if (session.phase !== 'feedback') return session;
   const index = session.index + 1;

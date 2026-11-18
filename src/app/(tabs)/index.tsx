@@ -29,7 +29,7 @@ import { ROUND_SIZE } from '@/workout/session';
 
 /** What the next opening step asks of the player, as the row's detail and spoken label. */
 const LESSON_STEPS = {
-  resume: { detail: 'Continue where you left off', action: 'Resume lesson' },
+  resume: { detail: 'You left it part-way', action: 'Restart lesson' },
   review: { detail: 'Play it again from memory', action: 'Review lesson' },
   apply: { detail: 'Try the idea in a new position', action: 'Try a new position' },
   learn: { detail: 'Watch the moves, then play them', action: 'Start lesson' },
