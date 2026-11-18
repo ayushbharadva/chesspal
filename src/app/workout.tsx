@@ -51,8 +51,6 @@ export default function WorkoutScreen() {
   );
   // Back one move and Reset jump the board back: a fresh board skips the slide and sound.
   const [takebacks, setTakebacks] = useState(0);
-  // Only a wrong move without a stored reply shakes the board.
-  const [shakes, setShakes] = useState(0);
   // Rest on the wrong move for a moment before the opponent's reply.
   const refuting = useReplyPause(
     `${session?.id}:${session?.index}:${takebacks}`,
@@ -160,7 +158,6 @@ export default function WorkoutScreen() {
     } else if (after?.lastWrong || after?.wrongMove) {
       haptic('error');
       playSound('wrong');
-      if (after.lastWrong) setShakes((count) => count + 1);
     } else haptic('tick');
   }
   const footer =
@@ -289,7 +286,6 @@ export default function WorkoutScreen() {
         successSquare={
           session.phase === 'feedback' && lastResult?.independent ? previous?.to : undefined
         }
-        shakeKey={shakes}
         wrongSquare={shownReply?.to}
       />
       {ruleMessage ? (

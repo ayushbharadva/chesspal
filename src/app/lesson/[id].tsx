@@ -185,7 +185,6 @@ export default function LessonScreen() {
           state.wrongLesson(key);
         }}
         lastMove={lastMove}
-        shakeKey={practicing ? (session?.mistakes ?? 0) : 0}
         hintSquare={hint && !transfer ? expected?.from : undefined}
       />
       {mode === 'learn' && !transfer && (

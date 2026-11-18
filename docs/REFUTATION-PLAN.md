@@ -63,7 +63,7 @@ Timings are from a 2-core cloud machine; divide the engine-hours by the number o
 - The reply's square uses the board's existing `wrongSquare` tint (`boardWrong`, already used by Learn drills), so no new colour pair was needed.
 - `IconButton` lives in `src/components/button.tsx` beside `Button`: 64 × 50 or larger, a required `accessibilityLabel`, the same variants. `undo-2` comes from `lucide-static` 1.75.0; `rotate-ccw` was already there and matches it.
 - A second `useReplyPause` holds the wrong move for 480 ms before the reply slides in; the buttons are disabled and the reason waits until the reply lands.
-- Back one move and Reset give the board a new `key`, so the jump back has no slide or sound. The board shakes only for a wrong move without a stored reply.
+- Back one move and Reset give the board a new `key`, so the jump back has no slide or sound. The board never shakes: the owner removed the shake everywhere on 2026-11-18.
 - The new-player tip and the hint are hidden while a wrong move is shown.
 - Checked in the web build at 390 px wide in light and dark mode with Chrome (a back-rank mate where Rd7 lets the queen take on e4 with check).
 
@@ -113,7 +113,7 @@ Checked in this order; the first match wins.
   - `undoWrongMove(session)` clears `wrongMove`, back to the same position.
   - `resetPuzzle(session)` sets ply to 0, clears `wrongMove` and hints; mistakes and help stay.
   - While `wrongMove` is set, answers, hints and Show answer are ignored.
-  - No stored data for a move: behave as today (`lastWrong`, shake, "Not quite. Try again.").
+  - No stored data for a move: `lastWrong` and "Not quite. Try again.", without a shake.
 - `src/storage/schema.ts`: the saved session gains `wrongMove` (a move or `null`) for validation; older saves load with `null`. Leaving or reopening clears it with the rest of the unfinished puzzle ([decision 0011](decisions/0011-restart-unfinished-items.md)).
 - Reset reuses `restartPuzzle` from decision 0011.
 

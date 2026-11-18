@@ -188,7 +188,7 @@ export function applyAnswer(session: Session, puzzle: Puzzle, move: string): Ses
   const result = checkPuzzleMove(puzzle, session.ply, move);
   if (!result.fen) return session;
   if (!result.correct) {
-    // Keep the move on the board for the stored reply; without one, shake and try again.
+    // Keep the move on the board for the stored reply; without one, just say try again.
     const refuted = refutationFor(puzzle.id, session.ply, move) !== undefined;
     return {
       ...session,

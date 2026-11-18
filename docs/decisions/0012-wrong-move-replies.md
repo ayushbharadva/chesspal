@@ -14,7 +14,8 @@ The app has no chess engine, and project rules say answers come from the engine-
 - **One reply, one line:** the wrong move stays on the board, the reply slides in after a short pause, its square turns red, and a line says why: the reply checkmates, takes a piece, or lets the king escape, or the opponent is safe now, with the theme's hint. A move that still leaves the player three pawns or more ahead is "Good move, but there's a stronger one" with no reply. Words are built in the app from the reason (`src/workout/refutation.ts`), so copy can change without rerunning the engine. Skill rounds that hide the theme get no theme hint.
 - **Two icon buttons:** Back one move (`undo-2`) and Reset (`rotate-ccw`), with spoken labels; on a puzzle's first move only Reset. Both keep the mistake, so the puzzle still counts as with help. Moves, Hint and Show answer wait until one is pressed.
 - **Puzzle rounds only:** practice, review, skills and the daily challenge, which share `workout.tsx`. Learn lessons and opening lessons are unchanged.
-- **Fallback:** a wrong move with no stored reply keeps the old shake and "Not quite. Try again."
+- **Fallback:** a wrong move with no stored reply says "Not quite. Try again."
+- **No shaking:** the board no longer shakes after any wrong move or tap, in puzzles, Learn lessons or opening lessons; the wrong tone, haptic and message are the feedback.
 
 ## Consequences
 

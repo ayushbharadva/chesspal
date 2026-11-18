@@ -97,7 +97,7 @@ describe('a wrong move with a stored reply', () => {
     expect(applyAnswer(undoWrongMove(wrongShown), puzzle, puzzle.moves[ply]).wrongMove).toBeNull();
   });
 
-  it('falls back to shake and try again when no reply is stored', () => {
+  it('falls back to try again when no reply is stored', () => {
     const lookup = jest.spyOn(refutations, 'refutationFor').mockReturnValueOnce(undefined);
     expect(applyAnswer(roundAt(puzzle), puzzle, wrong)).toMatchObject({
       wrongMove: null,
