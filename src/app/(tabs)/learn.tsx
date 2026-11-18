@@ -8,9 +8,14 @@ import { Screen } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
 import { Pill, ProgressBar } from '@/components/ui';
 import { courseLessons, courseSections } from '@/content/course';
+import { SectionMedallion } from '@/components/illustrations';
+import { type PieceType } from '@/chess';
 import { Spacing } from '@/constants/theme';
 import { bestStars, lessonStatus, nextCourseLesson, starTotals } from '@/course/path';
 import { useProgressStore } from '@/progress/store';
+
+/** Each section is marked by a piece of rising value, as the course climbs. */
+const SECTION_PIECES: readonly PieceType[] = ['p', 'n', 'r', 'q'];
 
 export default function LearnScreen() {
   const hydrated = useProgressStore((state) => state.hydrated);
@@ -81,16 +86,19 @@ export default function LearnScreen() {
 
       {courseSections.map((section, sectionIndex) => (
         <View key={section.id} style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <ThemedText type="label" themeColor="accent">
-              Section {sectionIndex + 1}
-            </ThemedText>
-            <ThemedText type="headline" accessibilityRole="header">
-              {section.title}
-            </ThemedText>
-            <ThemedText type="small" themeColor="textSecondary">
-              {section.summary}
-            </ThemedText>
+          <View style={styles.sectionRow}>
+            <SectionMedallion piece={SECTION_PIECES[sectionIndex] ?? 'k'} />
+            <View style={styles.sectionHeader}>
+              <ThemedText type="label" themeColor="accent">
+                Section {sectionIndex + 1}
+              </ThemedText>
+              <ThemedText type="headline" accessibilityRole="header">
+                {section.title}
+              </ThemedText>
+              <ThemedText type="small" themeColor="textSecondary">
+                {section.summary}
+              </ThemedText>
+            </View>
           </View>
           {section.units.map((unit) => {
             const ids = unit.lessons.map((lesson) => lesson.id);
@@ -139,7 +147,8 @@ const styles = StyleSheet.create({
   titleRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   heroText: { gap: Spacing.two, paddingRight: Spacing.five },
   section: { gap: Spacing.three, marginTop: Spacing.two },
-  sectionHeader: { gap: Spacing.one },
+  sectionHeader: { flex: 1, gap: Spacing.one },
+  sectionRow: { flexDirection: 'row', gap: Spacing.three, alignItems: 'flex-start' },
   unitHeader: {
     flexDirection: 'row',
     alignItems: 'center',
