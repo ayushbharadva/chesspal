@@ -1,5 +1,5 @@
 import { router, Stack, useLocalSearchParams } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { Button } from '@/components/button';
@@ -66,6 +66,9 @@ export default function CourseLessonScreen() {
   const finishStep = useProgressStore((state) => state.finishCourseStep);
   const closeCourse = useProgressStore((state) => state.closeCourse);
   const startCourse = useProgressStore((state) => state.startCourse);
+  const leaveCourse = useProgressStore((state) => state.leaveCourse);
+  // Leaving part-way starts the lesson over from step 1 next time.
+  useEffect(() => leaveCourse, [leaveCourse]);
   const [solved, setSolved] = useState<{ step: number; slips: number; note?: string } | null>(null);
   const run = current?.lessonId === id ? current : null;
 

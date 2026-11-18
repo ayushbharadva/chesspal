@@ -47,3 +47,7 @@ dist-web/
 
 # Local research artifacts and REA evidence
 .research/
+
+# Wrong-move reply runs: resume files and samples
+content/*.progress.jsonl
+content/refutations.sample.json

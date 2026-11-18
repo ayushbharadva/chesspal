@@ -1,10 +1,10 @@
 import { router } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { describeMove, playMove, positionAfter, readPosition, type Square } from '@/chess';
 import { Board } from '@/components/board/board';
-import { Button } from '@/components/button';
+import { Button, IconButton } from '@/components/button';
 import { Card } from '@/components/card';
 import { type IconName } from '@/components/icon';
 import { Screen } from '@/components/screen';
@@ -12,6 +12,7 @@ import { ThemedText } from '@/components/themed-text';
 import { RoutePath } from '@/components/route-path';
 import { IconBadge, ListRow, ProgressBar } from '@/components/ui';
 import { puzzleById } from '@/content';
+import { refutationFor } from '@/content/refutations';
 import { levelName } from '@/content/levels';
 import { skillById } from '@/content/skills';
 import { Spacing } from '@/constants/theme';
@@ -22,6 +23,7 @@ import { useTheme } from '@/hooks/use-theme';
 import { CHIME_DELAY_MS, playSound } from '@/sounds/play-sound';
 import { type Session } from '@/progress/types';
 import { RUNG_NAMES } from '@/skills/ladder';
+import { wrongMoveMessage } from '@/workout/refutation';
 import { useProgressStore } from '@/progress/store';
 
 export default function WorkoutScreen() {
@@ -33,6 +35,11 @@ export default function WorkoutScreen() {
   const replayStep = useProgressStore((state) => state.replayStep);
   const next = useProgressStore((state) => state.continuePractice);
   const chooseRoute = useProgressStore((state) => state.chooseRoute);
+  const undoWrong = useProgressStore((state) => state.undoWrongMove);
+  const resetPuzzle = useProgressStore((state) => state.resetPuzzle);
+  const leavePractice = useProgressStore((state) => state.leavePractice);
+  // Leaving part-way starts the unfinished puzzle over next time.
+  useEffect(() => leavePractice, [leavePractice]);
   // The move tip is only for the first few puzzles a player ever sees.
   const newPlayer = useProgressStore((state) => state.attempts.length < 3);
   const haptic = useHaptics();
@@ -40,6 +47,14 @@ export default function WorkoutScreen() {
   const replying = useReplyPause(
     `${session?.id}:${session?.index}`,
     session?.ply ?? 0,
+    session?.phase === 'solve',
+  );
+  // Back one move and Reset jump the board back: a fresh board skips the slide and sound.
+  const [takebacks, setTakebacks] = useState(0);
+  // Rest on the wrong move for a moment before the opponent's reply.
+  const refuting = useReplyPause(
+    `${session?.id}:${session?.index}:${takebacks}`,
+    session?.wrongMove ? 1 : 0,
     session?.phase === 'solve',
   );
   if (!hydrated)
@@ -92,27 +107,42 @@ export default function WorkoutScreen() {
     );
   const puzzle = puzzleById[session.puzzleIds[session.index]];
   const settledFen = session.acceptedFen ?? positionAfter(puzzle.fen, puzzle.moves, session.ply);
+  // A wrong move stays on the board with the opponent's stored reply.
+  const refutation = session.wrongMove
+    ? refutationFor(puzzle.id, session.ply, session.wrongMove)
+    : undefined;
+  const afterWrong = session.wrongMove ? playMove(settledFen, session.wrongMove).fen : null;
+  const reply = afterWrong && refutation?.reply ? playMove(afterWrong, refutation.reply) : null;
+  // Only the warm-up names the theme; later rounds test recognition.
+  const themeNamed = !(session.skill && session.skill.rung > 1);
   // Rest on the player's move for a moment before showing the opponent's reply.
-  const fen = replying ? positionAfter(puzzle.fen, puzzle.moves, session.ply - 1) : settledFen;
+  const shownReply = refuting ? null : reply;
+  const fen = replying
+    ? positionAfter(puzzle.fen, puzzle.moves, session.ply - 1)
+    : (shownReply?.fen ?? afterWrong ?? settledFen);
   const orientation = readPosition(puzzle.fen).turn;
   const expected =
     session.phase === 'solve' ? playMove(settledFen, puzzle.moves[session.ply]) : null;
-  const previous = replying
-    ? playMove(
-        positionAfter(puzzle.fen, puzzle.moves, session.ply - 2),
-        puzzle.moves[session.ply - 2],
-      )
-    : session.phase === 'feedback' && session.acceptedMove
-      ? {
-          from: session.acceptedMove.slice(0, 2) as Square,
-          to: session.acceptedMove.slice(2, 4) as Square,
-        }
-      : session.ply > 0
+  const previous = shownReply
+    ? shownReply
+    : afterWrong
+      ? playMove(settledFen, session.wrongMove!)
+      : replying
         ? playMove(
-            positionAfter(puzzle.fen, puzzle.moves, session.ply - 1),
-            puzzle.moves[session.ply - 1],
+            positionAfter(puzzle.fen, puzzle.moves, session.ply - 2),
+            puzzle.moves[session.ply - 2],
           )
-        : undefined;
+        : session.phase === 'feedback' && session.acceptedMove
+          ? {
+              from: session.acceptedMove.slice(0, 2) as Square,
+              to: session.acceptedMove.slice(2, 4) as Square,
+            }
+          : session.ply > 0
+            ? playMove(
+                positionAfter(puzzle.fen, puzzle.moves, session.ply - 1),
+                puzzle.moves[session.ply - 1],
+              )
+            : undefined;
   const lastResult = session.results.at(-1);
   const route = session.route;
   function play(move: string) {
@@ -125,13 +155,36 @@ export default function WorkoutScreen() {
       const earned = after.results.at(-1)?.independent;
       if (earned && !readPosition(after.acceptedFen!).checkmate)
         setTimeout(() => playSound('correct'), CHIME_DELAY_MS);
-    } else if (after?.lastWrong) {
+    } else if (after?.lastWrong || after?.wrongMove) {
       haptic('error');
       playSound('wrong');
     } else haptic('tick');
   }
   const footer =
-    session.phase === 'solve' ? (
+    session.phase === 'solve' && session.wrongMove ? (
+      <View style={styles.iconActions}>
+        {session.ply > 0 && (
+          <IconButton
+            icon="undo-2"
+            accessibilityLabel="Back one move"
+            disabled={refuting}
+            onPress={() => {
+              setTakebacks((count) => count + 1);
+              undoWrong();
+            }}
+          />
+        )}
+        <IconButton
+          icon="rotate-ccw"
+          accessibilityLabel="Reset"
+          disabled={refuting}
+          onPress={() => {
+            setTakebacks((count) => count + 1);
+            resetPuzzle();
+          }}
+        />
+      </View>
+    ) : session.phase === 'solve' ? (
       <View style={styles.actions}>
         <View style={styles.action}>
           <Button
@@ -210,36 +263,43 @@ export default function WorkoutScreen() {
           />
         )}
         <ThemedText type="headline" accessibilityRole="header">
-          {/* Only the warm-up names the theme; later rounds test recognition. */}
-          {session.skill && session.skill.rung > 1 ? 'Find the best move' : puzzle.goal}
+          {themeNamed ? puzzle.goal : 'Find the best move'}
         </ThemedText>
-        {newPlayer && session.phase === 'solve' && (
+        {newPlayer && session.phase === 'solve' && !session.wrongMove && (
           <ThemedText type="small" themeColor="textSecondary">
             Tap or drag a piece to move.
           </ThemedText>
         )}
       </View>
       <Board
+        key={`${session.index}:${takebacks}`}
         fen={fen}
         orientation={orientation}
-        interactive={session.phase === 'solve' && !replying}
+        interactive={session.phase === 'solve' && !replying && !session.wrongMove}
         onMove={play}
         onIllegalMove={() => {
           haptic('error');
           setRuleMessage("That piece can't move there.");
         }}
         lastMove={previous}
-        hintSquare={session.hintsShown >= 2 ? expected?.from : undefined}
+        hintSquare={session.hintsShown >= 2 && !session.wrongMove ? expected?.from : undefined}
         successSquare={
           session.phase === 'feedback' && lastResult?.independent ? previous?.to : undefined
         }
-        shakeKey={session.mistakes}
+        wrongSquare={shownReply?.to}
       />
       {ruleMessage ? (
         <ThemedText type="small" themeColor="textSecondary" accessibilityLiveRegion="polite">
           {ruleMessage}
         </ThemedText>
       ) : null}
+      {session.wrongMove && refutation && !refuting && (
+        <Card variant="danger">
+          <Feedback icon="x" tone="danger" title="Not quite.">
+            {wrongMoveMessage(puzzle, session.ply, session.wrongMove, refutation, themeNamed)}
+          </Feedback>
+        </Card>
+      )}
       {session.lastWrong && (
         <Card variant="danger">
           <Feedback icon="x" tone="danger" title="Not quite. Try again.">
@@ -247,7 +307,7 @@ export default function WorkoutScreen() {
           </Feedback>
         </Card>
       )}
-      {session.phase === 'solve' && session.hintsShown > 0 && (
+      {session.phase === 'solve' && session.hintsShown > 0 && !session.wrongMove && (
         <Card variant="accent">
           <Feedback icon="lightbulb" tone="accent" title={`Hint ${session.hintsShown}`}>
             {session.hintsShown === 1
@@ -349,6 +409,7 @@ const styles = StyleSheet.create({
   turn: { flexDirection: 'row', alignItems: 'center', gap: Spacing.one + Spacing.half },
   turnDot: { width: 12, height: 12, borderRadius: 6, borderWidth: 1 },
   actions: { flexDirection: 'row', gap: Spacing.two },
+  iconActions: { flexDirection: 'row', justifyContent: 'center', gap: Spacing.three },
   action: { flex: 1 },
   feedback: { flexDirection: 'row', gap: Spacing.three, alignItems: 'flex-start' },
   feedbackText: { flex: 1, gap: Spacing.one },

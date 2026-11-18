@@ -12,7 +12,13 @@ The 2026-11-03 run verified all 3,200 candidates: the 1,059 earlier puzzles and 
 
 The bundle records each source puzzle ID, original game URL, license, engine version, search depth and verification time. Goals and first hints come from `content/skills.json`; explanations are original templates filled only with verified facts (the final capture or mate). They are short starter explanations; beginner testing and chess-editor review remain useful before a public release.
 
-No player rating is inferred from the source puzzle ratings; the player chooses a level. Any legal immediate checkmate is accepted, including alternatives to the recorded line. Other answers follow the verified line. A legal wrong move receives a retry prompt without an invented engine refutation.
+No player rating is inferred from the source puzzle ratings; the player chooses a level. Any legal immediate checkmate is accepted, including alternatives to the recorded line. Other answers follow the verified line.
+
+### Wrong-move replies
+
+Run `npm run content:refutations` after any change to `content/puzzles.json` ([decision 0012](decisions/0012-wrong-move-replies.md), [plan and measurements](REFUTATION-PLAN.md)). For every position where the player moves, it tries every legal move except the answer and any checkmate, asks Stockfish 19 Lite at depth 14 for the opponent's best reply, and writes `content/refutations.json`: puzzle id → one string per player move, listing `wrong move + reply + reason letter` (`f4f5e6f5c`: f4–f5, answered by e6xf5, a capture). Reasons, in order: stalemate (no reply), still winning by three pawns or more (no reply), the reply mates, the reply captures, the king escapes in a checkmate puzzle, otherwise the opponent is safe. A fresh hash for each search keeps output identical between runs.
+
+The 2026-11-18 run searched 164,296 wrong moves in 3.6 engine-hours; the file is 1.74 MB and loads on the first wrong move. `--engines N` sets parallel engines (default: CPU cores minus one), `--minutes N` stops after N minutes, and progress in `content/refutations.json.progress.jsonl` (gitignored) lets a run resume; after changing how reasons are chosen, delete that file. `--sample 50` measures a spread of 50 puzzles. `src/content/__tests__/refutations.test.ts` requires every wrong move to be stored and nothing else, and checks replies and reasons against chess.js for every eighth puzzle.
 
 `content/skills.json` holds the original concept card, "look for" cue, goal and first hint for each theme, and the two units that group them.
 

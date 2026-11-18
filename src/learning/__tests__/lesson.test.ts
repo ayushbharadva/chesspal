@@ -7,6 +7,7 @@ import {
   lessonKey,
   lessonReviews,
   nextLessonReview,
+  restartLesson,
 } from '@/learning/lesson';
 import { emptyProgress, type LessonSession } from '@/progress/types';
 import { useProgressStore } from '@/progress/store';
@@ -21,9 +22,7 @@ function finish(session: LessonSession) {
   }
   return session;
 }
-beforeEach(() =>
-  useProgressStore.setState({ ...emptyProgress(), hydrated: true, lessonNotice: null }),
-);
+beforeEach(() => useProgressStore.setState({ ...emptyProgress(), hydrated: true }));
 
 it.each(['italian-game', 'caro-kann', 'queens-gambit'])(
   'learns branches with guidance before independent recall: %s',
@@ -78,7 +77,7 @@ it('tracks assistance and retries without recording duplicate completions', () =
   expect(store().lessonProgress.attempts.at(-1)?.independent).toBe(false);
 });
 
-it('hydrates a supported branch switch under its actual target key, then restarts and reviews it', () => {
+it('reloads a supported branch switch under its actual target key from its first move, then reviews it', () => {
   const state = useProgressStore.getState;
   const key = lessonKey('branch', 'italian-game', 'main');
   const recalledKey = lessonKey('branch', 'italian-game', 'evans-gambit');
@@ -93,7 +92,12 @@ it('hydrates a supported branch switch under its actual target key, then restart
   expect(state().lessonProgress.selected['italian-game']).toBe(recalledKey);
   state().selectLesson('italian-game', 'branch', 'main');
   expect(state().lessonProgress.sessions[key]).toBeUndefined();
-  expect(state().lessonProgress.sessions[recalledKey]).toEqual(switched);
+  expect(switched.ply).toBe(8);
+  expect(state().lessonProgress.sessions[recalledKey]).toEqual({
+    ...switched,
+    ply: 0,
+    acceptedMove: null,
+  });
   state().startLesson('italian-game', 'branch', 'evans-gambit');
   while (state().lessonProgress.sessions[recalledKey].phase === 'solve') {
     state().answerLesson(
@@ -113,7 +117,7 @@ it('hydrates a supported branch switch under its actual target key, then restart
   });
 });
 
-it('resumes an unfinished destination without replacing it or advancing the interrupted source', () => {
+it('carries on into a variation left unfinished earlier, keeping its earlier mistakes', () => {
   const state = useProgressStore.getState;
   const mainKey = lessonKey('branch', 'italian-game', 'main');
   const alternateKey = lessonKey('branch', 'italian-game', 'evans-gambit');
@@ -125,35 +129,52 @@ it('resumes an unfinished destination without replacing it or advancing the inte
   );
   let main = beginLesson('italian-game', 'branch', 'main', [], now)!;
   for (const ply of [0, 2, 4]) main = answerLesson(main, mainBranch.moves[ply]);
-  let saved = beginLesson('italian-game', 'branch', 'evans-gambit', [first], now)!;
-  for (const ply of [0, 2, 4, 6, 8]) saved = answerLesson(saved, alternate.moves[ply]);
-  saved = { ...saved, usedHelp: true, hintShown: true, mistakes: 2 };
+  let left = beginLesson('italian-game', 'branch', 'evans-gambit', [first], now)!;
+  for (const ply of [0, 2, 4, 6, 8]) left = answerLesson(left, alternate.moves[ply]);
+  left = restartLesson({ ...left, usedHelp: true, mistakes: 2 });
+  expect(left).toMatchObject({ ply: 0, usedHelp: true, mistakes: 2, phase: 'solve' });
   useProgressStore.setState({
     lessonProgress: {
       ...emptyProgress().lessonProgress,
       attempts: [first],
-      sessions: { [mainKey]: main, [alternateKey]: saved },
+      sessions: { [mainKey]: main, [alternateKey]: left },
       selected: { 'italian-game': mainKey },
     },
   });
   state().answerLesson(mainKey, 'b2b4');
   expect(state().lessonProgress.selected['italian-game']).toBe(alternateKey);
-  expect(state().lessonProgress.sessions[alternateKey]).toEqual(saved);
-  expect(state().lessonProgress.sessions[mainKey]).toEqual(main);
-  expect(state().lessonProgress.attempts).toEqual([first]);
-  expect(state().lessonNotice?.text).toMatch(/Picking up where you left off/);
-  const snapshot = { ...emptyProgress(), lessonProgress: state().lessonProgress };
-  expect(decodeProgress(JSON.stringify({ state: snapshot, version: 1 })).state).toEqual(snapshot);
-  state().startLesson('italian-game', 'branch', 'main');
-  state().answerLesson(mainKey, 'c2c3');
-  expect(state().lessonProgress.sessions[mainKey].ply).toBe(8);
-  expect(state().lessonProgress.sessions[alternateKey]).toEqual(saved);
-  state().answerLesson(alternateKey, alternate.moves[10]);
+  expect(state().lessonProgress.sessions[mainKey]).toBeUndefined();
+  expect(state().lessonProgress.sessions[alternateKey]).toMatchObject({
+    id: main.id,
+    ply: 8,
+    usedHelp: true,
+    mistakes: 2,
+  });
+  for (const ply of [8, 10]) state().answerLesson(alternateKey, alternate.moves[ply]);
   expect(state().lessonProgress.attempts).toHaveLength(2);
   expect(state().lessonProgress.attempts.at(-1)).toMatchObject({
     targetId: 'evans-gambit',
     independent: false,
   });
+});
+
+it('starts unfinished lessons over when they are left or the app reopens, keeping help', () => {
+  const state = useProgressStore.getState;
+  const key = lessonKey('branch', 'caro-kann', 'main');
+  state().startLesson('caro-kann', 'branch', 'main');
+  const branch = branchForGuide('caro-kann', 'main')!;
+  state().helpLesson(key);
+  state().answerLesson(key, branch.moves[1]);
+  state().wrongLesson(key);
+  expect(state().lessonProgress.sessions[key]).toMatchObject({ ply: 3, lastWrong: true });
+  const saved = { ...emptyProgress(), lessonProgress: state().lessonProgress };
+  const reopened = decodeProgress(JSON.stringify({ state: saved, version: 1 })).state;
+  state().leaveLessons();
+  for (const session of [
+    state().lessonProgress.sessions[key],
+    reopened.lessonProgress.sessions[key],
+  ])
+    expect(session).toMatchObject({ ply: 1, lastWrong: false, usedHelp: true, mistakes: 1 });
 });
 
 it('rejects noncanonical lesson keys without changing real legacy progress support', () => {
@@ -169,7 +190,7 @@ it('rejects noncanonical lesson keys without changing real legacy progress suppo
   expect(validProgress(state)).toBe(false);
 });
 
-it('resumes legacy main practice with guidance, then restarts from the beginning without hints', () => {
+it('starts main practice from its first move despite an old saved position, then restarts without hints', () => {
   const state = useProgressStore.getState;
   const key = lessonKey('branch', 'caro-kann', 'main');
   useProgressStore.setState({
@@ -178,7 +199,7 @@ it('resumes legacy main practice with guidance, then restarts from the beginning
     },
   });
   state().startLesson('caro-kann', 'branch', 'main');
-  expect(state().lessonProgress.sessions[key]).toMatchObject({ ply: 3, scaffold: 'guided' });
+  expect(state().lessonProgress.sessions[key]).toMatchObject({ ply: 1, scaffold: 'guided' });
   while (state().lessonProgress.sessions[key].phase === 'solve') {
     const session = state().lessonProgress.sessions[key];
     state().answerLesson(key, branchForGuide('caro-kann', 'main')!.moves[session.ply]);
@@ -235,15 +256,9 @@ it('preserves legacy viewing, partial practice and completion without granting i
   expect(normalized.guideProgress).toEqual(legacy.guideProgress);
   expect(normalized.attempts).toEqual(legacy.attempts);
   expect(normalized.lessonProgress.attempts).toEqual([]);
-  const resumed = beginLesson(
-    'caro-kann',
-    'branch',
-    'main',
-    [],
-    now,
-    normalized.guideProgress['caro-kann'].practicePly,
-  )!;
-  expect(resumed).toMatchObject({ ply: 3, scaffold: 'guided', usedHelp: true });
+  // A saved practice position no longer resumes the main line part-way.
+  const started = beginLesson('caro-kann', 'branch', 'main', [], now)!;
+  expect(started).toMatchObject({ ply: 1, scaffold: 'guided', usedHelp: true });
 });
 
 it('validates a resumed branch and transfer with assistance and rejects impossible progress', () => {

@@ -3,6 +3,7 @@ import {
   bestStars,
   lessonStatus,
   nextCourseLesson,
+  restartCourseRun,
   sectionFinished,
   starsForSlips,
   starTotals,
@@ -57,4 +58,15 @@ describe('course path', () => {
   it('turns slips into stars', () => {
     expect([0, 1, 2, 3, 9].map(starsForSlips)).toEqual([3, 2, 2, 1, 1]);
   });
+});
+
+it('starts an unfinished lesson over from step 1, keeping slips, and keeps a finished one', () => {
+  const { lesson } = courseLessons[0];
+  const run = { lessonId: lesson.id, step: 2, slips: 1 };
+  expect(restartCourseRun(run)).toEqual({ ...run, step: 0 });
+  const start = { ...run, step: 0 };
+  expect(restartCourseRun(start)).toBe(start);
+  const finished = { ...run, step: lesson.steps.length };
+  expect(restartCourseRun(finished)).toBe(finished);
+  expect(restartCourseRun(null)).toBeNull();
 });

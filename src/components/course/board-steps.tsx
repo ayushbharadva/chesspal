@@ -127,7 +127,6 @@ export function CaptureStep({ step, onComplete, done }: StepProps<'capture'>) {
         lastMove={lastMove}
         marks={step.marks}
         arrows={state.moves === 0 ? step.arrows : undefined}
-        shakeKey={feedback.mistakes}
       />
       <Message text={message} />
     </View>
@@ -164,7 +163,6 @@ export function TapStep({ step, onComplete, done }: StepProps<'tap'>) {
         found={done ? step.answers : found}
         wrongSquare={wrongSquare}
         onSquarePress={onSquarePress}
-        shakeKey={feedback.mistakes}
       />
       <Message
         text={
@@ -234,7 +232,6 @@ export function MoveStep({ step, onComplete, done }: StepProps<'move'>) {
         hintSquare={state.hint && !done ? (step.line[state.ply].slice(0, 2) as Square) : undefined}
         marks={step.marks}
         arrows={state.ply === 0 && !lastMove ? step.arrows : undefined}
-        shakeKey={feedback.mistakes}
       />
       <Message text={state.hint && !done ? step.hint : message} />
       {!done && !state.hint && (
@@ -314,7 +311,6 @@ export function PlayStep({ step, onComplete, done }: StepProps<'play'>) {
         onMove={onMove}
         lastMove={lastMove}
         marks={state.moves === 0 ? step.marks : undefined}
-        shakeKey={feedback.mistakes}
       />
       <Message
         text={

@@ -1,8 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react-native';
-import { Animated } from 'react-native';
 import { INITIAL_POSITION, playMove, positionAfter } from '@/chess';
 import { Board, dropSquare } from '@/components/board/board';
-import { useMotionEnabled } from '@/hooks/use-motion';
 import { playSound } from '@/sounds/play-sound';
 
 jest.mock('@/sounds/play-sound', () => ({ playSound: jest.fn() }));
@@ -31,19 +29,6 @@ it('requires a promotion choice and supports underpromotion', async () => {
   expect(onMove).not.toHaveBeenCalled();
   await fireEvent.press(screen.getByRole('button', { name: 'Promote to knight' }));
   expect(onMove).toHaveBeenCalledWith('a7a8n');
-});
-
-it('shakes only when the mistake count rises, not when it resets for the next puzzle', async () => {
-  jest.mocked(useMotionEnabled).mockReturnValue(true);
-  const sequence = jest.spyOn(Animated, 'sequence');
-  const board = (mistakes: number) => <Board fen={INITIAL_POSITION} shakeKey={mistakes} />;
-  const view = await render(board(0));
-  await view.rerender(board(1));
-  expect(sequence).toHaveBeenCalledTimes(1);
-  await view.rerender(board(0));
-  expect(sequence).toHaveBeenCalledTimes(1);
-  sequence.mockRestore();
-  jest.mocked(useMotionEnabled).mockReturnValue(false);
 });
 
 describe('dropSquare', () => {

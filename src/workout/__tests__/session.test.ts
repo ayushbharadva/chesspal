@@ -8,6 +8,7 @@ import {
   makeSession,
   nextPuzzle,
   relevelSession,
+  restartPuzzle,
   ROUND_SIZE,
   selectPuzzles,
 } from '@/workout/session';
@@ -236,4 +237,23 @@ describe('relevelSession', () => {
     const done = { ...makeSession('daily', 'daily', today, [], 1), phase: 'complete' as const };
     expect(relevelSession(done, [], 5)).toBe(done);
   });
+});
+
+it('starts the current puzzle over without forgetting help, and leaves finished ones alone', () => {
+  const puzzle = puzzles.find((candidate) => candidate.moves.length >= 3)!;
+  const round = { ...makeSession('restart', 'extra', '2026-11-18', []), puzzleIds: [puzzle.id] };
+  const midway = {
+    ...applyAnswer(round, puzzle, puzzle.moves[0]),
+    hintsShown: 2,
+    usedHelp: true,
+    mistakes: 1,
+    lastWrong: true,
+  };
+  expect(midway.ply).toBe(2);
+  expect(restartPuzzle(midway)).toEqual({ ...midway, ply: 0, hintsShown: 0, lastWrong: false });
+  expect(restartPuzzle(round)).toBe(round);
+  const replay = { ...round, phase: 'replay' as const, ply: 2, hintsShown: 3, usedHelp: true };
+  expect(restartPuzzle(replay)).toEqual({ ...replay, ply: 0 });
+  const feedback = { ...round, phase: 'feedback' as const };
+  expect(restartPuzzle(feedback)).toBe(feedback);
 });

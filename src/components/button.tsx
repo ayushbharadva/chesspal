@@ -57,6 +57,35 @@ export function Button({
   );
 }
 
+type IconButtonProps = Omit<PressableProps, 'children' | 'style'> & {
+  icon: IconName;
+  /** Read aloud by TalkBack and used by tests, since the button shows no text. */
+  accessibilityLabel: string;
+  variant?: ButtonProps['variant'];
+};
+
+/** A square button showing only an icon, for actions whose icon is clear without words. */
+export function IconButton({ icon, variant = 'secondary', ...rest }: IconButtonProps) {
+  const theme = useTheme();
+  const colors = variants[variant];
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityState={{ disabled: Boolean(rest.disabled) }}
+      style={({ pressed }) => [
+        styles.button,
+        styles.iconOnly,
+        colors.background && { backgroundColor: theme[colors.background] },
+        colors.border && { borderColor: theme[colors.border], borderWidth: 1 },
+        pressed && styles.pressed,
+        rest.disabled && styles.disabled,
+      ]}
+      {...rest}>
+      <Icon name={icon} size={22} color={colors.text} />
+    </Pressable>
+  );
+}
+
 const styles = StyleSheet.create({
   button: {
     minHeight: 54,
@@ -67,6 +96,8 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.two,
   },
   compact: { minHeight: 50, paddingHorizontal: Spacing.two },
+  // Wider than Android's 48 dp minimum touch target.
+  iconOnly: { minHeight: 50, minWidth: 64, paddingHorizontal: Spacing.three },
   content: { flexDirection: 'row', alignItems: 'center', gap: Spacing.two },
   label: { fontFamily: Fonts.semibold, fontSize: 16, lineHeight: 22, textAlign: 'center' },
   pressed: { opacity: 0.85, transform: [{ scale: 0.98 }] },

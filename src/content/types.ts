@@ -41,6 +41,18 @@ export interface Puzzle {
   verification: { engine: string; depth: number; checkedAt: string };
 }
 
+/** Why a wrong puzzle move fails, as stored in `content/refutations.json`. */
+export type RefutationReason = 'stalemate' | 'alsoGood' | 'mate' | 'capture' | 'escape' | 'defend';
+/** One letter per reason in the stored file; none of them is a promotion letter (q, r, b, n). */
+export const REFUTATION_REASON_LETTERS: Record<RefutationReason, string> = {
+  stalemate: 's',
+  alsoGood: 'g',
+  mate: 'm',
+  capture: 'c',
+  escape: 'e',
+  defend: 'd',
+};
+
 export interface OpeningGuide {
   id: string;
   title: string;

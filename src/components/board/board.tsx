@@ -51,8 +51,6 @@ interface BoardProps {
   hintSquare?: Square;
   /** Square to mark as a correct answer. */
   successSquare?: Square;
-  /** Raise this number to shake the board, such as a mistake count after a wrong move. */
-  shakeKey?: number;
   /** Squares a drill piece should reach. */
   stars?: readonly string[];
   /** Squares tinted to draw the eye, such as a square being named. */
@@ -88,7 +86,6 @@ export function Board({
   lastMove,
   hintSquare,
   successSquare,
-  shakeKey = 0,
   stars = [],
   marks = [],
   arrows = [],
@@ -110,7 +107,6 @@ export function Board({
   const [dragging, setDragging] = useState<Square | null>(null);
   const [dropped, setDropped] = useState<string | null>(null);
   const [dragOffset] = useState(() => new Animated.ValueXY());
-  const [shake] = useState(() => new Animated.Value(0));
   const position = useMemo(() => readPosition(fen), [fen]);
   const selected = selection?.fen === fen ? selection.square : null;
   const targets = useMemo(() => (selected ? legalMoves(fen, selected) : []), [fen, selected]);
@@ -168,17 +164,6 @@ export function Board({
     // moveKey already changes whenever lastMove does.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fen, moveKey]);
-
-  const previousShake = useRef(shakeKey);
-  useEffect(() => {
-    // Only a rise shakes: a count reset for the next puzzle is not a mistake.
-    const rose = shakeKey > previousShake.current;
-    previousShake.current = shakeKey;
-    if (!rose || !motion) return;
-    const nudge = (toValue: number) =>
-      Animated.timing(shake, { toValue, duration: 50, useNativeDriver: USE_NATIVE_DRIVER });
-    Animated.sequence([nudge(-7), nudge(7), nudge(-4), nudge(4), nudge(0)]).start();
-  }, [shakeKey, shake, motion]);
 
   /** Plays a move if legal, asking first for a promotion. Returns false when it is not legal. */
   function play(from: Square, to: Square, wasDropped: boolean) {
@@ -299,7 +284,6 @@ export function Board({
           {
             backgroundColor: theme.boardDark,
             boxShadow: elevation.raised,
-            transform: [{ translateX: shake }],
           },
         ]}
         accessibilityLabel="Chessboard">
