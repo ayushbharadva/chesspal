@@ -43,6 +43,7 @@ const textOnBackgroundPairs = [
   ['danger', 'dangerSurface'],
   ['streak', 'background'],
   ['streak', 'surface'],
+  ['boardFrameLabel', 'boardFrame'],
   ['boardLabelLight', 'boardLight'],
   ['boardLabelDark', 'boardDark'],
   ['boardLabelLight', 'boardLastLight'],

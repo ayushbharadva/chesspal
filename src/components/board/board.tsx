@@ -278,222 +278,243 @@ export function Board({
 
   return (
     <View>
-      <Animated.View
-        onLayout={(event) => setBoardSize(event.nativeEvent.layout.width)}
-        style={[
-          styles.board,
-          {
-            backgroundColor: theme.boardDark,
-            boxShadow: elevation.raised,
-          },
-        ]}
-        accessibilityLabel="Chessboard">
-        {ranks.split('').map((rank, row) => (
-          <View key={rank} style={styles.row}>
-            {files.split('').map((file, column) => {
-              const square = `${file}${rank}` as Square;
-              const piece = position.pieces.find((candidate) => candidate.square === square);
-              const light = (row + column) % 2 === 0;
-              const isTarget = targets.some((move) => move.to === square);
-              const highlighted =
-                selected === square || lastMove?.from === square || lastMove?.to === square;
-              const labelColor = light
-                ? theme.boardLabelLight
-                : highlighted
-                  ? theme.boardLabelHighlight
-                  : theme.boardLabelDark;
-              const star = stars.includes(square);
-              const label = `${square}, ${piece ? `${piece.color === 'w' ? 'white' : 'black'} ${PIECE_NAMES[piece.type]}` : 'empty'}${star ? ', star' : ''}${isTarget ? ', legal destination' : ''}`;
-              const tint = found.includes(square)
-                ? theme.boardSuccess
-                : wrongSquare === square
-                  ? theme.boardWrong
-                  : marks.includes(square)
-                    ? theme.boardMark
-                    : undefined;
-              const hidden = dragging === square || (sliding && lastMove?.to === square);
-              return (
-                <View key={square} style={styles.square} {...dragHandlers[square]?.panHandlers}>
-                  <Pressable
-                    testID={`square-${square}`}
-                    accessibilityRole="button"
-                    accessibilityLabel={label}
-                    accessibilityState={{
-                      selected: selected === square || found.includes(square),
-                      disabled: !interactive && !onSquarePress,
-                    }}
-                    accessibilityHint={
-                      onSquarePress
-                        ? 'Tap to choose this square'
-                        : interactive
-                          ? isTarget
-                            ? 'Tap to move here'
-                            : 'Tap your piece to see its legal moves'
-                          : 'Board preview'
-                    }
-                    onPress={() => selectSquare(square)}
-                    style={[
-                      styles.squareFill,
-                      {
-                        backgroundColor: highlighted
-                          ? light
-                            ? theme.boardLastLight
-                            : theme.boardLastDark
-                          : light
-                            ? theme.boardLight
-                            : theme.boardDark,
-                      },
-                    ]}>
-                    {tint && (
-                      <View pointerEvents="none" style={[styles.tint, { backgroundColor: tint }]} />
-                    )}
-                    {star && !piece && (
-                      <View pointerEvents="none" style={styles.star}>
-                        <Icon
-                          name="star"
-                          size={Math.max(12, squareSize * 0.55)}
-                          color="boardStar"
-                          fill="boardStar"
-                          strokeWidth={1.5}
-                        />
-                      </View>
-                    )}
-                    {successSquare === square && (
-                      <View
-                        pointerEvents="none"
-                        style={[styles.tint, { backgroundColor: theme.boardSuccess }]}
-                      />
-                    )}
-                    {successSquare === square && <SuccessBurst />}
-                    {checkedKing === square && (
-                      <View
-                        pointerEvents="none"
-                        style={[styles.check, { backgroundColor: theme.boardCheck }]}
-                      />
-                    )}
-                    {hintSquare === square && selected !== square && (
-                      <View
-                        pointerEvents="none"
-                        style={[styles.outline, { borderColor: theme.boardFocus }]}
-                      />
-                    )}
-                    {piece && !hidden && <Piece piece={piece} />}
-                    {isTarget && (
-                      <View
-                        pointerEvents="none"
-                        style={[
-                          piece ? styles.captureTarget : styles.target,
-                          piece
-                            ? { borderColor: theme.boardTarget }
-                            : { backgroundColor: theme.boardTarget },
-                        ]}
-                      />
-                    )}
-                    {column === 0 && (
-                      <ThemedText style={[styles.rank, { color: labelColor }]}>{rank}</ThemedText>
-                    )}
-                    {row === 7 && (
-                      <ThemedText style={[styles.file, { color: labelColor }]}>{file}</ThemedText>
-                    )}
-                  </Pressable>
-                </View>
-              );
-            })}
+      {/* A walnut frame carries the coordinates, so no label sits on top of a piece. */}
+      <View
+        style={[styles.frame, { backgroundColor: theme.boardFrame, boxShadow: elevation.raised }]}>
+        <View style={styles.frameRow}>
+          <View
+            style={styles.rankColumn}
+            accessibilityElementsHidden
+            importantForAccessibility="no-hide-descendants">
+            {ranks.split('').map((rank) => (
+              <View key={rank} style={styles.frameCell}>
+                <ThemedText style={[styles.frameLabel, { color: theme.boardFrameLabel }]}>
+                  {rank}
+                </ThemedText>
+              </View>
+            ))}
           </View>
-        ))}
-      </Animated.View>
-      {arrows.length > 0 && boardSize > 0 && (
+          <View style={styles.boardArea}>
+            <Animated.View
+              onLayout={(event) => setBoardSize(event.nativeEvent.layout.width)}
+              style={[styles.board, { backgroundColor: theme.boardDark }]}
+              accessibilityLabel="Chessboard">
+              {ranks.split('').map((rank, row) => (
+                <View key={rank} style={styles.row}>
+                  {files.split('').map((file, column) => {
+                    const square = `${file}${rank}` as Square;
+                    const piece = position.pieces.find((candidate) => candidate.square === square);
+                    const light = (row + column) % 2 === 0;
+                    const isTarget = targets.some((move) => move.to === square);
+                    const highlighted =
+                      selected === square || lastMove?.from === square || lastMove?.to === square;
+                    const star = stars.includes(square);
+                    const label = `${square}, ${piece ? `${piece.color === 'w' ? 'white' : 'black'} ${PIECE_NAMES[piece.type]}` : 'empty'}${star ? ', star' : ''}${isTarget ? ', legal destination' : ''}`;
+                    const tint = found.includes(square)
+                      ? theme.boardSuccess
+                      : wrongSquare === square
+                        ? theme.boardWrong
+                        : marks.includes(square)
+                          ? theme.boardMark
+                          : undefined;
+                    const hidden = dragging === square || (sliding && lastMove?.to === square);
+                    return (
+                      <View
+                        key={square}
+                        style={styles.square}
+                        {...dragHandlers[square]?.panHandlers}>
+                        <Pressable
+                          testID={`square-${square}`}
+                          accessibilityRole="button"
+                          accessibilityLabel={label}
+                          accessibilityState={{
+                            selected: selected === square || found.includes(square),
+                            disabled: !interactive && !onSquarePress,
+                          }}
+                          accessibilityHint={
+                            onSquarePress
+                              ? 'Tap to choose this square'
+                              : interactive
+                                ? isTarget
+                                  ? 'Tap to move here'
+                                  : 'Tap your piece to see its legal moves'
+                                : 'Board preview'
+                          }
+                          onPress={() => selectSquare(square)}
+                          style={[
+                            styles.squareFill,
+                            {
+                              backgroundColor: highlighted
+                                ? light
+                                  ? theme.boardLastLight
+                                  : theme.boardLastDark
+                                : light
+                                  ? theme.boardLight
+                                  : theme.boardDark,
+                            },
+                          ]}>
+                          {tint && (
+                            <View
+                              pointerEvents="none"
+                              style={[styles.tint, { backgroundColor: tint }]}
+                            />
+                          )}
+                          {star && !piece && (
+                            <View pointerEvents="none" style={styles.star}>
+                              <Icon
+                                name="star"
+                                size={Math.max(12, squareSize * 0.55)}
+                                color="boardStar"
+                                fill="boardStar"
+                                strokeWidth={1.5}
+                              />
+                            </View>
+                          )}
+                          {successSquare === square && (
+                            <View
+                              pointerEvents="none"
+                              style={[styles.tint, { backgroundColor: theme.boardSuccess }]}
+                            />
+                          )}
+                          {successSquare === square && <SuccessBurst />}
+                          {checkedKing === square && (
+                            <View
+                              pointerEvents="none"
+                              style={[styles.check, { backgroundColor: theme.boardCheck }]}
+                            />
+                          )}
+                          {hintSquare === square && selected !== square && (
+                            <View
+                              pointerEvents="none"
+                              style={[styles.outline, { borderColor: theme.boardFocus }]}
+                            />
+                          )}
+                          {piece && !hidden && <Piece piece={piece} />}
+                          {isTarget && (
+                            <View
+                              pointerEvents="none"
+                              style={[
+                                piece ? styles.captureTarget : styles.target,
+                                piece
+                                  ? { borderColor: theme.boardTarget }
+                                  : { backgroundColor: theme.boardTarget },
+                              ]}
+                            />
+                          )}
+                        </Pressable>
+                      </View>
+                    );
+                  })}
+                </View>
+              ))}
+            </Animated.View>
+            {arrows.length > 0 && boardSize > 0 && (
+              <View
+                pointerEvents="none"
+                style={styles.floating}
+                accessibilityElementsHidden
+                importantForAccessibility="no-hide-descendants">
+                <Svg width={boardSize} height={boardSize}>
+                  {arrows.map(([from, to]) => {
+                    const start = squareOrigin(from as Square);
+                    const end = squareOrigin(to as Square);
+                    const [x1, y1, centerX, centerY] = [start.x, start.y, end.x, end.y].map(
+                      (value) => value + squareSize / 2,
+                    );
+                    const angle = Math.atan2(centerY - y1, centerX - x1);
+                    // The tip stops short of the centre so a piece on the target square stays visible.
+                    const x2 = centerX - Math.cos(angle) * squareSize * 0.3;
+                    const y2 = centerY - Math.sin(angle) * squareSize * 0.3;
+                    const head = squareSize * 0.38;
+                    // Stop the shaft short so it does not poke through the arrowhead.
+                    const tipX = x2 - Math.cos(angle) * head * 0.6;
+                    const tipY = y2 - Math.sin(angle) * head * 0.6;
+                    const corner = (turn: number) =>
+                      `${x2 - Math.cos(angle + turn) * head},${y2 - Math.sin(angle + turn) * head}`;
+                    return (
+                      <Fragment key={`${from}${to}`}>
+                        <Line
+                          x1={x1}
+                          y1={y1}
+                          x2={tipX}
+                          y2={tipY}
+                          stroke={theme.boardArrow}
+                          strokeWidth={squareSize * 0.16}
+                          strokeLinecap="round"
+                        />
+                        <Polygon
+                          points={`${x2},${y2} ${corner(0.5)} ${corner(-0.5)}`}
+                          fill={theme.boardArrow}
+                        />
+                      </Fragment>
+                    );
+                  })}
+                </Svg>
+              </View>
+            )}
+            {sliding && lastMove && movedPiece && (
+              <Animated.View
+                pointerEvents="none"
+                style={[
+                  styles.floating,
+                  {
+                    width: squareSize,
+                    height: squareSize,
+                    transform: [
+                      {
+                        translateX: slide.interpolate({
+                          inputRange: [0, 1],
+                          outputRange: [squareOrigin(lastMove.from).x, squareOrigin(lastMove.to).x],
+                        }),
+                      },
+                      {
+                        translateY: slide.interpolate({
+                          inputRange: [0, 1],
+                          outputRange: [squareOrigin(lastMove.from).y, squareOrigin(lastMove.to).y],
+                        }),
+                      },
+                    ],
+                  },
+                ]}>
+                <Piece piece={movedPiece} />
+              </Animated.View>
+            )}
+            {draggedPiece && (
+              <Animated.View
+                pointerEvents="none"
+                style={[
+                  styles.floating,
+                  {
+                    // Lifted and enlarged so the finger does not hide the piece.
+                    left: squareOrigin(draggedPiece.square).x,
+                    top: squareOrigin(draggedPiece.square).y - squareSize * 0.35,
+                    width: squareSize,
+                    height: squareSize,
+                    transform: [
+                      { translateX: dragOffset.x },
+                      { translateY: dragOffset.y },
+                      { scale: 1.35 },
+                    ],
+                  },
+                ]}>
+                <Piece piece={draggedPiece} />
+              </Animated.View>
+            )}
+          </View>
+        </View>
         <View
-          pointerEvents="none"
-          style={styles.floating}
+          style={styles.fileRow}
           accessibilityElementsHidden
           importantForAccessibility="no-hide-descendants">
-          <Svg width={boardSize} height={boardSize}>
-            {arrows.map(([from, to]) => {
-              const start = squareOrigin(from as Square);
-              const end = squareOrigin(to as Square);
-              const [x1, y1, centerX, centerY] = [start.x, start.y, end.x, end.y].map(
-                (value) => value + squareSize / 2,
-              );
-              const angle = Math.atan2(centerY - y1, centerX - x1);
-              // The tip stops short of the centre so a piece on the target square stays visible.
-              const x2 = centerX - Math.cos(angle) * squareSize * 0.3;
-              const y2 = centerY - Math.sin(angle) * squareSize * 0.3;
-              const head = squareSize * 0.38;
-              // Stop the shaft short so it does not poke through the arrowhead.
-              const tipX = x2 - Math.cos(angle) * head * 0.6;
-              const tipY = y2 - Math.sin(angle) * head * 0.6;
-              const corner = (turn: number) =>
-                `${x2 - Math.cos(angle + turn) * head},${y2 - Math.sin(angle + turn) * head}`;
-              return (
-                <Fragment key={`${from}${to}`}>
-                  <Line
-                    x1={x1}
-                    y1={y1}
-                    x2={tipX}
-                    y2={tipY}
-                    stroke={theme.boardArrow}
-                    strokeWidth={squareSize * 0.16}
-                    strokeLinecap="round"
-                  />
-                  <Polygon
-                    points={`${x2},${y2} ${corner(0.5)} ${corner(-0.5)}`}
-                    fill={theme.boardArrow}
-                  />
-                </Fragment>
-              );
-            })}
-          </Svg>
+          {files.split('').map((file) => (
+            <View key={file} style={styles.frameCell}>
+              <ThemedText style={[styles.frameLabel, { color: theme.boardFrameLabel }]}>
+                {file}
+              </ThemedText>
+            </View>
+          ))}
         </View>
-      )}
-      {sliding && lastMove && movedPiece && (
-        <Animated.View
-          pointerEvents="none"
-          style={[
-            styles.floating,
-            {
-              width: squareSize,
-              height: squareSize,
-              transform: [
-                {
-                  translateX: slide.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [squareOrigin(lastMove.from).x, squareOrigin(lastMove.to).x],
-                  }),
-                },
-                {
-                  translateY: slide.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [squareOrigin(lastMove.from).y, squareOrigin(lastMove.to).y],
-                  }),
-                },
-              ],
-            },
-          ]}>
-          <Piece piece={movedPiece} />
-        </Animated.View>
-      )}
-      {draggedPiece && (
-        <Animated.View
-          pointerEvents="none"
-          style={[
-            styles.floating,
-            {
-              // Lifted and enlarged so the finger does not hide the piece.
-              left: squareOrigin(draggedPiece.square).x,
-              top: squareOrigin(draggedPiece.square).y - squareSize * 0.35,
-              width: squareSize,
-              height: squareSize,
-              transform: [
-                { translateX: dragOffset.x },
-                { translateY: dragOffset.y },
-                { scale: 1.35 },
-              ],
-            },
-          ]}>
-          <Piece piece={draggedPiece} />
-        </Animated.View>
-      )}
+      </View>
       <Modal
         visible={Boolean(promotions?.fen === fen && interactive)}
         transparent
@@ -545,12 +566,23 @@ export function Board({
   );
 }
 
+/** The frame's width around the board, and the strip that holds the coordinates. */
+const FRAME_EDGE = 5;
+const FRAME_LABEL = 12;
+
 const styles = StyleSheet.create({
+  frame: { borderRadius: Radius.medium, padding: FRAME_EDGE, paddingTop: FRAME_EDGE },
+  frameRow: { flexDirection: 'row' },
+  rankColumn: { width: FRAME_LABEL, marginRight: FRAME_EDGE },
+  boardArea: { flex: 1 },
+  fileRow: { flexDirection: 'row', height: FRAME_LABEL, marginLeft: FRAME_LABEL + FRAME_EDGE },
+  frameCell: { flex: 1, alignItems: 'center', justifyContent: 'center' },
+  frameLabel: { fontSize: 10, lineHeight: 13, fontFamily: Fonts.bold },
   board: {
     width: '100%',
     aspectRatio: 1,
     overflow: 'hidden',
-    borderRadius: Radius.medium,
+    borderRadius: Radius.small / 2,
   },
   row: { flex: 1, flexDirection: 'row' },
   square: { flex: 1 },
@@ -583,22 +615,6 @@ const styles = StyleSheet.create({
     right: 2,
     borderWidth: 4,
     borderRadius: 50,
-  },
-  rank: {
-    position: 'absolute',
-    top: 1,
-    left: 3,
-    fontSize: 10,
-    lineHeight: 13,
-    fontFamily: Fonts.bold,
-  },
-  file: {
-    position: 'absolute',
-    bottom: 0,
-    right: 3,
-    fontSize: 10,
-    lineHeight: 13,
-    fontFamily: Fonts.bold,
   },
   modalBackdrop: { flex: 1, justifyContent: 'center', padding: Spacing.four },
   promotionCard: {
