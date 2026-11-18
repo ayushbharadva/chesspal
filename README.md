@@ -7,6 +7,7 @@ Offline chess practice and opening guides for beginners who already know the rul
 ## MVP
 
 - **Practice:** 5 puzzles per workout at your level (one easier, three at level, one harder), then keep practicing without a daily limit.
+- **Wrong moves explained:** after a wrong move the opponent plays the reply that punishes it and a line says why; go back one move or reset the puzzle.
 - **3,200 puzzles:** eight themes (mate in one, back-rank mate, mate in two, hanging pieces, forks, pins, skewers, discovered attacks) at five levels, from Beginner to Expert, with about 80 per theme and level; legal moves, progressive hints, solution replay and explanations.
 - **Skills:** a concept card and three rounds per theme (warm-up, at your level, an unlabeled test). Clear a round with four of five solved without help.
 - **Strengths and weaknesses:** your strongest theme and the one worth practicing, on Results and Progress; your daily round includes the weaker one.
@@ -45,6 +46,8 @@ npx expo export --platform android
 The check runs TypeScript, ESLint, formatting and Jest, including actual board interactions, complete workouts, all three guides, Home learning recommendations, persisted state and the legality of every bundled puzzle. CI also exports the production Android bundle. Device validation is tracked in [docs/DEVICE-TESTING.md](docs/DEVICE-TESTING.md).
 
 `npm run content:verify` rebuilds puzzle content from a candidate import and verifies learner moves with Stockfish. Stockfish is a development tool; the app bundles only the resulting JSON.
+
+`npm run content:refutations` finds Stockfish's reply to every wrong move in every puzzle for `content/refutations.json`. Rerun it after any change to `content/puzzles.json`; it takes about 3.6 engine-hours, runs one engine per CPU core and resumes after a stop.
 
 `npm run content:verify-openings` checks all opening branches and reruns Stockfish verification of the six transfer exercises without rewriting their metadata. [Opening practice sources](content/OPENING-PRACTICE-SOURCES.md) explains the goal-specific answers and finite-depth checks.
 

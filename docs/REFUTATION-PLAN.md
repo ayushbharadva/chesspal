@@ -1,6 +1,6 @@
 # Wrong-move replies: plan
 
-Written 2026-11-17 on `feat/wrong-move-replies`. When a player makes a wrong move in a puzzle, the opponent replies with the move that punishes it, a short line says why, and the player can go back one move or reset the puzzle. Decision record: [0012](decisions/0012-wrong-move-replies.md) (to write in P5). Unfinished puzzles now start over when left ([decision 0011](decisions/0011-restart-unfinished-items.md)), so a wrong move on show is never restored.
+Written 2026-11-17 on `feat/wrong-move-replies`. When a player makes a wrong move in a puzzle, the opponent replies with the move that punishes it, a short line says why, and the player can go back one move or reset the puzzle. Decision record: [0012](decisions/0012-wrong-move-replies.md). Unfinished puzzles now start over when left ([decision 0011](decisions/0011-restart-unfinished-items.md)), so a wrong move on show is never restored.
 
 Progress:
 
@@ -9,7 +9,7 @@ Progress:
 - ✅ P2 Content access and content tests
 - ✅ P3 Pure logic, saved-session upgrade and unit tests (notes below)
 - ✅ P4 Screen, icon buttons and navigation tests (notes below)
-- [ ] P5 Docs and decision record
+- ✅ P5 Docs and decision record
 - [ ] P6 Android device check
 
 Each phase ends with `npm run check` passing and one commit.
@@ -138,7 +138,7 @@ Checked in this order; the first match wins.
 | P2  | Content access and tests | ✅ `src/content/refutations.ts` and `src/content/__tests__/refutations.test.ts`: every wrong move of every puzzle stored and nothing else; replies legal and reasons matching the board for every eighth puzzle (playing all 164,296 replies took 130 s; the sample takes 9 s). Both tests fail on a deliberately broken entry. Android bundle before P3 imports the file: 4.3 MB. |
 | P3  | Logic and save upgrade   | ✅ `src/workout/__tests__/refutation.test.ts` and a navigation test (wrong move → reason → Reset → solve, counted with help)                                                                                                                                                                                                                                                       |
 | P4  | Screen                   | ✅ Navigation tests for Reset on the first move and Back one move on the second; visual check above                                                                                                                                                                                                                                                                                |
-| P5  | Docs                     | Decision 0012; MVP.md, README, content-pipeline.md, DEVICE-TESTING.md and CLAUDE.md app map updated                                                                                                                                                                                                                                                                                |
+| P5  | Docs                     | ✅ Decision 0012; MVP.md, README, content-pipeline.md, DEVICE-TESTING.md and CLAUDE.md updated                                                                                                                                                                                                                                                                                     |
 | P6  | Android device           | Cold start time with the new file; the pause and reply feel right; icons readable in both themes; TalkBack reads both buttons                                                                                                                                                                                                                                                      |
 
 ## Risks
