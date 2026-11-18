@@ -18,7 +18,7 @@ import { Icon } from '@/components/icon';
 import { FadeIn } from '@/components/motion';
 import { Screen } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
-import { ProgressBar } from '@/components/ui';
+import { StepDots } from '@/components/ui';
 import { courseLessonById, courseLessons } from '@/content/course';
 import { type CourseStep } from '@/content/types';
 import { Spacing } from '@/constants/theme';
@@ -123,8 +123,12 @@ export default function CourseLessonScreen() {
             </ThemedText>
             <ThemedText themeColor="textSecondary" style={styles.centered}>
               {lesson.title}
-              {stars < 3 ? ' · Play it again without mistakes for three stars.' : ''}
             </ThemedText>
+            {stars < 3 && (
+              <ThemedText type="small" themeColor="textSecondary" style={styles.centered}>
+                Play it again without mistakes for three stars.
+              </ThemedText>
+            )}
           </FadeIn>
         </View>
         {next && (
@@ -169,12 +173,14 @@ export default function CourseLessonScreen() {
       }>
       <Stack.Screen options={{ title: lesson.title }} />
       <View style={styles.progress}>
-        <View style={styles.bar}>
-          <ProgressBar value={run.step / total} />
-        </View>
-        <ThemedText type="small" themeColor="textSecondary">
-          {run.step + 1} / {total}
+        <ThemedText type="label" themeColor="accent">
+          {entry.unit.title}
         </ThemedText>
+        <View accessible accessibilityLabel={`Step ${run.step + 1} of ${total}`}>
+          <StepDots
+            steps={lesson.steps.map((_, index) => ({ done: index <= run.step, available: true }))}
+          />
+        </View>
       </View>
       <FadeIn key={`${lesson.id}-${run.step}`}>
         <StepView
@@ -189,8 +195,7 @@ export default function CourseLessonScreen() {
 }
 
 const styles = StyleSheet.create({
-  progress: { flexDirection: 'row', alignItems: 'center', gap: Spacing.three },
-  bar: { flex: 1 },
+  progress: { gap: Spacing.two },
   note: { flexDirection: 'row', alignItems: 'center', gap: Spacing.two },
   noteText: { flex: 1 },
   summary: { alignItems: 'center', gap: Spacing.three, paddingTop: Spacing.six },
