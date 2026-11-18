@@ -361,7 +361,7 @@ export function PuzzlesStep({
   const last = index === list.length - 1;
   return (
     <View style={styles.step}>
-      <ThemedText type="overline" themeColor="accent">
+      <ThemedText type="label" themeColor="accent">
         Puzzle {index + 1} of {list.length}
       </ThemedText>
       <MoveStep

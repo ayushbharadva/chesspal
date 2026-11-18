@@ -1,9 +1,11 @@
 import { Pressable, StyleSheet, View } from 'react-native';
 
+import { type PieceType } from '@/chess';
+import { Piece } from '@/components/board/piece';
 import { Icon } from '@/components/icon';
 import { ThemedText } from '@/components/themed-text';
 import { LEVELS } from '@/content/levels';
-import { PUZZLE_LEVELS, type PuzzleLevel } from '@/content/types';
+import { type PuzzleLevel } from '@/content/types';
 import { Radius, Spacing } from '@/constants/theme';
 import { useElevation, useTheme } from '@/hooks/use-theme';
 
@@ -38,7 +40,7 @@ export function LevelPicker({
               },
               pressed && styles.pressed,
             ]}>
-            <LevelBars level={level.value} />
+            <LevelPiece level={level.value} />
             <View style={styles.text}>
               <ThemedText type="headline">{level.name}</ThemedText>
               <ThemedText type="small" themeColor="textSecondary">
@@ -57,26 +59,17 @@ export function LevelPicker({
   );
 }
 
-/** Rising bars filled up to a level, so the levels read as one ladder. */
-export function LevelBars({ level }: { level: PuzzleLevel }) {
+/** Each level is a piece of rising value, pawn to queen, so the levels read as one ladder. */
+const LEVEL_PIECES: Record<PuzzleLevel, PieceType> = { 1: 'p', 2: 'n', 3: 'b', 4: 'r', 5: 'q' };
+
+export function LevelPiece({ level }: { level: PuzzleLevel }) {
   const theme = useTheme();
   return (
     <View
-      style={[styles.bars, { backgroundColor: theme.accentSurface }]}
+      style={[styles.badge, { backgroundColor: theme.accentSurface }]}
       accessibilityElementsHidden
       importantForAccessibility="no-hide-descendants">
-      {PUZZLE_LEVELS.map((step) => (
-        <View
-          key={step}
-          style={[
-            styles.bar,
-            { height: 8 + step * 4 },
-            step <= level
-              ? { backgroundColor: theme.accent }
-              : { backgroundColor: theme.textSecondary, opacity: 0.25 },
-          ]}
-        />
-      ))}
+      <Piece piece={{ color: 'w', type: LEVEL_PIECES[level] }} />
     </View>
   );
 }
@@ -92,16 +85,13 @@ const styles = StyleSheet.create({
     minHeight: 88,
   },
   text: { flex: 1, gap: Spacing.half },
-  bars: {
-    width: 44,
-    height: 44,
+  badge: {
+    width: 48,
+    height: 48,
     borderRadius: 14,
-    flexDirection: 'row',
-    alignItems: 'flex-end',
+    alignItems: 'center',
     justifyContent: 'center',
-    gap: 3,
-    paddingBottom: 10,
+    padding: 4,
   },
-  bar: { width: 4, borderRadius: 2 },
   pressed: { opacity: 0.85, transform: [{ scale: 0.99 }] },
 });

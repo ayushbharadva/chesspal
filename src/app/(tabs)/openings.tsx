@@ -85,7 +85,7 @@ export default function OpeningsScreen() {
                   size={88}
                 />
                 <View style={styles.guideText}>
-                  <ThemedText type="overline" themeColor="accent">
+                  <ThemedText type="label" themeColor="accent">
                     Play as {guide.side === 'w' ? 'White' : 'Black'}
                   </ThemedText>
                   <ThemedText type="headline">{guide.title}</ThemedText>

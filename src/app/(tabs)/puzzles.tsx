@@ -4,7 +4,7 @@ import { StyleSheet, View } from 'react-native';
 
 import { Screen } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
-import { ListRow, SectionTitle, StepDots, TextLink } from '@/components/ui';
+import { Disclosure, ListRow, SectionTitle, StepDots, TextLink } from '@/components/ui';
 import { puzzleById } from '@/content';
 import { levelName } from '@/content/levels';
 import { skillById, skillUnits } from '@/content/skills';
@@ -79,7 +79,7 @@ export default function PuzzlesScreen() {
         <ListRow
           icon="rotate-ccw"
           title={`Review ${reviews} puzzle${reviews === 1 ? '' : 's'}`}
-          detail="Replay earlier puzzles so they stick"
+          detail="Try earlier puzzles again"
           onPress={() => openPractice(true)}
         />
       )}
@@ -89,14 +89,17 @@ export default function PuzzlesScreen() {
         detail={
           routeToday
             ? `${routeToday.score} points today`
-            : `${skillById[routeTheme(today)].name} · new every day`
+            : `Today: ${skillById[routeTheme(today)].name}`
         }
         onPress={() => router.push('/daily-route')}
       />
-      <ThemedText type="small" themeColor="textSecondary" style={styles.themesNote}>
-        Learn one theme at a time. Each has 3 short rounds; the dots show the ones you passed at
-        this level.
-      </ThemedText>
+      <SectionTitle>Skills</SectionTitle>
+      <Disclosure title="How skills work" icon="lightbulb">
+        <ThemedText type="small" themeColor="textSecondary">
+          Learn one theme at a time. Each has 3 short rounds; the dots show the ones you passed at
+          this level.
+        </ThemedText>
+      </Disclosure>
       {skillUnits.map((unit) => (
         <View key={unit.id} style={styles.unit}>
           <SectionTitle>{unit.title}</SectionTitle>
@@ -144,6 +147,5 @@ function describeProgress(progress: SkillProgress | undefined, available: readon
 const styles = StyleSheet.create({
   intro: { gap: Spacing.one, paddingTop: Spacing.two },
   level: { flexDirection: 'row', alignItems: 'center', gap: Spacing.three },
-  themesNote: { paddingTop: Spacing.two },
   unit: { gap: Spacing.three },
 });

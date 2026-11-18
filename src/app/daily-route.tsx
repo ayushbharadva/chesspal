@@ -6,6 +6,7 @@ import { Card } from '@/components/card';
 import { RoutePath } from '@/components/route-path';
 import { Screen } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
+import { EmptyState } from '@/components/illustrations';
 import { Bullet, Pill } from '@/components/ui';
 import { levelName } from '@/content/levels';
 import { skillById } from '@/content/skills';
@@ -94,14 +95,21 @@ export default function DailyRouteScreen() {
         </Card>
       )}
       <Card>
-        <ThemedText type="overline" themeColor="textSecondary">
+        <ThemedText type="label" themeColor="textSecondary">
           Your record
         </ThemedText>
-        <View style={styles.stats}>
-          <Stat label="Usual" value={par === null ? '–' : String(par)} />
-          <Stat label="Best" value={best === null ? '–' : String(best)} />
-          <Stat label="Played" value={String(runs.length)} />
-        </View>
+        {runs.length === 0 ? (
+          <EmptyState
+            title="No challenges yet"
+            detail="Your best and usual scores appear after your first one."
+          />
+        ) : (
+          <View style={styles.stats}>
+            <Stat label="Usual" value={par === null ? '–' : String(par)} />
+            <Stat label="Best" value={best === null ? '–' : String(best)} />
+            <Stat label="Played" value={String(runs.length)} />
+          </View>
+        )}
         {recent.length > 0 && (
           <ThemedText type="small" themeColor="textSecondary">
             Recent: {recent.join(', ')}

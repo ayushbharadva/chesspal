@@ -8,6 +8,7 @@ import { Card } from '@/components/card';
 import { Icon } from '@/components/icon';
 import { Screen } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
+import { BumpOnRise } from '@/components/motion';
 import { ListRow, Pill, ProgressBar, SectionTitle } from '@/components/ui';
 import { guides } from '@/content';
 import { courseLessons } from '@/content/course';
@@ -96,7 +97,9 @@ export default function HomeScreen() {
           <View
             accessible
             accessibilityLabel={`Practice streak: ${streak} ${streak === 1 ? 'day' : 'days'}`}>
-            <Pill icon="flame" tone={streak ? 'accent' : 'muted'} label={String(streak)} />
+            <BumpOnRise value={streak}>
+              <Pill icon="flame" tone={streak ? 'accent' : 'muted'} label={String(streak)} />
+            </BumpOnRise>
           </View>
           <Pressable
             accessibilityRole="button"
@@ -113,7 +116,7 @@ export default function HomeScreen() {
 
       {hydrated && learnFirst && nextCourse && (
         <Card variant="hero">
-          <Pill tone="onHero" icon="graduation-cap" label={`Learn · ${nextCourse.unit.title}`} />
+          <Pill tone="onHero" icon="graduation-cap" label={nextCourse.unit.title} />
           <View style={styles.heroText}>
             <ThemedText type="title" themeColor="onHero">
               {nextCourse.lesson.title}
@@ -133,11 +136,7 @@ export default function HomeScreen() {
 
       {/* A plain card while the Learn lesson leads, so Home has one hero. */}
       <Card variant={learnFirst ? 'surface' : 'hero'}>
-        <Pill
-          tone={learnFirst ? 'accent' : 'onHero'}
-          icon="puzzle"
-          label={`Today's puzzles · ${levelName(level)}`}
-        />
+        <Pill tone={learnFirst ? 'accent' : 'onHero'} icon="puzzle" label={levelName(level)} />
         <View style={styles.heroText}>
           <ThemedText
             type={learnFirst ? 'headline' : 'title'}
@@ -186,7 +185,7 @@ export default function HomeScreen() {
         <ListRow
           icon="rotate-ccw"
           title={`Review ${reviews} puzzle${reviews === 1 ? '' : 's'}`}
-          detail="Replay earlier puzzles so they stick"
+          detail="Try earlier puzzles again"
           onPress={() => openPractice(true)}
         />
       )}

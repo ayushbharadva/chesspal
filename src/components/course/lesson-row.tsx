@@ -1,7 +1,7 @@
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { Icon } from '@/components/icon';
-import { PopIn } from '@/components/motion';
+import { PopIn, Pulse } from '@/components/motion';
 import { ThemedText } from '@/components/themed-text';
 import { Spacing } from '@/constants/theme';
 import { type LessonStatus, type Stars } from '@/course/path';
@@ -66,6 +66,23 @@ export function LessonRow({
 }) {
   const theme = useTheme();
   const locked = status === 'locked';
+  const node = (
+    <View
+      style={[
+        styles.node,
+        status === 'done' && { backgroundColor: theme.successSurface },
+        status === 'next' && { backgroundColor: theme.primary },
+        locked && { backgroundColor: theme.surfaceMuted },
+      ]}>
+      {status === 'done' ? (
+        <Icon name="check" size={20} color="success" strokeWidth={2.6} />
+      ) : status === 'next' ? (
+        <Icon name="play" size={18} color="onPrimary" fill="onPrimary" />
+      ) : (
+        <Icon name="lock" size={16} color="textSecondary" />
+      )}
+    </View>
+  );
   return (
     <Pressable
       accessibilityRole="button"
@@ -81,25 +98,20 @@ export function LessonRow({
       onPress={onPress}
       style={({ pressed }) => [styles.row, pressed && styles.pressed]}>
       <View style={styles.rail}>
-        <View
-          style={[
-            styles.node,
-            status === 'done' && { backgroundColor: theme.successSurface },
-            status === 'next' && { backgroundColor: theme.primary },
-            locked && { backgroundColor: theme.surfaceMuted },
-          ]}>
-          {status === 'done' ? (
-            <Icon name="check" size={20} color="success" strokeWidth={2.6} />
-          ) : status === 'next' ? (
-            <Icon name="play" size={18} color="onPrimary" fill="onPrimary" />
-          ) : (
-            <Icon name="lock" size={16} color="textSecondary" />
-          )}
-        </View>
-        {!last && <View style={[styles.line, { backgroundColor: theme.border }]} />}
+        {/* The one lesson to play next breathes gently, so the path shows where to go. */}
+        {status === 'next' ? <Pulse color={theme.accentFill}>{node}</Pulse> : node}
+        {/* The path is filled in brass up to the lessons already finished. */}
+        {!last && (
+          <View
+            style={[
+              styles.line,
+              { backgroundColor: status === 'done' ? theme.accentFill : theme.border },
+            ]}
+          />
+        )}
       </View>
       <View style={styles.text}>
-        <ThemedText type="overline" themeColor={status === 'next' ? 'accent' : 'textSecondary'}>
+        <ThemedText type="label" themeColor={status === 'next' ? 'accent' : 'textSecondary'}>
           {status === 'next' ? 'Up next' : `Lesson ${number}`}
         </ThemedText>
         <ThemedText type="subtitle" themeColor={locked ? 'textSecondary' : 'text'}>

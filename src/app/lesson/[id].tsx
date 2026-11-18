@@ -109,7 +109,7 @@ export default function LessonScreen() {
   return (
     <Screen>
       <View style={styles.intro}>
-        <ThemedText type="overline" themeColor="accent">
+        <ThemedText type="label" themeColor="accent">
           Play as {guide.side === 'w' ? 'White' : 'Black'}
         </ThemedText>
         <ThemedText type="title" accessibilityRole="header">

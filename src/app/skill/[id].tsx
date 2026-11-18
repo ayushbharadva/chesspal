@@ -77,7 +77,7 @@ export default function SkillScreen() {
         <View style={styles.lookFor}>
           <IconBadge name="eye" tone="hero" size={40} />
           <View style={styles.lookForText}>
-            <ThemedText type="overline" themeColor="heroAccent">
+            <ThemedText type="label" themeColor="heroAccent">
               Look for
             </ThemedText>
             <ThemedText type="subtitle" themeColor="onHero">
@@ -116,7 +116,7 @@ export default function SkillScreen() {
       </ThemedText>
       {stats && (
         <Card>
-          <ThemedText type="overline" themeColor="textSecondary">
+          <ThemedText type="label" themeColor="textSecondary">
             Your record
           </ThemedText>
           <ThemedText type="headline">

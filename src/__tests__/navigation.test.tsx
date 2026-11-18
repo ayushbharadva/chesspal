@@ -194,7 +194,7 @@ it('opens an independently solved due puzzle from Home and persists its next rev
   );
   await useProgressStore.persist.rehydrate();
   const app = await renderApp();
-  expect(screen.getByText('Replay earlier puzzles so they stick')).toBeOnTheScreen();
+  expect(screen.getByText('Try earlier puzzles again')).toBeOnTheScreen();
   await fireEvent.press(screen.getByRole('button', { name: 'Review 1 puzzle' }));
   expect(app.getPathname()).toBe('/workout');
   expect(useProgressStore.getState().currentSession).toMatchObject({

@@ -6,6 +6,7 @@ import { Button } from '@/components/button';
 import { Card } from '@/components/card';
 import { Screen } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
+import { EmptyState } from '@/components/illustrations';
 import { Pill, ProgressBar, Segmented } from '@/components/ui';
 import { Radius, Spacing } from '@/constants/theme';
 import { useHaptics } from '@/hooks/use-haptics';
@@ -82,7 +83,7 @@ export default function VisionScreen() {
       {round ? (
         <View style={styles.status}>
           <View style={styles.prompt}>
-            <ThemedText type="overline" themeColor="textSecondary">
+            <ThemedText type="label" themeColor="textSecondary">
               Find
             </ThemedText>
             <ThemedText type="display" accessibilityLiveRegion="polite">
@@ -128,12 +129,19 @@ export default function VisionScreen() {
             onPress={start}
           />
           <Card>
-            <ThemedText type="overline" themeColor="textSecondary">
-              {side === 'w' ? 'As White' : 'As Black'}
-            </ThemedText>
-            <ThemedText type="headline">
-              {best === null ? 'No rounds yet' : `Best: ${best} squares`}
-            </ThemedText>
+            {best === null ? (
+              <EmptyState
+                title="No rounds yet"
+                detail={`Play one ${side === 'w' ? 'as White' : 'as Black'} to set your best.`}
+              />
+            ) : (
+              <>
+                <ThemedText type="label" themeColor="textSecondary">
+                  {side === 'w' ? 'As White' : 'As Black'}
+                </ThemedText>
+                <ThemedText type="headline">{`Best: ${best} squares`}</ThemedText>
+              </>
+            )}
             {recent.length > 0 && (
               <ThemedText type="small" themeColor="textSecondary">
                 Recent: {recent.join(', ')}

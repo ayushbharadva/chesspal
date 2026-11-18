@@ -4,6 +4,7 @@ import { StyleSheet, View } from 'react-native';
 
 import { describeMove, playMove, positionAfter, readPosition, type Square } from '@/chess';
 import { Board } from '@/components/board/board';
+import { Piece } from '@/components/board/piece';
 import { Button, IconButton } from '@/components/button';
 import { Card } from '@/components/card';
 import { type IconName } from '@/components/icon';
@@ -19,7 +20,6 @@ import { Spacing } from '@/constants/theme';
 import { routeSteps, SAFE_HELPED_POINTS, SAFE_POINTS, STEEP_POINTS } from '@/daily-route/route';
 import { useHaptics } from '@/hooks/use-haptics';
 import { useReplyPause } from '@/hooks/use-reply-pause';
-import { useTheme } from '@/hooks/use-theme';
 import { CHIME_DELAY_MS, playSound } from '@/sounds/play-sound';
 import { type Session } from '@/progress/types';
 import { RUNG_NAMES } from '@/skills/ladder';
@@ -241,7 +241,7 @@ export default function WorkoutScreen() {
     <Screen footer={footer}>
       <View style={styles.heading}>
         <View style={styles.progressRow}>
-          <ThemedText type="overline" themeColor="textSecondary" style={styles.progressLabel}>
+          <ThemedText type="label" themeColor="textSecondary" style={styles.progressLabel}>
             {`Puzzle ${session.index + 1} of ${session.puzzleIds.length}`}
             {route?.taken.includes(session.index) ? ' · Hard' : ''}
             {session.mode === 'review' ? ' · Review' : ''}
@@ -347,20 +347,14 @@ function RouteProgress({ session }: { session: Session }) {
   return <RoutePath steps={routeSteps(session)} />;
 }
 
+/** Whose move it is, shown with that side's king from the player's piece set. */
 function TurnBadge({ color }: { color: 'w' | 'b' }) {
-  const theme = useTheme();
   return (
     <View style={styles.turn}>
-      <View
-        style={[
-          styles.turnDot,
-          {
-            backgroundColor: color === 'w' ? theme.pieceWhite : theme.pieceBlack,
-            borderColor: theme.textSecondary,
-          },
-        ]}
-      />
-      <ThemedText type="overline" themeColor="textSecondary">
+      <View style={styles.turnPiece}>
+        <Piece piece={{ color, type: 'k' }} />
+      </View>
+      <ThemedText type="smallBold" themeColor="textSecondary">
         {color === 'w' ? 'White' : 'Black'} to move
       </ThemedText>
     </View>
@@ -407,7 +401,7 @@ const styles = StyleSheet.create({
   },
   progressLabel: { flex: 1 },
   turn: { flexDirection: 'row', alignItems: 'center', gap: Spacing.one + Spacing.half },
-  turnDot: { width: 12, height: 12, borderRadius: 6, borderWidth: 1 },
+  turnPiece: { width: 24, height: 24, alignItems: 'center', justifyContent: 'center' },
   actions: { flexDirection: 'row', gap: Spacing.two },
   iconActions: { flexDirection: 'row', justifyContent: 'center', gap: Spacing.three },
   action: { flex: 1 },

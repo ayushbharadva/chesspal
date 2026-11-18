@@ -2,12 +2,12 @@ import { router } from 'expo-router';
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import { BrandMark } from '@/components/brand-mark';
 import { Button } from '@/components/button';
 import { type IconName } from '@/components/icon';
 import { LevelPicker } from '@/components/level-picker';
 import { Screen } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
+import { WelcomeScene } from '@/components/illustrations';
 import { IconBadge, ListRow } from '@/components/ui';
 import { courseLessons } from '@/content/course';
 import { type PuzzleLevel } from '@/content/types';
@@ -65,7 +65,7 @@ export default function WelcomeScreen() {
       edges={['top', 'bottom', 'left', 'right']}
       footer={<Button label="Get started" onPress={() => setStep('level')} />}>
       <View style={styles.hero}>
-        <BrandMark size={72} />
+        <WelcomeScene />
         <ThemedText type="display" accessibilityRole="header" style={styles.centered}>
           Welcome to ChessPal
         </ThemedText>
@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
   hero: {
     alignItems: 'center',
     gap: Spacing.three,
-    paddingTop: Spacing.six,
+    paddingTop: Spacing.four,
     paddingBottom: Spacing.four,
   },
   centered: { textAlign: 'center' },

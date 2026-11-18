@@ -7,6 +7,7 @@ import { Card } from '@/components/card';
 import { type IconName } from '@/components/icon';
 import { Screen } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
+import { EmptyState, ProgressRing } from '@/components/illustrations';
 import { IconBadge, ListRow, Pill, ProgressBar, SectionTitle } from '@/components/ui';
 import { guides, puzzleById } from '@/content';
 import { levelName } from '@/content/levels';
@@ -103,14 +104,21 @@ export default function ProgressScreen() {
 
       <SectionTitle>Puzzles</SectionTitle>
       <Card>
-        <View style={styles.headlineStat}>
-          <ThemedText type="stat">
-            {attempts.length ? `${Math.round((independent / attempts.length) * 100)}%` : '–'}
-          </ThemedText>
-          <ThemedText type="small" themeColor="textSecondary">
-            {attempts.length ? 'solved without help' : 'No puzzles yet'}
-          </ThemedText>
-        </View>
+        {attempts.length ? (
+          <View style={styles.ringStat}>
+            <View style={styles.ring}>
+              <ProgressRing value={independent / attempts.length} />
+              <View style={styles.ringLabel}>
+                <ThemedText type="headline">{`${Math.round((independent / attempts.length) * 100)}%`}</ThemedText>
+              </View>
+            </View>
+            <ThemedText type="small" themeColor="textSecondary" style={styles.ringCaption}>
+              solved without help
+            </ThemedText>
+          </View>
+        ) : (
+          <EmptyState title="No puzzles yet" detail="Solve a few and your numbers show up here." />
+        )}
         <View style={styles.list}>
           <Stat label="Puzzles played" value={String(attempts.length)} />
           <Stat label="Solved without help" value={String(independent)} />
@@ -272,7 +280,10 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     gap: Spacing.two,
   },
-  headlineStat: { gap: Spacing.half },
+  ringStat: { flexDirection: 'row', alignItems: 'center', gap: Spacing.three },
+  ring: { width: 96, height: 96, alignItems: 'center', justifyContent: 'center' },
+  ringLabel: { position: 'absolute' },
+  ringCaption: { flex: 1 },
   list: { marginTop: -Spacing.two },
   row: {
     flexDirection: 'row',
